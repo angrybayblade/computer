@@ -3,6 +3,7 @@
 import { useWindowManager } from "./WindowManager";
 import { AppWindow } from "./AppWindow";
 import { APPS } from "./apps";
+import { resolveAppUiTheme } from "./apps/themes";
 
 export function Desktop() {
   const { windows, openWindow } = useWindowManager();
@@ -128,11 +129,13 @@ export function Desktop() {
       {/* Window rendering */}
       {windows.map((ws) => {
         const appDef = APPS.find((a) => a.id === ws.id);
+        const ui = resolveAppUiTheme(appDef?.ui);
         return (
           <AppWindow
             key={ws.id}
             windowState={ws}
-            accentColor={appDef?.accentColor}
+            chrome={ui.chrome}
+            contentBackground={ui.content?.background}
           >
             {appDef?.content ?? (
               <div style={{ padding: 24, color: "var(--color-bauhaus-dark-gray)" }}>

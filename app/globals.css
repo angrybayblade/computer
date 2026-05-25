@@ -77,3 +77,612 @@ body {
   background: var(--color-bauhaus-red);
   animation: radio-bar 0.9s ease-in-out infinite alternate;
 }
+
+/* Synth bar animation for playing songs */
+@keyframes synth-bar {
+  0%, 100% { height: 4px; }
+  50% { height: 100%; }
+}
+
+.synth-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 24px;
+}
+
+.synth-bar {
+  width: 3px;
+  background: #FFFFFF;
+  border-radius: 1px;
+  animation: synth-bar 0.8s ease-in-out infinite;
+}
+
+.synth-bar:nth-child(1) { animation-delay: 0s; }
+.synth-bar:nth-child(2) { animation-delay: 0.15s; }
+.synth-bar:nth-child(3) { animation-delay: 0.3s; }
+.synth-bar:nth-child(4) { animation-delay: 0.1s; }
+.synth-bar:nth-child(5) { animation-delay: 0.25s; }
+
+@keyframes music-tab-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.music-tab-border {
+  padding: 2px;
+  border-radius: var(--app-radius-sm, 4px);
+  background-size: 200% 100%;
+  animation: music-tab-border 2.8s linear infinite;
+}
+
+.music-tab-border-inactive {
+  padding: 2px;
+  border-radius: var(--app-radius-sm, 4px);
+  background: var(--app-border);
+}
+
+.music-tab-border-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border: none;
+  border-radius: calc(var(--app-radius-sm, 4px) - 2px);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--app-card);
+  color: var(--app-muted);
+  transition: color 0.2s ease, font-weight 0.2s ease;
+}
+
+.music-tab-border-inner--active {
+  color: var(--app-fg);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.music-card-border {
+  padding: 2px;
+  border-radius: var(--app-radius, 4px);
+  background-size: 200% 100%;
+}
+
+.music-card-border--playing {
+  animation: music-tab-border 2.8s linear infinite;
+}
+
+/* Pointillism / stippling aesthetic */
+.pointillism-app {
+  position: relative;
+  background-color: var(--app-bg);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(244, 196, 196, 0.35) 0, transparent 42%),
+    radial-gradient(circle at 88% 12%, rgba(232, 196, 168, 0.28) 0, transparent 38%),
+    radial-gradient(circle at 72% 82%, rgba(143, 168, 136, 0.22) 0, transparent 40%),
+    radial-gradient(circle, rgba(26, 26, 26, 0.06) 0.8px, transparent 0.8px);
+  background-size: auto, auto, auto, 5px 5px;
+  overflow: hidden;
+}
+
+.pointillism-atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.pointillism-orb {
+  position: absolute;
+  border-radius: 50%;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.12) 1px, transparent 1px);
+  animation: pointillism-float 18s ease-in-out infinite;
+}
+
+.pointillism-orb--1 {
+  width: 220px;
+  height: 220px;
+  top: -40px;
+  right: 8%;
+  background-size: 5px 5px;
+  opacity: 0.5;
+}
+
+.pointillism-orb--2 {
+  width: 160px;
+  height: 160px;
+  bottom: 12%;
+  left: -30px;
+  background-size: 4px 4px;
+  animation-delay: -6s;
+  opacity: 0.4;
+}
+
+.pointillism-orb--3 {
+  width: 120px;
+  height: 120px;
+  top: 42%;
+  right: -20px;
+  background-size: 3px 3px;
+  animation-delay: -11s;
+  opacity: 0.35;
+}
+
+.pointillism-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes pointillism-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(12px, -16px) scale(1.04);
+  }
+  66% {
+    transform: translate(-8px, 10px) scale(0.96);
+  }
+}
+
+@keyframes pointillism-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pointillism-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pointillism-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pointillism-shimmer {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pointillism-play-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(26, 26, 26, 0.2);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(26, 26, 26, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(26, 26, 26, 0);
+  }
+}
+
+.pointillism-header {
+  padding: 24px 20px 12px;
+  position: relative;
+}
+
+.pointillism-header::after {
+  content: "";
+  display: block;
+  margin-top: 14px;
+  height: 8px;
+  background-image: radial-gradient(circle, var(--app-ink) 1px, transparent 1px);
+  background-size: 6px 6px;
+  opacity: 0.18;
+  animation: pointillism-drift 8s linear infinite;
+}
+
+.pointillism-header-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--app-fg);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  animation: pointillism-rise 0.6s ease backwards;
+}
+
+.pointillism-header-sub {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--app-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: pointillism-rise 0.6s ease 0.08s backwards;
+}
+
+.pointillism-tab-panel {
+  animation: pointillism-fade-in 0.35s ease;
+}
+
+.pointillism-drift {
+  animation: pointillism-drift 2.4s linear infinite;
+}
+
+.pointillism-window {
+  background-color: #F5EDE3;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.05) 0.7px, transparent 0.7px);
+  background-size: 5px 5px;
+}
+
+.pointillism-title-bar {
+  background-color: #FAF6F0 !important;
+  background-image:
+    radial-gradient(circle at 8% 50%, rgba(244, 196, 196, 0.25) 0, transparent 36%),
+    radial-gradient(circle, rgba(26, 26, 26, 0.08) 0.7px, transparent 0.7px) !important;
+  background-size: auto, 4px 4px !important;
+}
+
+.pointillism-window-controls button {
+  font-family: var(--font-roboto-mono), ui-monospace, monospace;
+  background-color: #FAF6F0;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.07) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.pointillism-window-controls button:hover {
+  color: #1A1A1A;
+  background-color: #F5EDE3;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.14) 0.8px, transparent 0.8px);
+}
+
+.pointillism-window-controls button:last-child:hover {
+  background-color: #1A1A1A;
+  color: #FAF6F0;
+  background-image: radial-gradient(circle, rgba(250, 246, 240, 0.2) 0.6px, transparent 0.6px);
+}
+
+@keyframes pointillism-drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 10px 10px;
+  }
+}
+
+@keyframes stipple-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.pointillism-tab {
+  padding: 3px;
+  background-image: radial-gradient(circle, var(--tab-accent, var(--app-border)) 1px, transparent 1px);
+  background-size: 4px 4px;
+  transition: transform 0.2s ease;
+}
+
+.pointillism-tab:hover {
+  transform: translateY(-1px);
+}
+
+.pointillism-tab--active {
+  background-image: radial-gradient(circle, var(--app-ink) 1.2px, transparent 1.2px);
+  animation: pointillism-drift 2.4s linear infinite;
+}
+
+.pointillism-tab-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border: none;
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: var(--app-card);
+  color: var(--app-muted);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.pointillism-tab-inner:hover {
+  color: var(--app-fg);
+}
+
+.pointillism-tab-inner--active {
+  color: var(--app-fg);
+  font-weight: 700;
+  background-color: var(--app-card);
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.07) 0.7px, transparent 0.7px);
+  background-size: 4px 4px;
+}
+
+.pointillism-tab-icon {
+  display: inline-flex;
+  font-size: 13px;
+  transition: transform 0.25s ease;
+}
+
+.pointillism-tab-inner--active .pointillism-tab-icon {
+  animation: stipple-pulse 1.4s ease-in-out infinite;
+}
+
+.pointillism-card-border {
+  padding: 3px;
+  background-image: radial-gradient(circle, var(--card-accent, var(--app-border)) 1px, transparent 1px);
+  background-size: 5px 5px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: pointillism-rise 0.5s ease backwards;
+}
+
+.pointillism-card-border:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 rgba(26, 26, 26, 0.12);
+}
+
+.pointillism-card-border--playing {
+  background-image: radial-gradient(circle, var(--card-accent, var(--app-ink)) 1.3px, transparent 1.3px);
+  animation: pointillism-rise 0.5s ease backwards, pointillism-drift 1.6s linear infinite;
+  box-shadow: 4px 4px 0 rgba(26, 26, 26, 0.1);
+}
+
+.pointillism-card {
+  background: var(--app-card);
+  overflow: hidden;
+}
+
+.pointillism-cover {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.pointillism-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.14) 0.55px, transparent 0.55px);
+  background-size: 3px 3px;
+  mix-blend-mode: multiply;
+  transition: opacity 0.25s ease;
+}
+
+.pointillism-cover:hover::after {
+  animation: pointillism-drift 2.8s linear infinite;
+  opacity: 0.85;
+}
+
+.pointillism-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter 0.25s ease, transform 0.4s ease;
+}
+
+.pointillism-cover:hover img {
+  transform: scale(1.04);
+}
+
+.pointillism-cover--dim img {
+  filter: brightness(0.45);
+  transform: scale(1);
+}
+
+.pointillism-cover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  animation: pointillism-fade-in 0.2s ease;
+}
+
+.pointillism-play-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--app-card);
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.08) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+  animation: pointillism-play-ring 1.8s ease-out infinite;
+}
+
+.pointillism-card-info {
+  padding: 12px 14px;
+  border-top: 1px dotted var(--app-border);
+}
+
+.pointillism-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--app-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.pointillism-card-artist {
+  font-size: 12px;
+  color: var(--app-muted);
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: italic;
+}
+
+.pointillism-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--app-muted);
+  text-decoration: none;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.1) 0.8px, transparent 0.8px);
+  background-size: 4px 4px;
+  border: 1px dotted var(--app-border);
+  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pointillism-icon-link:hover {
+  transform: translateY(-1px);
+  color: var(--app-fg);
+  border-color: var(--app-ink);
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.18) 0.9px, transparent 0.9px);
+}
+
+.stipple-wave {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stipple-wave-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--app-fg-inv, #faf6f0);
+  animation: stipple-pulse 0.85s ease-in-out infinite;
+}
+
+.stipple-wave-dot:nth-child(1) { animation-delay: 0s; }
+.stipple-wave-dot:nth-child(2) { animation-delay: 0.12s; }
+.stipple-wave-dot:nth-child(3) { animation-delay: 0.24s; }
+.stipple-wave-dot:nth-child(4) { animation-delay: 0.08s; }
+.stipple-wave-dot:nth-child(5) { animation-delay: 0.2s; }
+
+.stipple-wave--dark .stipple-wave-dot {
+  background: var(--app-ink);
+}
+
+.pointillism-panel {
+  padding: 3px;
+  background-image: radial-gradient(circle, var(--panel-accent, var(--app-border)) 1px, transparent 1px);
+  background-size: 5px 5px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: pointillism-rise 0.5s ease backwards;
+}
+
+.pointillism-panel:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 rgba(26, 26, 26, 0.1);
+  animation: pointillism-rise 0.5s ease backwards, pointillism-drift 3s linear infinite;
+}
+
+.pointillism-panel-inner {
+  background: var(--panel-bg, var(--app-card));
+  padding: 18px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.04) 0.5px, transparent 0.5px);
+  background-size: 4px 4px;
+}
+
+.pointillism-lyric {
+  padding: 3px;
+  background-image: radial-gradient(circle, var(--app-ink) 1px, transparent 1px);
+  background-size: 5px 5px;
+  min-height: 200px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: pointillism-rise 0.5s ease backwards;
+}
+
+.pointillism-lyric:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 rgba(26, 26, 26, 0.12);
+  animation: pointillism-rise 0.5s ease backwards, pointillism-drift 4s linear infinite;
+}
+
+.pointillism-lyric-inner {
+  padding: 22px;
+  min-height: calc(200px - 6px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.06) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+}
+
+.pointillism-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  flex-shrink: 0;
+  border-top: 1px dotted var(--app-border);
+  background-color: var(--app-card);
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.05) 0.6px, transparent 0.6px);
+  background-size: 4px 4px;
+  animation: pointillism-slide-up 0.35s ease;
+}
+
+.pointillism-section-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--section-accent, var(--app-ink));
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.4) 0.5px, transparent 0.5px);
+  background-size: 2px 2px;
+  flex-shrink: 0;
+  animation: stipple-pulse 2s ease-in-out infinite;
+}
+
+/* Grain texture overlay for dark ethereal surfaces */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.38;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}

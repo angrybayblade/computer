@@ -8,16 +8,20 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useWindowManager, type WindowState } from "./WindowManager";
+import { type AppChromeTheme } from "./apps/types";
+import { bauhausTheme } from "./apps/themes";
 
 interface AppWindowProps {
   windowState: WindowState;
-  accentColor?: string;
+  chrome?: AppChromeTheme;
+  contentBackground?: string;
   children: ReactNode;
 }
 
 export function AppWindow({
   windowState,
-  accentColor = "var(--color-bauhaus-red)",
+  chrome = bauhausTheme.chrome,
+  contentBackground,
   children,
 }: AppWindowProps) {
   const {
@@ -171,9 +175,29 @@ export function AppWindow({
     sw: { bottom: -edgeSize / 2, left: -edgeSize / 2, width: edgeSize * 2, height: edgeSize * 2 },
   };
 
+  const controls = {
+    width: chrome.controls?.width ?? 36,
+    borderLeft: chrome.controls?.borderLeft ?? "3px solid var(--color-bauhaus-black)",
+    minimize: chrome.controls?.minimize ?? {
+      background: "var(--color-bauhaus-yellow)",
+      color: "var(--color-bauhaus-black)",
+    },
+    maximize: chrome.controls?.maximize ?? {
+      background: "var(--color-bauhaus-blue)",
+      color: "var(--color-bauhaus-white)",
+    },
+    close: chrome.controls?.close ?? {
+      background: "var(--color-bauhaus-red)",
+      color: "var(--color-bauhaus-white)",
+    },
+  };
+
+  const shellBackground = contentBackground ?? chrome.contentBackground ?? chrome.windowBackground;
+
   return (
     <div
       ref={windowRef}
+      className={chrome.windowClassName}
       onPointerDown={() => focusWindow(windowState.id)}
       style={{
         position: "absolute",
@@ -184,13 +208,14 @@ export function AppWindow({
         zIndex: windowState.zIndex,
         display: "flex",
         flexDirection: "column",
-        border: windowState.isMaximized ? "none" : "3px solid var(--color-bauhaus-black)",
-        background: "var(--color-bauhaus-white)",
-        boxShadow: windowState.isMaximized ? "none" : "6px 6px 0 var(--color-bauhaus-black)",
+        border: windowState.isMaximized ? "none" : (chrome.windowBorder ?? "3px solid var(--color-bauhaus-black)"),
+        background: chrome.windowBackground ?? "var(--color-bauhaus-white)",
+        boxShadow: windowState.isMaximized ? "none" : (chrome.windowShadow ?? "6px 6px 0 var(--color-bauhaus-black)"),
       }}
     >
       {/* Title bar */}
       <div
+        className={chrome.titleBarClassName}
         onPointerDown={handleTitlePointerDown}
         onPointerMove={handleTitlePointerMove}
         onPointerUp={handleTitlePointerUp}
@@ -198,46 +223,51 @@ export function AppWindow({
         style={{
           display: "flex",
           alignItems: "center",
-          height: 36,
-          background: accentColor,
+          height: chrome.titleBarHeight ?? 36,
+          background: chrome.titleBarBackground ?? chrome.accentColor,
           cursor: windowState.isMaximized ? "default" : "grab",
           userSelect: "none",
           flexShrink: 0,
-          borderBottom: "3px solid var(--color-bauhaus-black)",
+          borderBottom: chrome.titleBarBorderBottom ?? "3px solid var(--color-bauhaus-black)",
         }}
       >
         <span
           style={{
             flex: 1,
             paddingLeft: 12,
-            fontWeight: 700,
-            fontSize: 13,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "var(--color-bauhaus-white)",
+            fontFamily: chrome.titleBarFontFamily,
+            fontWeight: chrome.titleFontWeight ?? 700,
+            fontSize: chrome.titleFontSize ?? 13,
+            letterSpacing: chrome.titleLetterSpacing ?? "0.08em",
+            textTransform: chrome.titleTextTransform ?? "uppercase",
+            color: chrome.titleBarColor ?? "var(--color-bauhaus-white)",
           }}
         >
           {windowState.title}
         </span>
-        <div style={{ display: "flex", gap: 0, height: "100%" }}>
+        <div
+          className={chrome.controlsClassName}
+          style={{ display: "flex", gap: 0, height: "100%" }}
+        >
           <button
             onClick={(e) => {
               e.stopPropagation();
               minimizeWindow(windowState.id);
             }}
             style={{
-              width: 36,
+              width: controls.width,
               height: "100%",
               border: "none",
-              borderLeft: "3px solid var(--color-bauhaus-black)",
-              background: "var(--color-bauhaus-yellow)",
+              borderLeft: controls.borderLeft,
+              background: controls.minimize.background,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 18,
-              fontWeight: 900,
-              color: "var(--color-bauhaus-black)",
+              fontFamily: chrome.titleBarFontFamily,
+              fontSize: 16,
+              fontWeight: 600,
+              color: controls.minimize.color,
             }}
             aria-label="Minimize"
           >
@@ -249,18 +279,19 @@ export function AppWindow({
               toggleMaximize(windowState.id);
             }}
             style={{
-              width: 36,
+              width: controls.width,
               height: "100%",
               border: "none",
-              borderLeft: "3px solid var(--color-bauhaus-black)",
-              background: "var(--color-bauhaus-blue)",
+              borderLeft: controls.borderLeft,
+              background: controls.maximize.background,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 14,
-              fontWeight: 900,
-              color: "var(--color-bauhaus-white)",
+              fontFamily: chrome.titleBarFontFamily,
+              fontSize: 13,
+              fontWeight: 600,
+              color: controls.maximize.color,
             }}
             aria-label="Maximize"
           >
@@ -272,18 +303,19 @@ export function AppWindow({
               closeWindow(windowState.id);
             }}
             style={{
-              width: 36,
+              width: controls.width,
               height: "100%",
               border: "none",
-              borderLeft: "3px solid var(--color-bauhaus-black)",
-              background: "var(--color-bauhaus-red)",
+              borderLeft: controls.borderLeft,
+              background: controls.close.background,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 16,
-              fontWeight: 900,
-              color: "var(--color-bauhaus-white)",
+              fontFamily: chrome.titleBarFontFamily,
+              fontSize: 14,
+              fontWeight: 600,
+              color: controls.close.color,
             }}
             aria-label="Close"
           >
@@ -298,6 +330,7 @@ export function AppWindow({
           flex: 1,
           overflow: "auto",
           position: "relative",
+          background: shellBackground,
         }}
       >
         {children}
