@@ -778,3 +778,358 @@ body {
     transform: translateY(0);
   }
 }
+
+/* ── Anime (Neo-Tokyo / Akira) ── */
+
+.anime-app {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--app-bg, #0b0b0f);
+  background-size: 20px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-accent, #e12120) var(--app-surface, #15151c);
+}
+
+.anime-app::-webkit-scrollbar {
+  width: 8px;
+}
+
+.anime-app::-webkit-scrollbar-track {
+  background: var(--app-surface, #15151c);
+  border-left: 1px solid var(--app-border, #2e2e3a);
+}
+
+.anime-app::-webkit-scrollbar-thumb {
+  background: var(--app-accent, #e12120);
+  border: 1px solid var(--app-border, #2e2e3a);
+  box-shadow: 0 0 6px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45));
+}
+
+.anime-app::-webkit-scrollbar-thumb:hover {
+  background: #c41c1b;
+  box-shadow: 0 0 10px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45));
+}
+
+.anime-app::-webkit-scrollbar-corner {
+  background: var(--app-surface, #15151c);
+}
+
+.anime-window {
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.anime-title-bar {
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  box-shadow: 0 2px 12px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45));
+  animation: anime-flicker 8s infinite;
+}
+
+.anime-window-controls button {
+  font-weight: 700;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.anime-window-controls button:hover {
+  background: var(--app-accent, #e12120) !important;
+  color: #0b0b0f !important;
+  box-shadow: 0 0 10px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45));
+}
+
+.anime-window-controls button:last-child:hover {
+  background: var(--app-accent, #e12120) !important;
+  color: #0b0b0f !important;
+  box-shadow: 0 0 12px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45));
+}
+
+.anime-grid-wrap {
+  position: relative;
+  min-height: 100%;
+  padding: 28px 24px 32px;
+  isolation: isolate;
+}
+
+.anime-texture,
+.anime-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.anime-texture {
+  opacity: 0.22;
+  mix-blend-mode: screen;
+  background-image:
+    radial-gradient(circle, rgba(225, 33, 32, 0.45) 0.45px, transparent 0.45px),
+    radial-gradient(circle, rgba(225, 33, 32, 0.25) 0.45px, transparent 0.45px);
+  background-size: 5px 5px, 7px 7px;
+  background-position: 0 0, 3px 3px;
+}
+
+.anime-scanlines {
+  opacity: 0.12;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(225, 33, 32, 0.08) 2px,
+    rgba(225, 33, 32, 0.08) 4px
+  );
+}
+
+.anime-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 28px 24px;
+}
+
+.anime-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  animation: anime-rise 0.4s ease backwards;
+}
+
+.anime-card-cover {
+  position: relative;
+  padding: 4px;
+  background: var(--app-concrete, #1e1e28);
+  border: 1px solid var(--app-border, #2e2e3a);
+  border-radius: var(--app-radius, 2px);
+  box-shadow:
+    inset 0 0 0 1px rgba(225, 33, 32, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.anime-card-cover::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  pointer-events: none;
+  opacity: 0.18;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.35) 2px,
+    rgba(0, 0, 0, 0.35) 4px
+  );
+}
+
+.anime-card:hover .anime-card-cover {
+  border-color: var(--app-accent, #e12120);
+  box-shadow:
+    inset 0 0 0 1px rgba(225, 33, 32, 0.2),
+    0 0 16px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45)),
+    0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.anime-card-cover img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: var(--app-radius-sm, 1px);
+  filter: contrast(1.12) saturate(1.08);
+}
+
+.anime-rating-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 1;
+  background: var(--app-accent, #e12120);
+  color: #0b0b0f;
+  padding: 4px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: var(--app-radius-sm, 1px);
+  box-shadow: 0 0 10px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45));
+}
+
+.anime-card-title {
+  margin: 0;
+  font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-fg, #e8e4dc);
+  text-shadow: 0 0 20px rgba(225, 33, 32, 0.15);
+}
+
+@keyframes anime-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes anime-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.85; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+.anime-detail {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.anime-detail-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--app-border, #2e2e3a);
+}
+
+.anime-detail-back {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--app-accent, #e12120);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.anime-detail-back:hover {
+  color: var(--app-fg, #e8e4dc);
+  text-shadow: 0 0 12px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45));
+}
+
+.anime-detail-body {
+  padding: 28px 24px 32px;
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.anime-detail-poster {
+  border: 1px solid var(--app-border, #2e2e3a);
+  background: var(--app-concrete, #1e1e28);
+  padding: 4px;
+  box-shadow:
+    inset 0 0 0 1px rgba(225, 33, 32, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.anime-detail-poster img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  filter: contrast(1.12) saturate(1.08);
+}
+
+.anime-detail-rating-block {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--app-hairline, #1e1e28);
+}
+
+.anime-detail-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--app-muted, #6b6878);
+  margin-bottom: 6px;
+}
+
+.anime-detail-rating-stamp {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  background: var(--app-accent, #e12120);
+  padding: 8px 10px;
+  min-width: 72px;
+  box-shadow: 0 0 10px var(--app-neon-red-glow, rgba(225, 33, 32, 0.45));
+}
+
+.anime-detail-rating-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #0b0b0f;
+}
+
+.anime-detail-rating-suffix {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #0b0b0f;
+}
+
+.anime-detail-tag {
+  display: inline-block;
+  background: var(--app-accent, #e12120);
+  padding: 6px 10px;
+  margin-bottom: 18px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #0b0b0f;
+}
+
+.anime-detail-title {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--app-fg, #e8e4dc);
+  max-width: 14ch;
+  text-shadow: 0 0 24px rgba(225, 33, 32, 0.2);
+}
+
+.anime-detail-description {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--app-border, #2e2e3a);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--app-fg, #e8e4dc);
+}
+
+.anime-detail-footer {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--app-hairline, #1e1e28);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--app-muted, #6b6878);
+}
