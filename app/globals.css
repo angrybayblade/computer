@@ -290,7 +290,7 @@ body {
 }
 
 .pointillism-header {
-  padding: 24px 20px 12px;
+  padding: 20px 20px 20px;
   position: relative;
 }
 
@@ -340,9 +340,6 @@ body {
 
 .pointillism-title-bar {
   background-color: #FAF6F0 !important;
-  background-image:
-    radial-gradient(circle at 8% 50%, rgba(244, 196, 196, 0.25) 0, transparent 36%),
-    radial-gradient(circle, rgba(26, 26, 26, 0.08) 0.7px, transparent 0.7px) !important;
   background-size: auto, 4px 4px !important;
 }
 
@@ -685,4 +682,99 @@ body {
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
+}
+
+/* ── Mid-Century Modern (Comics) ── */
+
+.midcentury-app {
+  height: 100%;
+  overflow: auto;
+}
+
+.midcentury-window {
+  border-radius: 0;
+}
+
+.midcentury-title-bar {
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.midcentury-window-controls button {
+  font-weight: 700;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.midcentury-window-controls button:hover {
+  background: var(--app-mustard, #d4a843) !important;
+}
+
+.midcentury-window-controls button:last-child:hover {
+  background: var(--app-terracotta, #c45d2c) !important;
+  color: #faf6f0 !important;
+}
+
+.midcentury-grid-wrap {
+  min-height: 100%;
+  padding: 28px 24px 32px;
+}
+
+.midcentury-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 28px 24px;
+}
+
+.midcentury-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: midcentury-rise 0.45s ease backwards;
+}
+
+.midcentury-card-cover {
+  position: relative;
+  padding: 5px;
+  background: var(--app-surface, #faf6f0);
+  border: 2px solid var(--app-border, #1a1a1a);
+}
+
+.midcentury-card-cover img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.midcentury-rating-badge {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  background: var(--app-accent, #d4a843);
+  color: var(--app-fg, #1a1a1a);
+  padding: 4px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.midcentury-card-title {
+  margin: 0;
+  font-size: clamp(0.85rem, 1.3vw, 1rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--app-fg, #1a1a1a);
+}
+
+@keyframes midcentury-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

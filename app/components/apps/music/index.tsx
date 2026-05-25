@@ -516,7 +516,6 @@ function MusicAppContent() {
         </header>
 
         <TabBar active={tab} onChange={setTab} />
-
         <div style={{ flex: 1, overflow: "auto" }}>
           <div key={tab} className="pointillism-tab-panel">
             {tab === "songs" ? (
