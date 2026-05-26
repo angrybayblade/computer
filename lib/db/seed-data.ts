@@ -52,6 +52,15 @@ export type SeedLyric = {
   accent?: string;
 };
 
+export type SeedBook = {
+  id: string;
+  title: string;
+  author: string;
+  thumb: string;
+  description: string;
+  rating: number;
+};
+
 function readSeedJson<T>(filename: string): T {
   const filePath = path.join(SEED_DATA_DIR, filename);
   const raw = fs.readFileSync(filePath, "utf8");
@@ -82,6 +91,10 @@ export function loadSeedLyrics() {
   return readSeedJson<SeedLyric[]>("lyrics.json");
 }
 
+export function loadSeedBooks() {
+  return readSeedJson<SeedBook[]>("books.json");
+}
+
 export function loadAllSeedData() {
   return {
     movies: loadSeedMovies(),
@@ -90,5 +103,6 @@ export function loadAllSeedData() {
     songs: loadSeedSongs(),
     playlists: loadSeedPlaylists(),
     lyrics: loadSeedLyrics(),
+    books: loadSeedBooks(),
   };
 }

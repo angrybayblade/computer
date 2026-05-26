@@ -1,4 +1,5 @@
 import type { Anime } from "@/lib/anime/types";
+import type { Book } from "@/lib/books/types";
 import type { Comic } from "@/lib/comics/types";
 import type { Movie } from "@/lib/movies/types";
 import type { Lyric, Playlist, Song } from "@/lib/music/types";
@@ -68,6 +69,17 @@ function mapPlaylist(row: Row): Playlist {
   };
 }
 
+function mapBook(row: Row): Book {
+  return {
+    id: String(row.id),
+    title: String(row.title),
+    author: String(row.author),
+    thumb: String(row.thumb),
+    description: String(row.description),
+    rating: Number(row.rating),
+  };
+}
+
 function mapLyric(row: Row): Lyric {
   return {
     id: String(row.id),
@@ -92,13 +104,15 @@ function mapResource(slug: ResourceSlug, row: Row) {
       return mapPlaylist(row);
     case "lyrics":
       return mapLyric(row);
+    case "books":
+      return mapBook(row);
   }
 }
 
 function normalizeInput(slug: ResourceSlug, input: Record<string, unknown>): Row {
   const normalized: Row = { ...input };
 
-  if (slug === "movies" || slug === "anime" || slug === "comics") {
+  if (slug === "movies" || slug === "anime" || slug === "comics" || slug === "books") {
     if (normalized.rating != null) normalized.rating = Number(normalized.rating);
   }
 
@@ -129,8 +143,10 @@ export function listResource(slug: ResourceSlug) {
     return rows.map((row) => mapResource(slug, row)).sort((a, b) => {
       const aRating = "rating" in a ? a.rating : 0;
       const bRating = "rating" in b ? b.rating : 0;
-      const aName = "name" in a ? a.name : "";
-      const bName = "name" in b ? b.name : "";
+      const aName =
+        "name" in a ? a.name : "title" in a ? a.title : "";
+      const bName =
+        "name" in b ? b.name : "title" in b ? b.title : "";
       return bRating - aRating || aName.localeCompare(bName);
     });
   }

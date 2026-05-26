@@ -2,6 +2,7 @@ import { getDb } from "./client";
 import {
   loadAllSeedData,
   type SeedAnime,
+  type SeedBook,
   type SeedComic,
   type SeedLyric,
   type SeedMovie,
@@ -144,6 +145,23 @@ function seedLyrics(force?: boolean) {
   return rows.length;
 }
 
+function seedBooks(force?: boolean) {
+  if (!shouldSeed("books", force)) return 0;
+
+  const db = getDb();
+  if (force) db.prepare("DELETE FROM books").run();
+
+  const rows = loadAllSeedData().books;
+  const insert = db.prepare(
+    "INSERT INTO books (id, title, author, thumb, description, rating) VALUES (@id, @title, @author, @thumb, @description, @rating)"
+  );
+  const tx = db.transaction((items: SeedBook[]) => {
+    for (const row of items) insert.run(row);
+  });
+  tx(rows);
+  return rows.length;
+}
+
 export function seedDatabase(options: SeedOptions = {}) {
   const { force = false } = options;
 
@@ -154,6 +172,7 @@ export function seedDatabase(options: SeedOptions = {}) {
     songs: seedSongs(force),
     playlists: seedPlaylists(force),
     lyrics: seedLyrics(force),
+    books: seedBooks(force),
   };
 
   return counts;

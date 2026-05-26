@@ -55,10 +55,10 @@ export function ComicsApp() {
 function ComicsIcon() {
   return (
     <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <rect x="5" y="6" width="26" height="24" fill="#FAF6F0" stroke="#1A1A1A" strokeWidth="1.5" />
-      <circle cx="18" cy="16" r="6" fill="#D4A843" stroke="#1A1A1A" strokeWidth="1.5" />
+      <rect x="4" y="5" width="30" height="30" fill="#FAF6F0" stroke="#1A1A1A" strokeWidth="1.5" />
+      <circle cx="18" cy="18" r="6" fill="#D4A843" stroke="#1A1A1A" strokeWidth="1.5" />
       <path d="M8 28 L14 22 L22 26 L28 20" fill="none" stroke="#1B365D" strokeWidth="2" strokeLinecap="round" />
-      <rect x="24" y="8" width="5" height="3" fill="#C45D2C" />
+      <rect x="24" y="12" width="5" height="3" fill="#C45D2C" />
     </svg>
   );
 }

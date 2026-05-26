@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Open_Sans, Roboto_Mono } from "next/font/google";
+import { Crimson_Text, Geist, Geist_Mono, Open_Sans, Playfair_Display, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,6 +22,17 @@ const openSans = Open_Sans({
   subsets: ["latin"],
 });
 
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair-display",
+  subsets: ["latin"],
+});
+
+const crimsonText = Crimson_Text({
+  variable: "--font-crimson-text",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "BauhausOS",
   description: "A desktop interface inspired by Bauhaus design",
@@ -35,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${robotoMono.variable} ${openSans.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${robotoMono.variable} ${openSans.variable} ${playfairDisplay.variable} ${crimsonText.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

@@ -58,6 +58,15 @@ function initSchema(database: Database.Database) {
       song TEXT NOT NULL,
       accent TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS books (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      author TEXT NOT NULL,
+      thumb TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      rating REAL NOT NULL DEFAULT 0
+    );
   `);
 }
 

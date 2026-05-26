@@ -1,4 +1,4 @@
-export type ResourceSlug = "movies" | "comics" | "anime" | "songs" | "playlists" | "lyrics";
+export type ResourceSlug = "movies" | "comics" | "anime" | "songs" | "playlists" | "lyrics" | "books";
 
 export type FieldType = "text" | "url" | "number" | "textarea";
 
@@ -115,6 +115,24 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
       { key: "artist", label: "Artist", type: "text", required: true },
       { key: "song", label: "Song", type: "text", required: true },
       { key: "accent", label: "Accent Color", type: "text", placeholder: "#5BA4A4" },
+    ],
+  },
+  {
+    slug: "books",
+    label: "Books",
+    table: "books",
+    listColumns: [
+      { key: "title", label: "Title" },
+      { key: "author", label: "Author" },
+      { key: "rating", label: "Rating" },
+    ],
+    fields: [
+      { key: "id", label: "ID", type: "text", placeholder: "Auto-generated if empty" },
+      { key: "title", label: "Title", type: "text", required: true },
+      { key: "author", label: "Author", type: "text", required: true },
+      { key: "thumb", label: "Cover URL", type: "url", required: true },
+      { key: "description", label: "Description", type: "textarea", required: true },
+      { key: "rating", label: "Rating", type: "number", required: true },
     ],
   },
 ];
