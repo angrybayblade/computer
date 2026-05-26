@@ -5,7 +5,7 @@ import { FastAverageColor } from "fast-average-color";
 import { AppContent } from "../AppContent";
 import { type AppDefinition } from "../types";
 import { etherealTheme } from "../themes";
-import { loadLyrics, loadPlaylists, loadSongs, groupPlaylistsByMood } from "@/lib/music/storage";
+import { fetchLyrics, fetchPlaylists, fetchSongs, groupPlaylistsByMood } from "@/lib/music/storage";
 import { type Lyric, type Playlist, type Song } from "@/lib/music/types";
 
 type MusicTab = "songs" | "playlists" | "lyrics";
@@ -497,9 +497,15 @@ function EmbeddedPlayer({ song, onClose }: { song: Song; onClose: () => void }) 
 function MusicAppContent() {
   const [tab, setTab] = useState<MusicTab>("songs");
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const songs = useMemo(() => loadSongs(), []);
-  const playlists = useMemo(() => loadPlaylists(), []);
-  const lyrics = useMemo(() => loadLyrics(), []);
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [lyrics, setLyrics] = useState<Lyric[]>([]);
+
+  useEffect(() => {
+    void fetchSongs().then(setSongs);
+    void fetchPlaylists().then(setPlaylists);
+    void fetchLyrics().then(setLyrics);
+  }, []);
 
   const playingSong = playingId ? (songs.find((s) => s.id === playingId) ?? null) : null;
 

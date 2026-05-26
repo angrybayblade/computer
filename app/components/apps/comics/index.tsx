@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppContent } from "../AppContent";
 import { type AppDefinition } from "../types";
 import { midcenturyTheme } from "../themes";
-import { loadComics } from "@/lib/comics/storage";
 import { type Comic } from "@/lib/comics/types";
+import { fetchMetadata } from "@/lib/metadata/client";
 
 function formatRating(value: number) {
   return String(value).padStart(2, "0");
@@ -27,7 +27,11 @@ function ComicCard({ comic, index }: { comic: Comic; index: number }) {
 }
 
 function ComicsAppContent() {
-  const [comics] = useState<Comic[]>(() => loadComics());
+  const [comics, setComics] = useState<Comic[]>([]);
+
+  useEffect(() => {
+    void fetchMetadata<Comic>("comics").then(setComics);
+  }, []);
 
   return (
     <div className="midcentury-grid-wrap">

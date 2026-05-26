@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useWindowManager } from "./WindowManager";
+import { EditPasswordModal } from "./edit/EditPasswordModal";
 
 export function TopBar() {
   const { windows, restoreWindow, focusWindow } = useWindowManager();
@@ -27,6 +28,23 @@ export function TopBar() {
   const openWindows = windows.filter((w) => !w.isMinimized);
   const minimizedWindows = windows.filter((w) => w.isMinimized);
   const isMaximized = windows.some((w) => w.isMaximized);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const logoClickCount = useRef(0);
+  const logoClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function handleLogoClick() {
+    logoClickCount.current += 1;
+    if (logoClickTimer.current) clearTimeout(logoClickTimer.current);
+    if (logoClickCount.current >= 3) {
+      logoClickCount.current = 0;
+      setShowPasswordModal(true);
+      return;
+    }
+
+    logoClickTimer.current = setTimeout(() => {
+      logoClickCount.current = 0;
+    }, 600);
+  }
 
   return (
     <div
@@ -45,9 +63,9 @@ export function TopBar() {
         gap: 0,
       }}
     >
-      {/* Clock — top left */}
-      
+      {/* logo */}
       <div
+        onClick={handleLogoClick}
         style={{
           paddingRight: 16,
           paddingLeft: 16,
@@ -56,6 +74,7 @@ export function TopBar() {
           gap: 8,
           height: "100%",
           borderRight: "2px solid var(--color-bauhaus-dark-gray)",
+          cursor: "pointer",
         }}
       >
         <div
@@ -160,7 +179,8 @@ export function TopBar() {
       </div>
 
       {/* Bauhaus mark */}
-     
+
+      <EditPasswordModal open={showPasswordModal} onClose={() => setShowPasswordModal(false)} />
     </div>
   );
 }

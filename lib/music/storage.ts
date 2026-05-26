@@ -1,17 +1,5 @@
-import { SEED_LYRICS, SEED_PLAYLISTS, SEED_SONGS } from "./data";
+import { fetchMetadata } from "@/lib/metadata/client";
 import { type Lyric, type Playlist, type Song } from "./types";
-
-export function loadSongs(): Song[] {
-  return SEED_SONGS;
-}
-
-export function loadPlaylists(): Playlist[] {
-  return SEED_PLAYLISTS;
-}
-
-export function loadLyrics(): Lyric[] {
-  return SEED_LYRICS;
-}
 
 export function groupPlaylistsByMood(playlists: Playlist[]) {
   const groups = new Map<string, Playlist[]>();
@@ -23,4 +11,16 @@ export function groupPlaylistsByMood(playlists: Playlist[]) {
   }
 
   return [...groups.entries()].map(([mood, items]) => ({ mood, playlists: items }));
+}
+
+export async function fetchSongs(): Promise<Song[]> {
+  return fetchMetadata<Song>("songs");
+}
+
+export async function fetchPlaylists(): Promise<Playlist[]> {
+  return fetchMetadata<Playlist>("playlists");
+}
+
+export async function fetchLyrics(): Promise<Lyric[]> {
+  return fetchMetadata<Lyric>("lyrics");
 }

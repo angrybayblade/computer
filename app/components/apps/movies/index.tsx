@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppContent } from "../AppContent";
 import { type AppDefinition } from "../types";
 import { utilitarianTheme } from "../themes";
-import { loadMovies } from "@/lib/movies/storage";
 import { type Movie } from "@/lib/movies/types";
+import { fetchMetadata } from "@/lib/metadata/client";
 
 function formatRating(value: number) {
   return String(value).padStart(2, "0");
@@ -304,8 +304,12 @@ function MovieDetail({
 }
 
 function MoviesAppContent() {
-  const [movies] = useState<Movie[]>(() => loadMovies());
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    void fetchMetadata<Movie>("movies").then(setMovies);
+  }, []);
 
   const selectedMovie = movies.find((movie) => movie.id === selectedId) ?? null;
 

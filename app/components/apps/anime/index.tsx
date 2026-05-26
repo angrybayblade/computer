@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppContent } from "../AppContent";
 import { type AppDefinition } from "../types";
 import { animeTheme } from "../themes";
-import { loadAnime } from "@/lib/anime/storage";
 import { type Anime } from "@/lib/anime/types";
+import { fetchMetadata } from "@/lib/metadata/client";
 
 function formatRating(value: number) {
   return String(value).padStart(2, "0");
@@ -87,8 +87,12 @@ function AnimeDetail({
 }
 
 function AnimeAppContent() {
-  const [anime] = useState<Anime[]>(() => loadAnime());
+  const [anime, setAnime] = useState<Anime[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    void fetchMetadata<Anime>("anime").then(setAnime);
+  }, []);
 
   const selectedAnime = anime.find((entry) => entry.id === selectedId) ?? null;
 

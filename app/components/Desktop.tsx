@@ -100,15 +100,7 @@ export function Desktop() {
               width: 80,
             }}
           >
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                border: "3px solid var(--color-bauhaus-black)",
-                padding: 6,
-                background: "var(--color-bauhaus-white)",
-              }}
-            >
+            <div style={{width: 48, height: 48}}>
               {app.icon}
             </div>
             <span
