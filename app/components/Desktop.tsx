@@ -1,12 +1,40 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useWindowManager } from "./WindowManager";
 import { AppWindow } from "./AppWindow";
 import { APPS } from "./apps";
 import { resolveAppUiTheme } from "./apps/themes";
 
+const TOP_BAR_HEIGHT = 40;
+
 export function Desktop() {
   const { windows, openWindow } = useWindowManager();
+  const openedWelcome = useRef(false);
+
+  useEffect(() => {
+    if (openedWelcome.current) return;
+    openedWelcome.current = true;
+
+    const welcome = APPS.find((app) => app.id === "welcome");
+    if (!welcome) return;
+
+    const width = welcome.width ?? 520;
+    const height = welcome.height ?? 380;
+
+    openWindow(welcome.id, welcome.title, {
+      width,
+      height,
+      minWidth: welcome.minWidth,
+      minHeight: welcome.minHeight,
+      x: Math.max(80, Math.round((window.innerWidth - width) / 2)),
+      y: Math.max(
+        TOP_BAR_HEIGHT + 24,
+        Math.round((window.innerHeight - TOP_BAR_HEIGHT - height) / 2)
+      ),
+    });
+  }, [openWindow]);
+
   return (
     <div
       style={{

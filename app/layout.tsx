@@ -34,8 +34,8 @@ const crimsonText = Crimson_Text({
 });
 
 export const metadata: Metadata = {
-  title: "BauhausOS",
-  description: "A desktop interface inspired by Bauhaus design",
+  title: "Viraj's Computer",
+  description: "Viraj's Computer",
 };
 
 export default function RootLayout({
