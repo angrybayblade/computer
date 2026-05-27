@@ -67,6 +67,14 @@ function initSchema(database: Database.Database) {
       description TEXT NOT NULL DEFAULT '',
       rating REAL NOT NULL DEFAULT 0
     );
+
+    CREATE TABLE IF NOT EXISTS vines (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      video_id TEXT NOT NULL,
+      start_time REAL NOT NULL,
+      end_time REAL NOT NULL
+    );
   `);
 }
 

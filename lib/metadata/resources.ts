@@ -1,4 +1,4 @@
-export type ResourceSlug = "movies" | "comics" | "anime" | "songs" | "playlists" | "lyrics" | "books";
+export type ResourceSlug = "movies" | "comics" | "anime" | "songs" | "playlists" | "lyrics" | "books" | "vines";
 
 export type FieldType = "text" | "url" | "number" | "textarea";
 
@@ -133,6 +133,22 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
       { key: "thumb", label: "Cover URL", type: "url", required: true },
       { key: "description", label: "Description", type: "textarea", required: true },
       { key: "rating", label: "Rating", type: "number", required: true },
+    ],
+  },
+  {
+    slug: "vines",
+    label: "Vines",
+    table: "vines",
+    listColumns: [
+      { key: "title", label: "Title" },
+      { key: "video_id", label: "Video ID" },
+    ],
+    fields: [
+      { key: "id", label: "ID", type: "text", placeholder: "Auto-generated if empty" },
+      { key: "title", label: "Title", type: "text", required: true },
+      { key: "video_id", label: "YouTube Video ID", type: "text", required: true },
+      { key: "start_time", label: "Start Time (seconds)", type: "number", required: true },
+      { key: "end_time", label: "End Time (seconds)", type: "number", required: true },
     ],
   },
 ];

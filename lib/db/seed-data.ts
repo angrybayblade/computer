@@ -61,6 +61,14 @@ export type SeedBook = {
   rating: number;
 };
 
+export type SeedVine = {
+  id: string;
+  title: string;
+  videoId: string;
+  startTime: number;
+  endTime: number;
+};
+
 function readSeedJson<T>(filename: string): T {
   const filePath = path.join(SEED_DATA_DIR, filename);
   const raw = fs.readFileSync(filePath, "utf8");
@@ -95,6 +103,10 @@ export function loadSeedBooks() {
   return readSeedJson<SeedBook[]>("books.json");
 }
 
+export function loadSeedVines() {
+  return readSeedJson<SeedVine[]>("vines.json");
+}
+
 export function loadAllSeedData() {
   return {
     movies: loadSeedMovies(),
@@ -104,5 +116,6 @@ export function loadAllSeedData() {
     playlists: loadSeedPlaylists(),
     lyrics: loadSeedLyrics(),
     books: loadSeedBooks(),
+    vines: loadSeedVines(),
   };
 }

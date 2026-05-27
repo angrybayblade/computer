@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "doppler run -- next dev",
+    "dev": "doppler run -- next dev --port 3001",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -31,5 +31,10 @@
     "tailwindcss": "^4",
     "tsx": "^4.22.3",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
   }
 }

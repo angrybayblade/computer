@@ -17,8 +17,11 @@ function WelcomeAppContent() {
       <div className="welcome-content">
         <p className="welcome-eyebrow">Welcome to my computer</p>
         <p className="welcome-lead">
-          My name is Viraj, I'm a software engineer by profession, I like cooking,
-          lifting weights and consuming all sort of media in my free time
+          My name is Viraj, on the internet I go by the pseudonym <b>angrybayblade</b>.
+        </p>
+        <p className="welcome-lead">
+          I'm a software engineer by profession, I like cooking, lifting weights
+          and consuming all sort of media in my free time
         </p>
         <p className="welcome-lead">
           Feel free to look around, use the apps to learn stuff about me

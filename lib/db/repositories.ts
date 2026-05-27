@@ -3,6 +3,7 @@ import type { Book } from "@/lib/books/types";
 import type { Comic } from "@/lib/comics/types";
 import type { Movie } from "@/lib/movies/types";
 import type { Lyric, Playlist, Song } from "@/lib/music/types";
+import type { Vine } from "@/lib/vines/types";
 import { getDb } from "./client";
 import { seedDatabaseIfEmpty } from "./seed";
 import { getResourceConfig, isResourceSlug, type ResourceSlug } from "@/lib/metadata/resources";
@@ -90,6 +91,16 @@ function mapLyric(row: Row): Lyric {
   };
 }
 
+function mapVine(row: Row): Vine {
+  return {
+    id: String(row.id),
+    title: String(row.title),
+    videoId: String(row.video_id),
+    startTime: Number(row.start_time),
+    endTime: Number(row.end_time),
+  };
+}
+
 function mapResource(slug: ResourceSlug, row: Row) {
   switch (slug) {
     case "movies":
@@ -106,6 +117,8 @@ function mapResource(slug: ResourceSlug, row: Row) {
       return mapLyric(row);
     case "books":
       return mapBook(row);
+    case "vines":
+      return mapVine(row);
   }
 }
 
@@ -122,6 +135,11 @@ function normalizeInput(slug: ResourceSlug, input: Record<string, unknown>): Row
 
   if (slug === "songs" && normalized.play_config_timestamp != null && normalized.play_config_timestamp !== "") {
     normalized.play_config_timestamp = Number(normalized.play_config_timestamp);
+  }
+
+  if (slug === "vines") {
+    if (normalized.start_time != null) normalized.start_time = Number(normalized.start_time);
+    if (normalized.end_time != null) normalized.end_time = Number(normalized.end_time);
   }
 
   for (const key of Object.keys(normalized)) {

@@ -7,6 +7,7 @@ export { etherealTheme } from "./ethereal";
 export { midcenturyTheme } from "./midcentury";
 export { animeTheme } from "./anime";
 export { booksTheme } from "./books";
+export { surrealismTheme } from "./surrealism";
 
 export function resolveAppUiTheme(ui?: AppUiTheme): AppUiTheme {
   if (!ui) return bauhausTheme;

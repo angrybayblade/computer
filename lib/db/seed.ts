@@ -8,6 +8,7 @@ import {
   type SeedMovie,
   type SeedPlaylist,
   type SeedSong,
+  type SeedVine,
 } from "./seed-data";
 
 type SeedOptions = {
@@ -162,6 +163,31 @@ function seedBooks(force?: boolean) {
   return rows.length;
 }
 
+function seedVines(force?: boolean) {
+  if (!shouldSeed("vines", force)) return 0;
+
+  const db = getDb();
+  if (force) db.prepare("DELETE FROM vines").run();
+
+  const rows = loadAllSeedData().vines;
+  const insert = db.prepare(
+    "INSERT INTO vines (id, title, video_id, start_time, end_time) VALUES (@id, @title, @video_id, @start_time, @end_time)"
+  );
+  const tx = db.transaction((items: SeedVine[]) => {
+    for (const row of items) {
+      insert.run({
+        id: row.id,
+        title: row.title,
+        video_id: row.videoId,
+        start_time: row.startTime,
+        end_time: row.endTime,
+      });
+    }
+  });
+  tx(rows);
+  return rows.length;
+}
+
 export function seedDatabase(options: SeedOptions = {}) {
   const { force = false } = options;
 
@@ -173,6 +199,7 @@ export function seedDatabase(options: SeedOptions = {}) {
     playlists: seedPlaylists(force),
     lyrics: seedLyrics(force),
     books: seedBooks(force),
+    vines: seedVines(force),
   };
 
   return counts;
