@@ -8,6 +8,7 @@ export { midcenturyTheme } from "./midcentury";
 export { animeTheme } from "./anime";
 export { booksTheme } from "./books";
 export { surrealismTheme } from "./surrealism";
+export { wabisabiTheme } from "./wabisabi";
 
 export function resolveAppUiTheme(ui?: AppUiTheme): AppUiTheme {
   if (!ui) return bauhausTheme;

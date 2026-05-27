@@ -2079,3 +2079,21 @@ body {
   border: none;
   background: #000;
 }
+
+/* ── Resume (Wabi-Sabi) — window chrome only; content uses resume.module.css ── */
+
+.wabisabi-window {
+  border-radius: 4px;
+}
+
+.wabisabi-title-bar {
+  font-style: normal;
+}
+
+.wabisabi-window-controls button:hover {
+  filter: brightness(0.97);
+}
+
+.wabisabi-window-controls button:last-child:hover {
+  filter: brightness(1.06);
+}

@@ -1,0 +1,276 @@
+.app {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-open-sans), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #3a3a38;
+  background: #f5f0e6;
+}
+
+.scroll {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(107, 123, 92, 0.45) transparent;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: rgba(107, 123, 92, 0.45);
+  border-radius: 3px;
+}
+
+.texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image:
+    radial-gradient(ellipse 120% 80% at 10% 0%, rgba(107, 123, 92, 0.07), transparent 55%),
+    radial-gradient(ellipse 90% 60% at 95% 100%, rgba(166, 93, 69, 0.06), transparent 50%);
+}
+
+.layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 680px;
+  margin: 0 auto;
+  min-height: 100%;
+  padding: 28px 36px 48px;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(58, 58, 56, 0.12);
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-family: var(--font-open-sans), system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #5c7a78;
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-playfair-display), Georgia, serif;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #2c2c2a;
+}
+
+.tagline {
+  margin: 14px 0 0;
+  font-size: 13px;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.55;
+  color: #7a756c;
+}
+
+.kintsugi {
+  margin-top: 18px;
+  width: 52px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #b8a078 25%, #a65d45 50%, #b8a078 75%, transparent);
+  border-radius: 2px;
+}
+
+.sectionTitle {
+  margin: 0 0 16px;
+  font-family: var(--font-playfair-display), Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6b7b5c;
+}
+
+.sectionTitleMain {
+  margin: 0 0 28px;
+  padding-bottom: 12px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: #2c2c2a;
+  border-bottom: 2px solid rgba(107, 123, 92, 0.35);
+}
+
+.skillList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skill {
+  display: inline-block;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #3a3a38;
+  background: #faf7f0;
+  border: 1px solid rgba(58, 58, 56, 0.14);
+  border-radius: 999px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.entry {
+  padding-bottom: 8px;
+}
+
+.entryHeader {
+  margin-bottom: 12px;
+}
+
+.company {
+  margin: 0;
+  font-family: var(--font-playfair-display), Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #2c2c2a;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #7a756c;
+}
+
+.metaLocation {
+  font-weight: 600;
+  font-style: normal;
+  color: #5c7a78;
+}
+
+.metaSep {
+  font-weight: 400;
+  opacity: 0.45;
+}
+
+.metaPeriod {
+  font-style: italic;
+  font-weight: 500;
+  color: #6b7b5c;
+}
+
+.entryIntro {
+  margin: 0 0 20px;
+  padding-left: 14px;
+  border-left: 3px solid rgba(184, 160, 120, 0.55);
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #5a554d;
+}
+
+.roles {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.role {
+  padding: 16px 0 4px 16px;
+  border-left: 3px solid rgba(107, 123, 92, 0.4);
+}
+
+.roleHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+
+.roleTitle {
+  margin: 0;
+  font-family: var(--font-open-sans), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #a65d45;
+}
+
+.rolePeriod {
+  font-size: 11px;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #5c7a78;
+}
+
+.bullets {
+  margin: 0;
+  padding: 0 0 0 1.15em;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #3a3a38;
+}
+
+.bullets li {
+  margin-bottom: 8px;
+}
+
+.bullets li::marker {
+  color: #6b7b5c;
+}
+
+.bullets strong {
+  font-weight: 700;
+  color: #2c2c2a;
+}
+
+@media (max-width: 640px) {
+  .layout {
+    padding: 24px 20px 36px;
+  }
+
+  .name {
+    font-size: 2.25rem;
+  }
+}
