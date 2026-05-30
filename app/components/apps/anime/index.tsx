@@ -129,10 +129,11 @@ export function AnimeApp() {
 function AnimeIcon() {
   return (
     <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <rect x="4" y="4" width="28" height="28" fill="#0B0B0F" stroke="#2E2E3A" strokeWidth="1.5" />
-      <circle cx="18" cy="18" r="9" fill="#e12120" stroke="#E8E4DC" strokeWidth="1" />
-      <circle cx="18" cy="18" r="3" fill="#FFB800" />
-      <line x1="4" y1="32" x2="32" y2="32" stroke="#e12120" strokeWidth="2" />
+      <rect x="3" y="3" width="30" height="30" fill="#0B0B0F" stroke="#2E2E3A" strokeWidth="1.25" />
+      <path
+        d="M18 25.1 L6 10.9 L7.1 11.6 L8.3 12.3 L9.8 13.2 L11.2 14 L12.4 15.2 L23.6 15.2 L24.8 14 L26.2 13.2 L27.7 12.3 L28.9 11.6 L30 10.9 Z"
+        fill="#e12120"
+      />
     </svg>
   );
 }

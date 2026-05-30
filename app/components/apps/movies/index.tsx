@@ -387,11 +387,26 @@ export function MoviesApp() {
 function MoviesIcon() {
   return (
     <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <rect x="4" y="5" width="30" height="30" fill="var(--color-bauhaus-white)" stroke="var(--color-bauhaus-black)" strokeWidth="1.5" />
-      <line x1="8" y1="14" x2="30" y2="14" stroke="var(--color-bauhaus-black)" strokeWidth="1.5" />
-      <line x1="8" y1="20" x2="30" y2="20" stroke="var(--color-bauhaus-black)" strokeWidth="1.5" />
-      <line x1="8" y1="26" x2="30" y2="26" stroke="var(--color-bauhaus-black)" strokeWidth="1.5" />
-      <rect x="24" y="10" width="4" height="2" fill="#FFD200" />
+      <defs>
+        <clipPath id="movies-clapper-stripes">
+          <polygon points="7,17 29,17 27,8 5,10" />
+        </clipPath>
+      </defs>
+      <rect x="3" y="3" width="30" height="30" fill="#F7F7F5" stroke="#111111" strokeWidth="1.25" />
+      <rect x="8" y="17" width="20" height="12" fill="#111111" />
+      <line x1="10" y1="20.5" x2="22" y2="20.5" stroke="#F7F7F5" strokeWidth="0.75" opacity="0.9" />
+      <line x1="10" y1="23.5" x2="19" y2="23.5" stroke="#F7F7F5" strokeWidth="0.75" opacity="0.7" />
+      <line x1="10" y1="26.5" x2="21" y2="26.5" stroke="#FFD200" strokeWidth="0.75" opacity="0.85" />
+      <polygon points="7,17 29,17 27,8 5,10" fill="#111111" />
+      <g clipPath="url(#movies-clapper-stripes)">
+        <rect x="-2" y="4" width="5" height="16" fill="#F7F7F5" transform="rotate(-13 18 12)" />
+        <rect x="3" y="4" width="5" height="16" fill="#111111" transform="rotate(-13 18 12)" />
+        <rect x="8" y="4" width="5" height="16" fill="#FFD200" transform="rotate(-13 18 12)" />
+        <rect x="13" y="4" width="5" height="16" fill="#F7F7F5" transform="rotate(-13 18 12)" />
+        <rect x="18" y="4" width="5" height="16" fill="#111111" transform="rotate(-13 18 12)" />
+        <rect x="23" y="4" width="5" height="16" fill="#FFD200" transform="rotate(-13 18 12)" />
+        <rect x="28" y="4" width="5" height="16" fill="#F7F7F5" transform="rotate(-13 18 12)" />
+      </g>
     </svg>
   );
 }

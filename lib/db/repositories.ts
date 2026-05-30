@@ -159,7 +159,7 @@ export function listResource(slug: ResourceSlug) {
 
   const rows = readRows(slug);
 
-  if (slug === "movies" || slug === "anime") {
+  if (slug === "movies" || slug === "anime" || slug === "comics") {
     return rows.map((row) => mapResource(slug, row)).sort((a, b) => {
       const aRating = "rating" in a ? a.rating : 0;
       const bRating = "rating" in b ? b.rating : 0;

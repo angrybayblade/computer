@@ -18,7 +18,7 @@ export const wabisabiTheme: AppUiTheme = {
     titleBarClassName: "wabisabi-title-bar",
     windowClassName: "wabisabi-window",
     controlsClassName: "wabisabi-window-controls",
-    windowBorder: "1px solid rgba(58, 58, 56, 0.12)",
+    windowBorder: "1px solid #6B7B5C",
     windowBackground: "#F5F0E6",
     windowShadow: "6px 8px 24px rgba(58, 58, 56, 0.08)",
     contentBackground: "#F5F0E6",

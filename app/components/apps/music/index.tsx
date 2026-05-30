@@ -550,16 +550,20 @@ export function MusicApp() {
 
 function MusicIcon() {
   return (
-    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
+    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden className="music-vinyl-icon">
       <rect x="2" y="2" width="32" height="32" fill="#F5EDE3" stroke="#1A1A1A" strokeWidth="1" />
-      <circle cx="10" cy="10" r="2.5" fill="#8FA888" />
-      <circle cx="18" cy="10" r="2" fill="#9AABB5" />
-      <circle cx="26" cy="10" r="1.5" fill="#E8C4A8" />
-      <circle cx="10" cy="18" r="1.5" fill="#E8C4A8" />
-      <circle cx="18" cy="18" r="2.5" fill="#F4C4C4" />
-      <circle cx="26" cy="18" r="2" fill="#8FA888" />
-      <circle cx="14" cy="26" r="2" fill="#9AABB5" />
-      <circle cx="22" cy="26" r="1.5" fill="#1A1A1A" />
+      <g className="music-vinyl-spin">
+        <circle cx="18" cy="18" r="12" fill="#1A1A1A" />
+        <circle cx="18" cy="18" r="10" fill="none" stroke="#6B5E54" strokeWidth="0.5" opacity="0.45" />
+        <circle cx="18" cy="18" r="7.5" fill="none" stroke="#6B5E54" strokeWidth="0.5" opacity="0.35" />
+        <circle cx="18" cy="18" r="5" fill="none" stroke="#6B5E54" strokeWidth="0.5" opacity="0.25" />
+        <circle cx="18" cy="18" r="4.2" fill="#F4C4C4" stroke="#1A1A1A" strokeWidth="0.75" />
+        <circle cx="18" cy="18" r="1.1" fill="#1A1A1A" />
+        <line x1="18" y1="6" x2="18" y2="10" stroke="#8FA888" strokeWidth="0.75" opacity="0.8" />
+        <line x1="18" y1="26" x2="18" y2="30" stroke="#8FA888" strokeWidth="0.75" opacity="0.8" />
+        <line x1="6" y1="18" x2="10" y2="18" stroke="#9AABB5" strokeWidth="0.75" opacity="0.8" />
+        <line x1="26" y1="18" x2="30" y2="18" stroke="#9AABB5" strokeWidth="0.75" opacity="0.8" />
+      </g>
     </svg>
   );
 }

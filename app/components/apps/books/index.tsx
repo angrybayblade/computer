@@ -127,7 +127,7 @@ export function BooksApp() {
 function BooksIcon() {
   return (
     <svg viewBox="0 0 36 36" aria-hidden>
-      <rect x="3" y="3" width="30" height="30" fill="#0A0A0A" stroke="#C9A84C" strokeWidth="1" />
+      <rect x="3" y="4" width="30" height="30" fill="#0A0A0A"/>
       <path
         d="M10 11h7v16H10V11zm9 0h7v16h-7V11z"
         fill="#1B3A2F"

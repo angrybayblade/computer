@@ -104,6 +104,21 @@ body {
 .synth-bar:nth-child(4) { animation-delay: 0.1s; }
 .synth-bar:nth-child(5) { animation-delay: 0.25s; }
 
+@keyframes music-vinyl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.music-vinyl-icon .music-vinyl-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: music-vinyl-spin 4s linear infinite;
+}
+
 @keyframes music-tab-border {
   0% {
     background-position: 0% 50%;
