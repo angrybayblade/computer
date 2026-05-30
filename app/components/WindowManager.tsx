@@ -5,8 +5,14 @@ import {
   useContext,
   useCallback,
   useState,
+  useEffect,
   type ReactNode,
 } from "react";
+import {
+  getFullscreenWindowBounds,
+  isMobileViewport,
+  TOP_BAR_HEIGHT,
+} from "@/lib/viewport";
 
 export interface WindowState {
   id: string;
@@ -44,17 +50,57 @@ interface WindowManagerContextValue {
 
 const WindowManagerContext = createContext<WindowManagerContextValue | null>(null);
 
+function buildWindowBounds(
+  opts: Partial<
+    Pick<WindowState, "x" | "y" | "width" | "height" | "minWidth" | "minHeight">
+  > | undefined,
+  offset: number
+) {
+  return {
+    x: opts?.x ?? 80 + offset,
+    y: opts?.y ?? TOP_BAR_HEIGHT + 40 + offset,
+    width: opts?.width ?? 640,
+    height: opts?.height ?? 480,
+    minWidth: opts?.minWidth ?? 320,
+    minHeight: opts?.minHeight ?? 240,
+  };
+}
+
+function withMobileFullscreen<T extends Pick<WindowState, "x" | "y" | "width" | "height">>(
+  bounds: T
+): T & Pick<WindowState, "x" | "y" | "width" | "height" | "isMaximized" | "prevBounds"> {
+  if (!isMobileViewport()) {
+    return { ...bounds, isMaximized: false, prevBounds: undefined };
+  }
+
+  return {
+    ...bounds,
+    ...getFullscreenWindowBounds(),
+    isMaximized: true,
+    prevBounds: bounds,
+  };
+}
+
 export function useWindowManager() {
   const ctx = useContext(WindowManagerContext);
   if (!ctx) throw new Error("useWindowManager must be used within WindowManagerProvider");
   return ctx;
 }
 
-const TOP_BAR_HEIGHT = 40;
-
 export function WindowManagerProvider({ children }: { children: ReactNode }) {
   const [windows, setWindows] = useState<WindowState[]>([]);
   const [topZ, setTopZ] = useState(10);
+
+  useEffect(() => {
+    function handleResize() {
+      setWindows((prev) =>
+        prev.map((w) => (w.isMaximized ? { ...w, ...getFullscreenWindowBounds() } : w))
+      );
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const openWindow: WindowManagerContextValue["openWindow"] = useCallback(
     (id, title, opts) => {
@@ -62,27 +108,45 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
         const existing = prev.find((w) => w.id === id);
         if (existing) {
           if (existing.isMinimized) {
+            const bounds = buildWindowBounds(
+              {
+                x: existing.prevBounds?.x ?? existing.x,
+                y: existing.prevBounds?.y ?? existing.y,
+                width: existing.prevBounds?.width ?? existing.width,
+                height: existing.prevBounds?.height ?? existing.height,
+                minWidth: existing.minWidth,
+                minHeight: existing.minHeight,
+              },
+              0
+            );
+
             return prev.map((w) =>
-              w.id === id ? { ...w, isMinimized: false } : w
+              w.id === id
+                ? {
+                    ...w,
+                    isMinimized: false,
+                    ...withMobileFullscreen(bounds),
+                  }
+                : w
             );
           }
           return prev;
         }
         const offset = prev.length * 28;
+        const bounds = buildWindowBounds(opts, offset);
+        const placement = withMobileFullscreen(bounds);
+
         return [
           ...prev,
           {
             id,
             title,
-            x: opts?.x ?? 80 + offset,
-            y: opts?.y ?? TOP_BAR_HEIGHT + 40 + offset,
-            width: opts?.width ?? 640,
-            height: opts?.height ?? 480,
-            minWidth: opts?.minWidth ?? 320,
-            minHeight: opts?.minHeight ?? 240,
+            ...bounds,
+            ...placement,
+            minWidth: bounds.minWidth,
+            minHeight: bounds.minHeight,
             zIndex: topZ + 1,
             isMinimized: false,
-            isMaximized: false,
           },
         ];
       });
@@ -144,10 +208,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
           ...w,
           isMaximized: true,
           prevBounds: { x: w.x, y: w.y, width: w.width, height: w.height },
-          x: 0,
-          y: TOP_BAR_HEIGHT,
-          width: window.innerWidth,
-          height: window.innerHeight - TOP_BAR_HEIGHT,
+          ...getFullscreenWindowBounds(),
         };
       })
     );
@@ -164,9 +225,28 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
       const nextZ = topZ + 1;
       setTopZ(nextZ);
       setWindows((prev) =>
-        prev.map((w) =>
-          w.id === id ? { ...w, isMinimized: false, zIndex: nextZ } : w
-        )
+        prev.map((w) => {
+          if (w.id !== id) return w;
+
+          const bounds = buildWindowBounds(
+            {
+              x: w.prevBounds?.x ?? w.x,
+              y: w.prevBounds?.y ?? w.y,
+              width: w.prevBounds?.width ?? w.width,
+              height: w.prevBounds?.height ?? w.height,
+              minWidth: w.minWidth,
+              minHeight: w.minHeight,
+            },
+            0
+          );
+
+          return {
+            ...w,
+            isMinimized: false,
+            zIndex: nextZ,
+            ...withMobileFullscreen(bounds),
+          };
+        })
       );
     },
     [topZ]

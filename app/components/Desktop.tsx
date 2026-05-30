@@ -5,8 +5,7 @@ import { useWindowManager } from "./WindowManager";
 import { AppWindow } from "./AppWindow";
 import { APPS } from "./apps";
 import { resolveAppUiTheme } from "./apps/themes";
-
-const TOP_BAR_HEIGHT = 40;
+import { isMobileViewport, TOP_BAR_HEIGHT } from "@/lib/viewport";
 
 export function Desktop() {
   const { windows, openWindow } = useWindowManager();
@@ -108,14 +107,24 @@ export function Desktop() {
         {APPS.map((app) => (
           <button
             key={app.id}
-            onDoubleClick={() =>
+            onClick={() => {
+              if (!isMobileViewport()) return;
               openWindow(app.id, app.title, {
                 width: app.width,
                 height: app.height,
                 minWidth: app.minWidth,
                 minHeight: app.minHeight,
-              })
-            }
+              });
+            }}
+            onDoubleClick={() => {
+              if (isMobileViewport()) return;
+              openWindow(app.id, app.title, {
+                width: app.width,
+                height: app.height,
+                minWidth: app.minWidth,
+                minHeight: app.minHeight,
+              });
+            }}
             style={{
               display: "flex",
               flexDirection: "column",
