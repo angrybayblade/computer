@@ -4,11 +4,11 @@ import type { Comic } from "@/lib/comics/types";
 import type { Movie } from "@/lib/movies/types";
 import type { Lyric, Playlist, Song } from "@/lib/music/types";
 import type { Vine } from "@/lib/vines/types";
-import { getDb } from "./client";
+import { readResourceRows, type StorageRow, writeResourceRows } from "./client";
 import { seedDatabaseIfEmpty } from "./seed";
 import { getResourceConfig, isResourceSlug, type ResourceSlug } from "@/lib/metadata/resources";
 
-type Row = Record<string, unknown>;
+type Row = StorageRow;
 
 function ensureReady() {
   seedDatabaseIfEmpty();
@@ -130,7 +130,7 @@ function normalizeInput(slug: ResourceSlug, input: Record<string, unknown>): Row
   }
 
   if (slug === "songs" && normalized.play_config_timestamp === "") {
-    normalized.play_config_timestamp = null;
+    delete normalized.play_config_timestamp;
   }
 
   if (slug === "songs" && normalized.play_config_timestamp != null && normalized.play_config_timestamp !== "") {
@@ -143,28 +143,28 @@ function normalizeInput(slug: ResourceSlug, input: Record<string, unknown>): Row
   }
 
   for (const key of Object.keys(normalized)) {
-    if (normalized[key] === "") normalized[key] = null;
+    if (normalized[key] === "") delete normalized[key];
   }
 
   return normalized;
 }
 
+function readRows(slug: ResourceSlug) {
+  return readResourceRows(slug);
+}
+
 export function listResource(slug: ResourceSlug) {
   ensureReady();
-  const config = getResourceConfig(slug);
-  if (!config) throw new Error("Unknown resource");
+  if (!getResourceConfig(slug)) throw new Error("Unknown resource");
 
-  const db = getDb();
-  const rows = db.prepare(`SELECT * FROM ${config.table} ORDER BY rowid ASC`).all() as Row[];
+  const rows = readRows(slug);
 
   if (slug === "movies" || slug === "anime") {
     return rows.map((row) => mapResource(slug, row)).sort((a, b) => {
       const aRating = "rating" in a ? a.rating : 0;
       const bRating = "rating" in b ? b.rating : 0;
-      const aName =
-        "name" in a ? a.name : "title" in a ? a.title : "";
-      const bName =
-        "name" in b ? b.name : "title" in b ? b.title : "";
+      const aName = "name" in a ? a.name : "title" in a ? a.title : "";
+      const bName = "name" in b ? b.name : "title" in b ? b.title : "";
       return bRating - aRating || aName.localeCompare(bName);
     });
   }
@@ -174,11 +174,9 @@ export function listResource(slug: ResourceSlug) {
 
 export function getResourceRow(slug: ResourceSlug, id: string) {
   ensureReady();
-  const config = getResourceConfig(slug);
-  if (!config) throw new Error("Unknown resource");
+  if (!getResourceConfig(slug)) throw new Error("Unknown resource");
 
-  const db = getDb();
-  const row = db.prepare(`SELECT * FROM ${config.table} WHERE id = ?`).get(id) as Row | undefined;
+  const row = readRows(slug).find((item) => String(item.id) === id);
   return row ? mapResource(slug, row) : null;
 }
 
@@ -188,13 +186,14 @@ export function createResource(slug: ResourceSlug, input: Record<string, unknown
   if (!config) throw new Error("Unknown resource");
 
   const data = normalizeInput(slug, input);
-  const columns = config.fields.map((field) => field.key);
-  const placeholders = columns.map((col) => `@${col}`).join(", ");
-  const db = getDb();
+  const rows = readRows(slug);
 
-  db.prepare(
-    `INSERT INTO ${config.table} (${columns.join(", ")}) VALUES (${placeholders})`
-  ).run(data);
+  if (rows.some((row) => String(row.id) === String(data.id))) {
+    throw new Error("Resource already exists");
+  }
+
+  rows.push(data);
+  writeResourceRows(slug, rows);
 
   return getResourceRow(slug, String(data.id));
 }
@@ -205,38 +204,35 @@ export function updateResource(slug: ResourceSlug, id: string, input: Record<str
   if (!config) throw new Error("Unknown resource");
 
   const data = normalizeInput(slug, input);
-  const columns = config.fields
-    .map((field) => field.key)
-    .filter((key) => key !== "id");
+  const rows = readRows(slug);
+  const index = rows.findIndex((row) => String(row.id) === id);
 
-  const assignments = columns.map((col) => `${col} = @${col}`).join(", ");
-  const db = getDb();
+  if (index === -1) return null;
 
-  db.prepare(`UPDATE ${config.table} SET ${assignments} WHERE id = @id`).run({
-    ...data,
-    id,
-  });
+  rows[index] = { ...rows[index], ...data, id };
+  writeResourceRows(slug, rows);
 
   return getResourceRow(slug, id);
 }
 
 export function deleteResource(slug: ResourceSlug, id: string) {
   ensureReady();
-  const config = getResourceConfig(slug);
-  if (!config) throw new Error("Unknown resource");
+  if (!getResourceConfig(slug)) throw new Error("Unknown resource");
 
-  const db = getDb();
-  const result = db.prepare(`DELETE FROM ${config.table} WHERE id = ?`).run(id);
-  return result.changes > 0;
+  const rows = readRows(slug);
+  const nextRows = rows.filter((row) => String(row.id) !== id);
+
+  if (nextRows.length === rows.length) return false;
+
+  writeResourceRows(slug, nextRows);
+  return true;
 }
 
 export function listResourceRowsForEditor(slug: ResourceSlug) {
   ensureReady();
-  const config = getResourceConfig(slug);
-  if (!config) throw new Error("Unknown resource");
+  if (!getResourceConfig(slug)) throw new Error("Unknown resource");
 
-  const db = getDb();
-  return db.prepare(`SELECT * FROM ${config.table} ORDER BY rowid ASC`).all() as Row[];
+  return readRows(slug);
 }
 
 export function assertResourceSlug(slug: string): ResourceSlug {

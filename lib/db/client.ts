@@ -1,92 +1,46 @@
-import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
+import type { ResourceSlug } from "@/lib/metadata/resources";
 
-const DB_DIR = path.join(process.cwd(), ".data");
-const DB_PATH = path.join(DB_DIR, "app.sqlite");
+export const DATA_DIR = path.join(process.cwd(), ".data");
 
-let db: Database.Database | null = null;
+export type StorageRow = Record<string, unknown>;
 
-function initSchema(database: Database.Database) {
-  database.exec(`
-    CREATE TABLE IF NOT EXISTS movies (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      thumb TEXT NOT NULL,
-      description TEXT NOT NULL DEFAULT '',
-      rating REAL NOT NULL DEFAULT 0
-    );
-
-    CREATE TABLE IF NOT EXISTS comics (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      thumb TEXT NOT NULL,
-      rating REAL NOT NULL DEFAULT 0
-    );
-
-    CREATE TABLE IF NOT EXISTS anime (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      thumb TEXT NOT NULL,
-      description TEXT NOT NULL DEFAULT '',
-      rating REAL NOT NULL DEFAULT 0
-    );
-
-    CREATE TABLE IF NOT EXISTS songs (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      artist TEXT NOT NULL,
-      play_config_id TEXT NOT NULL,
-      play_config_timestamp INTEGER,
-      spotify_url TEXT
-    );
-
-    CREATE TABLE IF NOT EXISTS playlists (
-      id TEXT PRIMARY KEY,
-      mood TEXT NOT NULL,
-      name TEXT NOT NULL,
-      description TEXT,
-      cover TEXT NOT NULL,
-      spotify_url TEXT,
-      youtube_music_url TEXT
-    );
-
-    CREATE TABLE IF NOT EXISTS lyrics (
-      id TEXT PRIMARY KEY,
-      lyric TEXT NOT NULL,
-      artist TEXT NOT NULL,
-      song TEXT NOT NULL,
-      accent TEXT
-    );
-
-    CREATE TABLE IF NOT EXISTS books (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      author TEXT NOT NULL,
-      thumb TEXT NOT NULL,
-      description TEXT NOT NULL DEFAULT '',
-      rating REAL NOT NULL DEFAULT 0
-    );
-
-    CREATE TABLE IF NOT EXISTS vines (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      video_id TEXT NOT NULL,
-      start_time REAL NOT NULL,
-      end_time REAL NOT NULL
-    );
-  `);
+export function ensureDataDir() {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
 }
 
-export function getDb() {
-  if (db) return db;
+function dataFilePath(slug: ResourceSlug) {
+  return path.join(DATA_DIR, `${slug}.json`);
+}
 
-  if (!fs.existsSync(DB_DIR)) {
-    fs.mkdirSync(DB_DIR, { recursive: true });
+export function readResourceRows(slug: ResourceSlug): StorageRow[] {
+  ensureDataDir();
+  const filePath = dataFilePath(slug);
+
+  if (!fs.existsSync(filePath)) {
+    return [];
   }
 
-  db = new Database(DB_PATH);
-  db.pragma("journal_mode = WAL");
-  initSchema(db);
-  return db;
+  const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
+  if (!Array.isArray(parsed)) {
+    throw new Error(`Invalid data file: ${slug}.json`);
+  }
+
+  return parsed as StorageRow[];
+}
+
+export function writeResourceRows(slug: ResourceSlug, rows: StorageRow[]) {
+  ensureDataDir();
+  const filePath = dataFilePath(slug);
+  const tmpPath = `${filePath}.tmp`;
+
+  fs.writeFileSync(tmpPath, `${JSON.stringify(rows, null, 2)}\n`, "utf8");
+  fs.renameSync(tmpPath, filePath);
+}
+
+export function resourceRowCount(slug: ResourceSlug) {
+  return readResourceRows(slug).length;
 }

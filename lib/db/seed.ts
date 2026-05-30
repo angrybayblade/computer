@@ -1,4 +1,5 @@
-import { getDb } from "./client";
+import type { ResourceSlug } from "@/lib/metadata/resources";
+import { type StorageRow, resourceRowCount, writeResourceRows } from "./client";
 import {
   loadAllSeedData,
   type SeedAnime,
@@ -15,194 +16,83 @@ type SeedOptions = {
   force?: boolean;
 };
 
-function tableCount(table: string) {
-  const db = getDb();
-  const row = db.prepare(`SELECT COUNT(*) AS count FROM ${table}`).get() as { count: number };
-  return row.count;
+function shouldSeed(slug: ResourceSlug, force?: boolean) {
+  return force || resourceRowCount(slug) === 0;
 }
 
-function shouldSeed(table: string, force?: boolean) {
-  return force || tableCount(table) === 0;
-}
-
-function seedMovies(force?: boolean) {
-  if (!shouldSeed("movies", force)) return 0;
-
-  const db = getDb();
-  if (force) db.prepare("DELETE FROM movies").run();
-
-  const rows = loadAllSeedData().movies;
-  const insert = db.prepare(
-    "INSERT INTO movies (id, name, thumb, description, rating) VALUES (@id, @name, @thumb, @description, @rating)"
-  );
-  const tx = db.transaction((items: SeedMovie[]) => {
-    for (const row of items) insert.run(row);
-  });
-  tx(rows);
+function seedRows(slug: ResourceSlug, rows: StorageRow[], force?: boolean) {
+  if (!shouldSeed(slug, force)) return 0;
+  writeResourceRows(slug, rows);
   return rows.length;
 }
 
-function seedComics(force?: boolean) {
-  if (!shouldSeed("comics", force)) return 0;
-
-  const db = getDb();
-  if (force) db.prepare("DELETE FROM comics").run();
-
-  const rows = loadAllSeedData().comics;
-  const insert = db.prepare(
-    "INSERT INTO comics (id, name, thumb, rating) VALUES (@id, @name, @thumb, @rating)"
-  );
-  const tx = db.transaction((items: SeedComic[]) => {
-    for (const row of items) insert.run(row);
-  });
-  tx(rows);
-  return rows.length;
+function seedMovieRows(items: SeedMovie[]): StorageRow[] {
+  return items.map((row) => ({ ...row }));
 }
 
-function seedAnime(force?: boolean) {
-  if (!shouldSeed("anime", force)) return 0;
-
-  const db = getDb();
-  if (force) db.prepare("DELETE FROM anime").run();
-
-  const rows = loadAllSeedData().anime;
-  const insert = db.prepare(
-    "INSERT INTO anime (id, name, thumb, description, rating) VALUES (@id, @name, @thumb, @description, @rating)"
-  );
-  const tx = db.transaction((items: SeedAnime[]) => {
-    for (const row of items) insert.run(row);
-  });
-  tx(rows);
-  return rows.length;
+function seedComicRows(items: SeedComic[]): StorageRow[] {
+  return items.map((row) => ({ ...row }));
 }
 
-function seedSongs(force?: boolean) {
-  if (!shouldSeed("songs", force)) return 0;
-
-  const db = getDb();
-  if (force) db.prepare("DELETE FROM songs").run();
-
-  const rows = loadAllSeedData().songs;
-  const insert = db.prepare(
-    "INSERT INTO songs (id, title, artist, play_config_id, play_config_timestamp, spotify_url) VALUES (@id, @title, @artist, @play_config_id, @play_config_timestamp, @spotify_url)"
-  );
-  const tx = db.transaction((items: SeedSong[]) => {
-    for (const row of items) {
-      insert.run({
-        id: row.id,
-        title: row.title,
-        artist: row.artist,
-        play_config_id: row.playConfig.id,
-        play_config_timestamp: row.playConfig.timestamp ?? null,
-        spotify_url: row.spotifyUrl ?? null,
-      });
-    }
-  });
-  tx(rows);
-  return rows.length;
+function seedAnimeRows(items: SeedAnime[]): StorageRow[] {
+  return items.map((row) => ({ ...row }));
 }
 
-function seedPlaylists(force?: boolean) {
-  if (!shouldSeed("playlists", force)) return 0;
-
-  const db = getDb();
-  if (force) db.prepare("DELETE FROM playlists").run();
-
-  const rows = loadAllSeedData().playlists;
-  const insert = db.prepare(
-    "INSERT INTO playlists (id, mood, name, description, cover, spotify_url, youtube_music_url) VALUES (@id, @mood, @name, @description, @cover, @spotify_url, @youtube_music_url)"
-  );
-  const tx = db.transaction((items: SeedPlaylist[]) => {
-    for (const row of items) {
-      insert.run({
-        id: row.id,
-        mood: row.mood,
-        name: row.name,
-        description: row.description ?? null,
-        cover: row.cover,
-        spotify_url: row.spotifyUrl ?? null,
-        youtube_music_url: row.youtubeMusicUrl ?? null,
-      });
-    }
-  });
-  tx(rows);
-  return rows.length;
+function seedSongRows(items: SeedSong[]): StorageRow[] {
+  return items.map((row) => ({
+    id: row.id,
+    title: row.title,
+    artist: row.artist,
+    play_config_id: row.playConfig.id,
+    ...(row.playConfig.timestamp != null ? { play_config_timestamp: row.playConfig.timestamp } : {}),
+    ...(row.spotifyUrl ? { spotify_url: row.spotifyUrl } : {}),
+  }));
 }
 
-function seedLyrics(force?: boolean) {
-  if (!shouldSeed("lyrics", force)) return 0;
-
-  const db = getDb();
-  if (force) db.prepare("DELETE FROM lyrics").run();
-
-  const rows = loadAllSeedData().lyrics;
-  const insert = db.prepare(
-    "INSERT INTO lyrics (id, lyric, artist, song, accent) VALUES (@id, @lyric, @artist, @song, @accent)"
-  );
-  const tx = db.transaction((items: SeedLyric[]) => {
-    for (const row of items) insert.run(row);
-  });
-  tx(rows);
-  return rows.length;
+function seedPlaylistRows(items: SeedPlaylist[]): StorageRow[] {
+  return items.map((row) => ({
+    id: row.id,
+    mood: row.mood,
+    name: row.name,
+    cover: row.cover,
+    ...(row.description ? { description: row.description } : {}),
+    ...(row.spotifyUrl ? { spotify_url: row.spotifyUrl } : {}),
+    ...(row.youtubeMusicUrl ? { youtube_music_url: row.youtubeMusicUrl } : {}),
+  }));
 }
 
-function seedBooks(force?: boolean) {
-  if (!shouldSeed("books", force)) return 0;
-
-  const db = getDb();
-  if (force) db.prepare("DELETE FROM books").run();
-
-  const rows = loadAllSeedData().books;
-  const insert = db.prepare(
-    "INSERT INTO books (id, title, author, thumb, description, rating) VALUES (@id, @title, @author, @thumb, @description, @rating)"
-  );
-  const tx = db.transaction((items: SeedBook[]) => {
-    for (const row of items) insert.run(row);
-  });
-  tx(rows);
-  return rows.length;
+function seedLyricRows(items: SeedLyric[]): StorageRow[] {
+  return items.map((row) => ({ ...row }));
 }
 
-function seedVines(force?: boolean) {
-  if (!shouldSeed("vines", force)) return 0;
+function seedBookRows(items: SeedBook[]): StorageRow[] {
+  return items.map((row) => ({ ...row }));
+}
 
-  const db = getDb();
-  if (force) db.prepare("DELETE FROM vines").run();
-
-  const rows = loadAllSeedData().vines;
-  const insert = db.prepare(
-    "INSERT INTO vines (id, title, video_id, start_time, end_time) VALUES (@id, @title, @video_id, @start_time, @end_time)"
-  );
-  const tx = db.transaction((items: SeedVine[]) => {
-    for (const row of items) {
-      insert.run({
-        id: row.id,
-        title: row.title,
-        video_id: row.videoId,
-        start_time: row.startTime,
-        end_time: row.endTime,
-      });
-    }
-  });
-  tx(rows);
-  return rows.length;
+function seedVineRows(items: SeedVine[]): StorageRow[] {
+  return items.map((row) => ({
+    id: row.id,
+    title: row.title,
+    video_id: row.videoId,
+    start_time: row.startTime,
+    end_time: row.endTime,
+  }));
 }
 
 export function seedDatabase(options: SeedOptions = {}) {
   const { force = false } = options;
+  const data = loadAllSeedData();
 
-  const counts = {
-    movies: seedMovies(force),
-    comics: seedComics(force),
-    anime: seedAnime(force),
-    songs: seedSongs(force),
-    playlists: seedPlaylists(force),
-    lyrics: seedLyrics(force),
-    books: seedBooks(force),
-    vines: seedVines(force),
+  return {
+    movies: seedRows("movies", seedMovieRows(data.movies), force),
+    comics: seedRows("comics", seedComicRows(data.comics), force),
+    anime: seedRows("anime", seedAnimeRows(data.anime), force),
+    songs: seedRows("songs", seedSongRows(data.songs), force),
+    playlists: seedRows("playlists", seedPlaylistRows(data.playlists), force),
+    lyrics: seedRows("lyrics", seedLyricRows(data.lyrics), force),
+    books: seedRows("books", seedBookRows(data.books), force),
+    vines: seedRows("vines", seedVineRows(data.vines), force),
   };
-
-  return counts;
 }
 
 export function seedDatabaseIfEmpty() {

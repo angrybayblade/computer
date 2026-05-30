@@ -13,7 +13,6 @@ export type FieldConfig = {
 export type ResourceConfig = {
   slug: ResourceSlug;
   label: string;
-  table: string;
   fields: FieldConfig[];
   listColumns: { key: string; label: string }[];
 };
@@ -22,7 +21,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   {
     slug: "movies",
     label: "Movies",
-    table: "movies",
     listColumns: [
       { key: "name", label: "Name" },
       { key: "rating", label: "Rating" },
@@ -38,7 +36,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   {
     slug: "comics",
     label: "Comics",
-    table: "comics",
     listColumns: [
       { key: "name", label: "Name" },
       { key: "rating", label: "Rating" },
@@ -53,7 +50,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   {
     slug: "anime",
     label: "Anime",
-    table: "anime",
     listColumns: [
       { key: "name", label: "Name" },
       { key: "rating", label: "Rating" },
@@ -69,7 +65,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   {
     slug: "songs",
     label: "Songs",
-    table: "songs",
     listColumns: [
       { key: "title", label: "Title" },
       { key: "artist", label: "Artist" },
@@ -86,7 +81,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   {
     slug: "playlists",
     label: "Playlists",
-    table: "playlists",
     listColumns: [
       { key: "name", label: "Name" },
       { key: "mood", label: "Mood" },
@@ -104,7 +98,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   {
     slug: "lyrics",
     label: "Lyrics",
-    table: "lyrics",
     listColumns: [
       { key: "song", label: "Song" },
       { key: "artist", label: "Artist" },
@@ -120,7 +113,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   {
     slug: "books",
     label: "Books",
-    table: "books",
     listColumns: [
       { key: "title", label: "Title" },
       { key: "author", label: "Author" },
@@ -138,7 +130,6 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   {
     slug: "vines",
     label: "Vines",
-    table: "vines",
     listColumns: [
       { key: "title", label: "Title" },
       { key: "video_id", label: "Video ID" },
