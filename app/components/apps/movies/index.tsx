@@ -437,13 +437,12 @@ export function MoviesApp() {
 function MoviesIcon() {
   return (
     <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
-      <path d="M5 20h38v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3Z" fill="#111111" />
-      <path d="M5 20h38v6H5z" fill="#FFD200" />
-      <path d="m5 12 35-8 2 9-35 8Z" fill="#111111" stroke="#111111" strokeWidth="2" strokeLinejoin="round" />
-      <path d="m11 11 6-1.37-3 9.92-6 1.37Z M24 8.03l6-1.37-3 9.92-6 1.37Z M37 5.06l3-.69 2 8.77-8 1.83Z" fill="#F7F7F5" />
-      <circle cx="8" cy="23" r="1.25" fill="#111111" />
-      <path d="M12 32h17M12 37h10" stroke="#F7F7F5" strokeWidth="2" strokeLinecap="round" />
-      <path d="m34 31 5 4-5 4Z" fill="#FFD200" />
+      <rect x="5" y="5" width="38" height="38" fill="#F7F7F5" stroke="#111111" strokeWidth="1.5" />
+      <path d="M5 5h7v38H5zM36 5h7v38h-7z" fill="#111111" />
+      <path d="M7 8h3v4H7zM7 17h3v4H7zM7 27h3v4H7zM7 36h3v4H7zM38 8h3v4h-3zM38 17h3v4h-3zM38 27h3v4h-3zM38 36h3v4h-3z" fill="#F7F7F5" />
+      <path d="M12 12h24v24H12z" fill="#FFD200" />
+      <path d="m21 18 9 6-9 6Z" fill="#111111" />
+      <path d="M12 12h24M12 36h24" stroke="#111111" strokeWidth="1.5" />
     </svg>
   );
 }
