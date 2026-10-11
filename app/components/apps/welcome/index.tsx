@@ -55,13 +55,15 @@ export function WelcomeApp() {
 
 function ThisPcIcon() {
   return (
-    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <rect x="4" y="4.5" width="30" height="30" fill="var(--color-bauhaus-white)" stroke="var(--color-bauhaus-black)" strokeWidth="1.5" />
-      <rect x="8" y="8" width="22" height="22" fill="var(--color-bauhaus-blue)" />
-      <circle cx="14" cy="14.5" r="2" fill="var(--color-bauhaus-red)" stroke="var(--color-bauhaus-black)" strokeWidth="0.75" />
-      <circle cx="14" cy="19.5" r="2" fill="var(--color-bauhaus-red)" stroke="var(--color-bauhaus-black)" strokeWidth="0.75" />
-      <circle cx="14" cy="24.5" r="2" fill="var(--color-bauhaus-red)" stroke="var(--color-bauhaus-black)" strokeWidth="0.75" />
-      <rect x="17" y="12.5" width="6" height="3" fill="var(--color-bauhaus-yellow)" stroke="var(--color-bauhaus-black)" strokeWidth="0.75" />
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
+      <path d="M21 32h6v7h-6z" fill="var(--color-bauhaus-black)" />
+      <rect x="13" y="39" width="22" height="3" rx="1" fill="var(--color-bauhaus-black)" />
+      <rect x="3" y="6" width="42" height="28" rx="3" fill="var(--color-bauhaus-black)" />
+      <path d="M6 9h36v20H6z" fill="var(--color-bauhaus-white)" />
+      <path d="M6 9h18v20H6z" fill="var(--color-bauhaus-blue)" />
+      <circle cx="24" cy="19" r="7" fill="var(--color-bauhaus-red)" />
+      <path d="M31 22h11v7H31z" fill="var(--color-bauhaus-yellow)" />
+      <path d="M21 31.5h6" stroke="var(--color-bauhaus-white)" strokeWidth="1" strokeLinecap="round" />
     </svg>
   );
 }
