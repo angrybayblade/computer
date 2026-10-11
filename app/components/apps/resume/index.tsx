@@ -188,27 +188,20 @@ export function ResumeApp() {
 
 function ResumeIcon() {
   return (
-    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <rect
-        x="3"
-        y="3"
-        width="30"
-        height="30"
-        fill="#FAF7F0"
-        stroke="#6B7B5C"
-        strokeWidth="1.25"
-      />
-      <rect x="8" y="8" width="20" height="20" rx="1" fill="#F5F0E6" stroke="#6B7B5C" strokeWidth="0.75" opacity="0.45" />
-      <line x1="11" y1="12" x2="25" y2="12" stroke="#3A3A38" strokeWidth="1" opacity="0.35" />
-      <line x1="11" y1="16" x2="23" y2="16" stroke="#3A3A38" strokeWidth="0.75" opacity="0.25" />
-      <line x1="11" y1="19.5" x2="21" y2="19.5" stroke="#3A3A38" strokeWidth="0.75" opacity="0.2" />
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
       <path
-        d="M14 23.5 Q18 26.5 22 23"
-        fill="none"
-        stroke="#B8A078"
-        strokeWidth="1.5"
-        strokeLinecap="round"
+        d="M11 4h20l8 8v29a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"
+        fill="#FAF7F0"
+        stroke="#3A3A38"
+        strokeWidth="2"
+        strokeLinejoin="round"
       />
+      <path d="M31 4v8h8" fill="#DCE1D5" stroke="#3A3A38" strokeWidth="2" strokeLinejoin="round" />
+      <rect x="13" y="12" width="12" height="14" rx="2" fill="#6B7B5C" />
+      <circle cx="19" cy="16.5" r="2.5" fill="#FAF7F0" />
+      <path d="M15 24v-1a4 4 0 0 1 8 0v1Z" fill="#FAF7F0" />
+      <path d="M29 19h5M29 24h4" stroke="#6B7B5C" strokeWidth="2" strokeLinecap="round" />
+      <path d="M14 31h19M14 36h14" stroke="#3A3A38" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
