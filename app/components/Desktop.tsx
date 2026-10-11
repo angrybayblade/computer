@@ -109,18 +109,7 @@ export function Desktop({
       </div>
 
       {/* Desktop app icons */}
-      <div
-        style={{
-          position: "absolute",
-          top: 64,
-          bottom: 0,
-          left: 16,
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          overflowY: "auto",
-        }}
-      >
+      <div className="desktop-icon-grid">
         {APPS.map((app) => {
           const route = getPublicAppRouteById(app.id);
           if (!route) return null;
@@ -136,6 +125,7 @@ export function Desktop({
               onDoubleClick={() => {
                 if (!isMobileViewport()) router.push(route.path, { scroll: false });
               }}
+              className="desktop-icon"
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -145,8 +135,6 @@ export function Desktop({
                 border: "none",
                 cursor: "pointer",
                 padding: 8,
-                width: 80,
-                flexShrink: 0,
                 textDecoration: "none",
               }}
             >

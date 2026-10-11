@@ -2147,3 +2147,39 @@ body {
 .wabisabi-window-controls button:last-child:hover {
   filter: brightness(1.06);
 }
+/* Icons fill downward first and wrap into a new column when the viewport is full. */
+.desktop-icon-grid {
+  position: absolute;
+  top: 64px;
+  right: 16px;
+  bottom: 0;
+  left: 16px;
+  display: flex;
+  flex-flow: column wrap;
+  align-content: flex-start;
+  gap: 12px;
+  overflow: auto;
+  padding-bottom: 16px;
+}
+
+.desktop-icon {
+  width: 80px;
+  min-height: 88px;
+  flex: 0 0 88px;
+}
+
+@media (max-width: 640px) {
+  .desktop-icon-grid {
+    top: 52px;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    gap: 8px;
+  }
+
+  .desktop-icon {
+    width: 72px;
+    min-height: 82px;
+    flex-basis: 82px;
+  }
+}
