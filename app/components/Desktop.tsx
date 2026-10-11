@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useWindowManager } from "./WindowManager";
 import { AppWindow } from "./AppWindow";
 import { APPS } from "./apps";
@@ -17,7 +16,6 @@ export function Desktop({
   routedAppId?: string;
   routedContent?: ReactNode;
 }) {
-  const router = useRouter();
   const { windows, openWindow } = useWindowManager();
   const openedWelcome = useRef(false);
 
@@ -118,13 +116,6 @@ export function Desktop({
               key={app.id}
               href={route.path}
               scroll={false}
-              onClick={(event) => {
-                // Desktop icons retain their familiar double-click behavior.
-                if (!isMobileViewport() && event.detail !== 0) event.preventDefault();
-              }}
-              onDoubleClick={() => {
-                if (!isMobileViewport()) router.push(route.path, { scroll: false });
-              }}
               className="desktop-icon"
               style={{
                 display: "flex",

@@ -334,18 +334,23 @@ function MoviesAppContent({ initialMovies }: { initialMovies?: Movie[] }) {
   const movieSections = [
     {
       title: "Peak",
-      ratingRange: "Above 8/10",
-      movies: movies.filter((movie) => movie.rating > 8),
+      ratingRange: "9/10 and above",
+      movies: movies.filter((movie) => movie.rating >= 9),
+    },
+    {
+      title: "Good",
+      ratingRange: "7/10 and above",
+      movies: movies.filter((movie) => movie.rating >= 7 && movie.rating < 9),
     },
     {
       title: "Alright",
-      ratingRange: "Above 7/10",
-      movies: movies.filter((movie) => movie.rating > 7 && movie.rating <= 8),
+      ratingRange: "Above 4/10",
+      movies: movies.filter((movie) => movie.rating > 4 && movie.rating < 7),
     },
     {
       title: "Meh",
-      ratingRange: "Above 5/10",
-      movies: movies.filter((movie) => movie.rating > 5 && movie.rating <= 7),
+      ratingRange: "Above 0/10",
+      movies: movies.filter((movie) => movie.rating > 0 && movie.rating <= 4),
     },
     {
       title: "So bad it's good",
@@ -360,28 +365,6 @@ function MoviesAppContent({ initialMovies }: { initialMovies?: Movie[] }) {
 
   return (
     <div style={{ minHeight: "100%" }}>
-      <div
-        style={{
-          padding: "24px 24px 12px",
-          borderBottom: "1px solid var(--app-border)",
-        }}
-      >
-        <MetaLabel>Recommendations</MetaLabel>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: "clamp(2rem, 4vw, 2.75rem)",
-            fontWeight: 700,
-            lineHeight: 0.92,
-            letterSpacing: "-0.04em",
-            textTransform: "uppercase",
-            color: "var(--app-fg)",
-          }}
-        >
-          Films
-        </h1>
-      </div>
-
       <div style={{ padding: "24px" }}>
         {movieSections.length === 0 ? (
           <div

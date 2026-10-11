@@ -2166,6 +2166,12 @@ body {
   width: 80px;
   min-height: 88px;
   flex: 0 0 88px;
+  outline: none;
+}
+
+.desktop-icon:focus-visible {
+  outline: 2px solid var(--color-bauhaus-red);
+  outline-offset: -2px;
 }
 
 @media (max-width: 640px) {
