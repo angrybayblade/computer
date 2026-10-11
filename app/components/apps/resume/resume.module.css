@@ -29,7 +29,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.8;
   background-image:
     radial-gradient(ellipse 120% 80% at 10% 0%, rgba(107, 123, 92, 0.07), transparent 55%),
     radial-gradient(ellipse 90% 60% at 95% 100%, rgba(166, 93, 69, 0.06), transparent 50%);
@@ -44,16 +44,93 @@
   max-width: 680px;
   margin: 0 auto;
   min-height: 100%;
-  padding: 28px 36px 48px;
+  padding: 36px 36px 48px;
 }
 
 .hero {
+  position: relative;
+  isolation: isolate;
+  margin-bottom: 32px;
+  padding: 28px 24px;
+  border: 1px solid #ded8cb;
+  border-radius: 4px 28px 4px 4px;
+  background: #faf7f0;
+  overflow: hidden;
+  animation: arrive 550ms ease-out both;
+}
+
+.heroArt {
+  position: absolute;
+  z-index: -1;
+  right: -24px;
+  top: -36px;
+  width: 160px;
+  height: 200px;
+  opacity: 0.2;
+  transform: rotate(-20deg);
+}
+
+.heroArt span {
+  position: absolute;
+  width: 100px;
+  height: 150px;
+  border: 1px solid #6b7b5c;
+  border-radius: 70% 0 70% 0;
+  background: #b4c0a5;
+}
+
+.heroArt span:nth-child(2) { transform: rotate(35deg); left: 28px; top: 30px; }
+.heroArt span:nth-child(3) { transform: rotate(70deg); left: 45px; top: 65px; background: #d7b99b; }
+
+.nameDot { color: #a65d45; }
+
+.heroLinks {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-bottom: 36px;
-  padding-bottom: 28px;
-  border-bottom: 1px solid rgba(58, 58, 56, 0.12);
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin-top: 24px;
+}
+
+.heroLinks a {
+  font-size: 12px;
+  font-weight: 600;
+  color: #536447;
+  text-decoration: none;
+  border-bottom: 1px solid #b4c0a5;
+  padding-bottom: 3px;
+  transition: color 180ms, border-color 180ms;
+}
+
+.heroLinks a:hover { color: #a65d45; border-color: #a65d45; }
+.heroLinks a:focus-visible { outline: 2px solid #a65d45; outline-offset: 5px; }
+
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 20px 0;
+  border-top: 1px solid #ded8cb;
+  border-bottom: 1px solid #ded8cb;
+}
+
+.highlights dt {
+  font-family: var(--font-playfair-display), Georgia, serif;
+  font-size: clamp(24px, 4vw, 32px);
+  color: #a65d45;
+  line-height: 1.2;
+}
+
+.highlights dd { margin: 8px 0 0; font-size: 11px; color: #5a554d; line-height: 1.5; }
+
+@keyframes arrive {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero { animation: none; }
+  .heroLinks a { transition: none; }
 }
 
 .section {
@@ -95,9 +172,8 @@
   margin: 14px 0 0;
   font-size: 13px;
   font-weight: 400;
-  font-style: italic;
   line-height: 1.55;
-  color: #7a756c;
+  color: #5a554d;
 }
 
 .kintsugi {
@@ -157,8 +233,24 @@
 }
 
 .entry {
-  padding-bottom: 8px;
+  position: relative;
+  padding: 0 0 8px 22px;
+  border-left: 1px solid #c7cdbd;
 }
+
+.entry::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: -5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #6b7b5c;
+  box-shadow: 0 0 0 4px #f5f0e6;
+}
+
+.entry:first-child::before { background: #a65d45; }
 
 .entryHeader {
   margin-bottom: 12px;
@@ -219,8 +311,10 @@
 }
 
 .role {
-  padding: 16px 0 4px 16px;
-  border-left: 3px solid rgba(107, 123, 92, 0.4);
+  padding: 16px;
+  border-radius: 4px;
+  background: rgba(250, 247, 240, 0.8);
+  border: 1px solid #e5dfd3;
 }
 
 .roleHeader {
@@ -280,4 +374,12 @@
   .name {
     font-size: 2.25rem;
   }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 24px 18px; }
+  .highlights { gap: 10px; }
+  .highlights dt { font-size: 24px; }
+  .entry { padding-left: 16px; }
+  .role { padding: 12px; }
 }

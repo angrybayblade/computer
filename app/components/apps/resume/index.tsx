@@ -148,11 +148,29 @@ function ResumeAppContent() {
       <div className={styles.scroll}>
         <div className={styles.texture} aria-hidden />
         <div className={styles.layout}>
+          <header className={styles.hero}>
+            <div className={styles.heroArt} aria-hidden="true">
+              <span /><span /><span />
+            </div>
+            <p className={styles.eyebrow}>Engineering · Bengaluru, India</p>
+            <h1 className={styles.name}>Viraj Patel<span className={styles.nameDot}>.</span></h1>
+            <p className={styles.tagline}>Building the tools that help others build.</p>
+            <div className={styles.heroLinks}>
+              <a href="mailto:vptl185@gmail.com">Say hello <span aria-hidden="true">↗</span></a>
+              <a href="https://github.com/angrybayblade" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+              <a href="https://linkedin.com/in/angrybayblade" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+            </div>
+          </header>
           <section className={styles.section} aria-labelledby="resume-summary-heading">
             <h2 id="resume-summary-heading" className={`${styles.sectionTitle} ${styles.sectionTitleMain}`}>
               Summary
             </h2>
             <p className={styles.summary}>{SUMMARY}</p>
+            <dl className={styles.highlights}>
+              <div><dt>11×</dt><dd>Orchestration performance</dd></div>
+              <div><dt>95–99%</dt><dd>Less deployment time</dd></div>
+              <div><dt>48.6%</dt><dd>SWEKIT on SWE Bench</dd></div>
+            </dl>
           </section>
           <section className={styles.section} aria-labelledby="resume-experience-heading">
             <h2
