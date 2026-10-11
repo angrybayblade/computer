@@ -10,6 +10,7 @@ import { BooksApp } from "@/app/components/apps/books";
 import { VinesApp } from "@/app/components/apps/vines";
 import { listResource } from "@/lib/db/repositories";
 import { getPublicAppRouteById, type PublicAppId } from "@/lib/app-routes";
+import { SITE_NAME } from "@/lib/site";
 import type { Movie } from "@/lib/movies/types";
 import type { Song, Playlist, Lyric } from "@/lib/music/types";
 import type { Comic } from "@/lib/comics/types";
@@ -28,12 +29,12 @@ export function metadataForApp(id: PublicAppId): Metadata {
     openGraph: {
       type: "website",
       url: route.path,
-      title: `${route.title} | Viraj Patel`,
+      title: `${route.title} | ${SITE_NAME}`,
       description: route.description,
     },
     twitter: {
       card: "summary",
-      title: `${route.title} | Viraj Patel`,
+      title: `${route.title} | ${SITE_NAME}`,
       description: route.description,
     },
   };
