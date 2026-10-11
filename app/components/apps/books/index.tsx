@@ -126,16 +126,14 @@ export function BooksApp() {
 
 function BooksIcon() {
   return (
-    <svg viewBox="0 0 36 36" aria-hidden>
-      <rect x="3" y="4" width="30" height="30" fill="#0A0A0A"/>
-      <path
-        d="M10 11h7v16H10V11zm9 0h7v16h-7V11z"
-        fill="#1B3A2F"
-        stroke="#C9A84C"
-        strokeWidth="0.75"
-      />
-      <line x1="13.5" y1="14" x2="13.5" y2="24" stroke="#C9A84C" strokeWidth="0.75" opacity="0.6" />
-      <line x1="22.5" y1="14" x2="22.5" y2="24" stroke="#C9A84C" strokeWidth="0.75" opacity="0.6" />
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
+      <path d="M11 5h28v37H11a5 5 0 0 1-5-5V10a5 5 0 0 1 5-5Z" fill="#1B3A2F" stroke="#10291F" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M12 5v28" stroke="#C9A84C" strokeWidth="1.5" />
+      <path d="M11 34h28v8H11a4 4 0 0 1 0-8Z" fill="#F5EEDC" stroke="#10291F" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M13 38h23" stroke="#C7BDA4" strokeWidth="1" />
+      <path d="M29 34h6v11l-3-2-3 2Z" fill="#C9A84C" />
+      <path d="M19 14h13M22 19h7" stroke="#C9A84C" strokeWidth="2" strokeLinecap="round" />
+      <path d="m25.5 24 2 2-2 2-2-2Z" fill="#C9A84C" />
     </svg>
   );
 }
