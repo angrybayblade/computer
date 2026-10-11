@@ -60,11 +60,14 @@ export function VinesApp() {
 
 function VinesIcon() {
   return (
-    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <rect x="4" y="4" width="30" height="30" fill="#1A1228" stroke="#1A1A1A" strokeWidth="2" />
-      <rect x="8" y="11" width="22" height="16" fill="#0A0A0A" stroke="#E84545" strokeWidth="1" />
-      <polygon points="16,15.5 16,22.5 22.5,19" fill="#E84545" stroke="#1A1A1A" strokeWidth="0.75" strokeLinejoin="round" />
-      <rect x="8" y="28" width="22" height="2" fill="#2A2040" stroke="#1A1A1A" strokeWidth="0.5" />
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
+      <rect x="6" y="15" width="37" height="28" rx="7" fill="#1A1228" />
+      <rect x="3" y="12" width="37" height="28" rx="7" fill="#392B54" stroke="#1A1228" strokeWidth="2" />
+      <path d="M10 18h23" stroke="#64527E" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="m18 20 11 7-11 7Z" fill="#F27670" stroke="#F27670" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M12 10a13 13 0 0 1 23-1" fill="none" stroke="#E84545" strokeWidth="3" strokeLinecap="round" />
+      <path d="m30 9 6 2 1-6" fill="none" stroke="#E84545" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="10" cy="34" r="1" fill="#F27670" />
     </svg>
   );
 }
