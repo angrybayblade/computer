@@ -19,22 +19,25 @@ type Experience = {
   roles: Role[];
 };
 
+const SUMMARY =
+  "Founding engineer with experience building developer platforms, SDKs, orchestration systems, and open-source infrastructure at early-stage startups. Shipped systems from idea to POC to production, including an orchestration rewrite that improved performance 11× and deployment tooling that reduced deployment time by 95–99%. Comfortable owning ambiguous problems end to end across backend infrastructure and developer experience.";
+
 const EXPERIENCE: Experience[] = [
   {
     company: "Composio",
     location: "Bengaluru, India",
     period: "May 2024 — September 2025",
     intro:
-      "Joined as a founding engineer, led the development of the tooling infrastructure and worked on improving the developer experience both internally and externally.",
+      "Joined as a founding engineer, led the development of the tooling infrastructure, improved the developer experience internally and externally, and ran multiple growth experiments during the company’s early search for product-market fit.",
     roles: [
       {
         title: "Founding Engineer",
-        period: "May 2024 — Present",
+        period: "May 2024 — September 2025",
         bullets: [
-          "Led the development of the SDK and the plugin ecosystem",
-          "Rewrote the tooling orchestration service which led to the overall performance boost of 11×",
-          "Designed and developed multiple components of the tooling infrastructure ground up including a runtime framework for scaling tool executions, a versioning framework for tools, and a pipeline which takes in an OpenAPI specification and outputs a tool compatible with Composio's platform",
-          "Implemented abstractions and in-house tooling for speeding the development process while reducing risk factors",
+          "Rewrote the early tooling infrastructure, delivering more robust infrastructure and an 11× throughput improvement",
+          "Designed and developed core tooling infrastructure from the ground up, including a scalable tool-execution runtime, a versioning service, and an OpenAPI-to-tool generation pipeline",
+          "Built reusable abstractions and internal developer tooling that accelerated implementation while reducing regressions and operational risk",
+          "Built Composio SDK, SWEKIT (scored 48.6%, second place in SWE Bench at the time), and the plugin ecosystem as part of early growth experimentation",
         ],
       },
     ],
@@ -47,7 +50,7 @@ const EXPERIENCE: Experience[] = [
       "Joined as one of the founding engineers, led the development of the core stack and multiple open source frameworks to improve the developer experience.",
     roles: [
       {
-        title: "Python Engineer",
+        title: "Senior Python Engineer",
         period: "Aug 2023 — May 2024",
         bullets: [
           "Reduced deployment complexity on the user platform by automating environment configurations",
@@ -56,23 +59,22 @@ const EXPERIENCE: Experience[] = [
         ],
       },
       {
-        title: "Python Engineer & Engineering Coordinator",
+        title: "Python Engineer and Engineering Lead (SDK)",
         period: "Sep 2022 — Aug 2023",
         bullets: [
-          "Coordinated release cycles for the core frameworks",
-          "Developed an orchestration framework to streamline development, testing, and deployment of autonomous services",
-          "Sped up development and reduced production issues by introducing in-house static analysers",
-          "Developed multiple plugins to support on-chain interaction from different chains and wallets",
+          "Coordinated release cycles across the core open-source frameworks",
+          "Built an orchestration framework that streamlined the development, testing, and deployment of services built using the agent frameworks",
+          "Introduced custom static-analysis tooling that accelerated development and reduced production issues",
+          "Built plugins enabling on-chain interactions across multiple blockchain networks and wallets",
         ],
       },
       {
         title: "Junior Python Developer",
         period: "Sep 2021 — Sep 2022",
         bullets: [
-          "Improved user experience by fixing bugs and implementing new features on the core framework",
-          "Worked on developing various autonomous services using the core stack as proof of concept",
-          "Designed and developed infrastructure for package management on the IPFS network",
-          "Reduced deployment time of services by up to 80% by introducing internal tooling",
+          "Built internal tooling that reduced service deployment time by up to 80%",
+          "Designed and built IPFS-based package-management infrastructure and an extensible plugin ecosystem around it",
+          "Developed autonomous-service prototypes using the core stack to validate its capabilities and potential use cases",
         ],
       },
     ],
@@ -85,7 +87,7 @@ const EXPERIENCE: Experience[] = [
       "Accepted as a summer intern in GSoC 2021, working on a low-code platform for developing neural networks with TensorFlow at Emory School of Medicine.",
     roles: [
       {
-        title: "Summer Intern",
+        title: "Intern",
         period: "May 2021 — Aug 2021",
         bullets: [
           "Reduced workflow complexity by introducing a simple and coherent development process",
@@ -98,13 +100,13 @@ const EXPERIENCE: Experience[] = [
 ];
 
 const SKILLS = [
-  "C, Go, Python, TypeScript",
-  "Flask, Django, FastAPI",
-  "Tailwind, React, Next.js",
+  "Python, JavaScript, Go",
+  "Flask, Django",
+  "ReactJS, NextJS",
   "MongoDB, PostgreSQL",
   "Web3, IPFS",
-  "Linux, Network Programming, Async Programming",
-  "Git, VS Code, Docker",
+  "Linux, Network Programming, Asynchronous Programming",
+  "Git, VS Code, Docker, Kubernetes",
 ];
 
 function ExperienceBlock({ entry }: { entry: Experience }) {
@@ -146,6 +148,12 @@ function ResumeAppContent() {
       <div className={styles.scroll}>
         <div className={styles.texture} aria-hidden />
         <div className={styles.layout}>
+          <section className={styles.section} aria-labelledby="resume-summary-heading">
+            <h2 id="resume-summary-heading" className={`${styles.sectionTitle} ${styles.sectionTitleMain}`}>
+              Summary
+            </h2>
+            <p className={styles.summary}>{SUMMARY}</p>
+          </section>
           <section className={styles.section} aria-labelledby="resume-experience-heading">
             <h2
               id="resume-experience-heading"

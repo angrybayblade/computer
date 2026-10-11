@@ -64,6 +64,13 @@
   margin-bottom: 0;
 }
 
+.summary {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #5a554d;
+}
+
 .eyebrow {
   margin: 0 0 8px;
   font-family: var(--font-open-sans), system-ui, sans-serif;
