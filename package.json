@@ -3,19 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "doppler run -- next dev --port 3001",
+    "dev": "doppler run -- next dev",
     "build": "next build",
-    "start": "next start --port 3001",
+    "start": "next start",
     "lint": "eslint",
     "seed": "tsx scripts/seed.ts",
     "seed:force": "tsx scripts/seed.ts --force",
     "deploy": "bash scripts/deploy.sh",
-    "pm2:start": "pm2 start ecosystem.config.cjs",
-    "pm2:reload": "pm2 reload ecosystem.config.cjs --update-env",
-    "pm2:stop": "pm2 stop ecosystem.config.cjs",
-    "pm2:delete": "pm2 delete ecosystem.config.cjs",
-    "pm2:logs": "pm2 logs me",
-    "pm2:status": "pm2 status me"
+    "docker:logs": "docker compose logs -f web",
+    "docker:status": "docker compose ps",
+    "docker:stop": "docker compose down"
   },
   "dependencies": {
     "clsx": "^2.1.1",

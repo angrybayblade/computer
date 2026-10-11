@@ -1,0 +1,14 @@
+name: me
+
+services:
+  web:
+    build: .
+    image: me-web:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:10010:3000"
+    volumes:
+      - ./.data:/app/.data
+    environment:
+      - EDIT_PASSWORD
+      - EDIT_SESSION_SECRET
