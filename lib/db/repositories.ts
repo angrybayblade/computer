@@ -172,6 +172,11 @@ export async function listResource(slug: ResourceSlug) {
       const bRating = "rating" in b ? b.rating : 0;
       const aName = "name" in a ? a.name : "title" in a ? a.title : "";
       const bName = "name" in b ? b.name : "title" in b ? b.title : "";
+      if (slug === "movies") {
+        const groupDifference = Number(aRating < 0) - Number(bRating < 0);
+        if (groupDifference !== 0) return groupDifference;
+        if (aRating < 0 && bRating < 0) return aRating - bRating || aName.localeCompare(bName);
+      }
       return bRating - aRating || aName.localeCompare(bName);
     });
   }

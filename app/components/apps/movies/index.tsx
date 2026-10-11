@@ -8,17 +8,18 @@ import { type Movie } from "@/lib/movies/types";
 import { fetchMetadata } from "@/lib/metadata/client";
 
 function formatRating(value: number) {
-  return String(value).padStart(2, "0");
+  return value < 0 ? String(value) : String(value).padStart(2, "0");
 }
 
 function RatingStamp({ rating }: { rating: number }) {
+  const isBadGood = rating < 0;
   return (
     <div
       style={{
         display: "inline-flex",
         alignItems: "baseline",
         gap: 4,
-        background: "var(--app-accent)",
+        background: isBadGood ? "var(--app-accent-alt)" : "var(--app-accent)",
         padding: "8px 10px",
         minWidth: 72,
       }}
@@ -29,7 +30,7 @@ function RatingStamp({ rating }: { rating: number }) {
           fontWeight: 700,
           lineHeight: 1,
           letterSpacing: "-0.04em",
-          color: "var(--app-fg)",
+          color: isBadGood ? "var(--app-surface)" : "var(--app-fg)",
         }}
       >
         {formatRating(rating)}
@@ -39,7 +40,7 @@ function RatingStamp({ rating }: { rating: number }) {
           fontSize: 10,
           fontWeight: 500,
           letterSpacing: "0.08em",
-          color: "var(--app-fg)",
+          color: isBadGood ? "var(--app-surface)" : "var(--app-fg)",
         }}
       >
         /10
@@ -73,6 +74,7 @@ function MoviePoster({
   movie: Movie;
   onClick: () => void;
 }) {
+  const isBadGood = movie.rating < 0;
   return (
     <button
       type="button"
@@ -115,8 +117,8 @@ function MoviePoster({
             position: "absolute",
             bottom: 8,
             right: 8,
-            background: "var(--app-accent)",
-            color: "var(--app-fg)",
+            background: isBadGood ? "var(--app-accent-alt)" : "var(--app-accent)",
+            color: isBadGood ? "var(--app-surface)" : "var(--app-fg)",
             padding: "4px 6px",
             fontSize: 10,
             fontWeight: 600,
@@ -140,6 +142,20 @@ function MoviePoster({
         >
           {movie.name}
         </div>
+        {isBadGood ? (
+          <div
+            style={{
+              marginTop: 6,
+              fontSize: 8,
+              fontWeight: 600,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--app-muted)",
+            }}
+          >
+            So bad it&apos;s good
+          </div>
+        ) : null}
       </div>
     </button>
   );
@@ -224,7 +240,7 @@ function MovieDetail({
               paddingTop: 12,
             }}
           >
-            <MetaLabel>Rating</MetaLabel>
+            <MetaLabel>{movie.rating < 0 ? "Bad-good rating · lower is better" : "Rating"}</MetaLabel>
             <RatingStamp rating={movie.rating} />
           </div>
         </div>
@@ -314,6 +330,8 @@ function MoviesAppContent() {
   }, []);
 
   const selectedMovie = movies.find((movie) => movie.id === selectedId) ?? null;
+  const regularMovies = movies.filter((movie) => movie.rating >= 0);
+  const badGoodMovies = movies.filter((movie) => movie.rating < 0);
 
   if (selectedMovie) {
     return <MovieDetail movie={selectedMovie} onBack={() => setSelectedId(null)} />;
@@ -364,7 +382,7 @@ function MoviesAppContent() {
               gap: 24,
             }}
           >
-            {movies.map((movie) => (
+            {regularMovies.map((movie) => (
               <MoviePoster
                 key={movie.id}
                 movie={movie}
@@ -373,6 +391,36 @@ function MoviesAppContent() {
             ))}
           </div>
         )}
+
+        {badGoodMovies.length > 0 ? (
+          <section style={{ marginTop: 44, paddingTop: 24, borderTop: "1px solid var(--app-border)" }}>
+            <MetaLabel>Lower is better · −1 to −10</MetaLabel>
+            <h2
+              style={{
+                margin: "0 0 20px",
+                fontSize: "clamp(1.35rem, 3vw, 2rem)",
+                fontWeight: 700,
+                lineHeight: 1,
+                letterSpacing: "-0.03em",
+                textTransform: "uppercase",
+                color: "var(--app-fg)",
+              }}
+            >
+              So bad it&apos;s good
+            </h2>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(168px, 1fr))",
+                gap: 24,
+              }}
+            >
+              {badGoodMovies.map((movie) => (
+                <MoviePoster key={movie.id} movie={movie} onClick={() => setSelectedId(movie.id)} />
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
     </div>
   );
