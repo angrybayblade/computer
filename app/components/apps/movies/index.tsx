@@ -331,8 +331,28 @@ function MoviesAppContent({ initialMovies }: { initialMovies?: Movie[] }) {
   }, [initialMovies]);
 
   const selectedMovie = movies.find((movie) => movie.id === selectedId) ?? null;
-  const regularMovies = movies.filter((movie) => movie.rating >= 0);
-  const badGoodMovies = movies.filter((movie) => movie.rating < 0);
+  const movieSections = [
+    {
+      title: "Peak",
+      ratingRange: "Above 8/10",
+      movies: movies.filter((movie) => movie.rating > 8),
+    },
+    {
+      title: "Alright",
+      ratingRange: "Above 7/10",
+      movies: movies.filter((movie) => movie.rating > 7 && movie.rating <= 8),
+    },
+    {
+      title: "Meh",
+      ratingRange: "Above 5/10",
+      movies: movies.filter((movie) => movie.rating > 5 && movie.rating <= 7),
+    },
+    {
+      title: "So bad it's good",
+      ratingRange: "Lower is better · −1 to −10",
+      movies: movies.filter((movie) => movie.rating < 0),
+    },
+  ].filter((section) => section.movies.length > 0);
 
   if (selectedMovie) {
     return <MovieDetail movie={selectedMovie} onBack={() => setSelectedId(null)} />;
@@ -363,7 +383,7 @@ function MoviesAppContent({ initialMovies }: { initialMovies?: Movie[] }) {
       </div>
 
       <div style={{ padding: "24px" }}>
-        {movies.length === 0 ? (
+        {movieSections.length === 0 ? (
           <div
             style={{
               padding: "48px 0",
@@ -376,52 +396,39 @@ function MoviesAppContent({ initialMovies }: { initialMovies?: Movie[] }) {
             No entries catalogued.
           </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(168px, 1fr))",
-              gap: 24,
-            }}
-          >
-            {regularMovies.map((movie) => (
-              <MoviePoster
-                key={movie.id}
-                movie={movie}
-                onClick={() => setSelectedId(movie.id)}
-              />
-            ))}
-          </div>
+          movieSections.map((section, index) => (
+            <section
+              key={section.title}
+              style={index === 0 ? undefined : { marginTop: 44, paddingTop: 24, borderTop: "1px solid var(--app-border)" }}
+            >
+              <MetaLabel>{section.ratingRange}</MetaLabel>
+              <h2
+                style={{
+                  margin: "0 0 20px",
+                  fontSize: "clamp(1.35rem, 3vw, 2rem)",
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  letterSpacing: "-0.03em",
+                  textTransform: "uppercase",
+                  color: "var(--app-fg)",
+                }}
+              >
+                {section.title}
+              </h2>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(168px, 1fr))",
+                  gap: 24,
+                }}
+              >
+                {section.movies.map((movie) => (
+                  <MoviePoster key={movie.id} movie={movie} onClick={() => setSelectedId(movie.id)} />
+                ))}
+              </div>
+            </section>
+          ))
         )}
-
-        {badGoodMovies.length > 0 ? (
-          <section style={{ marginTop: 44, paddingTop: 24, borderTop: "1px solid var(--app-border)" }}>
-            <MetaLabel>Lower is better · −1 to −10</MetaLabel>
-            <h2
-              style={{
-                margin: "0 0 20px",
-                fontSize: "clamp(1.35rem, 3vw, 2rem)",
-                fontWeight: 700,
-                lineHeight: 1,
-                letterSpacing: "-0.03em",
-                textTransform: "uppercase",
-                color: "var(--app-fg)",
-              }}
-            >
-              So bad it&apos;s good
-            </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(168px, 1fr))",
-                gap: 24,
-              }}
-            >
-              {badGoodMovies.map((movie) => (
-                <MoviePoster key={movie.id} movie={movie} onClick={() => setSelectedId(movie.id)} />
-              ))}
-            </div>
-          </section>
-        ) : null}
       </div>
     </div>
   );
