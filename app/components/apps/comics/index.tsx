@@ -54,16 +54,20 @@ export function ComicsApp() {
 
 function ComicsIcon() {
   return (
-    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <rect x="3" y="3" width="30" height="30" fill="#FAF6F0" stroke="#1A1A1A" strokeWidth="1.5" />
-      <ellipse cx="18" cy="15.5" rx="2.8" ry="3.4" fill="#1B365D" />
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
+      <rect x="6" y="7" width="36" height="36" rx="2" fill="#1B365D" />
+      <rect x="3" y="4" width="36" height="36" rx="2" fill="#FAF6F0" stroke="#1B365D" strokeWidth="2" />
+      <path d="M6 7h12v30H6z" fill="#D4A843" />
+      <path d="M21 7h15v13H21z" fill="#1B365D" />
+      <path d="M21 23h15v14H21z" fill="#D4A843" />
       <path
-        d="M18 17.5 L10 9 M18 17.5 L26 9 M18 17.5 L8 14 M18 17.5 L28 14 M18 17.5 L8.5 19.5 M18 17.5 L27.5 19.5 M18 17.5 L11 25 M18 17.5 L25 25"
+        d="M17 12h17a6 6 0 0 1 6 6v3a6 6 0 0 1-6 6h-9l-7 6v-6h-1a6 6 0 0 1-6-6v-3a6 6 0 0 1 6-6Z"
+        fill="#FAF6F0"
         stroke="#1B365D"
-        strokeWidth="1.35"
-        strokeLinecap="round"
+        strokeWidth="2"
+        strokeLinejoin="round"
       />
-      <circle cx="18" cy="14.8" r="0.55" fill="#D4A843" />
+      <path d="M19 19h13M19 23h8" stroke="#1B365D" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
