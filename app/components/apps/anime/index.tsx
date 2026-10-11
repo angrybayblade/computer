@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import { AppContent } from "../AppContent";
 import { type AppDefinition } from "../types";
 import { animeTheme } from "../themes";
@@ -127,13 +127,27 @@ export function AnimeApp() {
 }
 
 function AnimeIcon() {
+  const id = useId();
+  const gradientId = `${id}-red`;
+  const glowId = `${id}-glow`;
+  const emblem = "M5 11 21 21 23 24 20 27 24 31 28 27 25 24 27 21 43 11 32 23 29 25 31 28 24 36 17 28 19 25 16 23Z";
+
   return (
-    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <rect x="3" y="3" width="30" height="30" fill="#0B0B0F" stroke="#2E2E3A" strokeWidth="1.25" />
-      <path
-        d="M18 25.1 L6 10.9 L7.1 11.6 L8.3 12.3 L9.8 13.2 L11.2 14 L12.4 15.2 L23.6 15.2 L24.8 14 L26.2 13.2 L27.7 12.3 L28.9 11.6 L30 10.9 Z"
-        fill="#e12120"
-      />
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
+      <defs>
+        <linearGradient id={gradientId} x1="24" y1="11" x2="24" y2="36" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#EF2028" />
+          <stop offset="0.55" stopColor="#FF474B" />
+          <stop offset="1" stopColor="#FF8A87" />
+        </linearGradient>
+        <filter id={glowId} x="-30%" y="-40%" width="160%" height="180%">
+          <feGaussianBlur stdDeviation="1.6" />
+        </filter>
+      </defs>
+      <rect x="3" y="3" width="42" height="42" rx="4" fill="#09090C" stroke="#29292F" />
+      <path d={emblem} fill="#FF1824" filter={`url(#${glowId})`} opacity="0.85" />
+      <path d={emblem} fill={`url(#${gradientId})`} />
+      <path d="m10 14 11 9 2 1-3 3 4 6 4-6-3-3 2-1 11-9" fill="none" stroke="#FFB1AA" strokeWidth="0.65" strokeLinejoin="round" opacity="0.5" />
     </svg>
   );
 }
