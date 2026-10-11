@@ -14,6 +14,7 @@ export function Desktop() {
   useEffect(() => {
     if (openedWelcome.current) return;
     openedWelcome.current = true;
+    if (isMobileViewport()) return;
 
     const welcome = APPS.find((app) => app.id === "welcome");
     if (!welcome) return;
