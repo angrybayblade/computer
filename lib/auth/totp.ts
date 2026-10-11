@@ -38,7 +38,7 @@ function decryptSecret(value: string) {
 
 async function authRow(): Promise<AdminAuthRow | null> {
   await initializeDatabase();
-  const result = await getDatabaseClient().execute(
+  const result = await getDatabaseClient().query(
     "SELECT totp_secret, last_used_counter, failed_attempts, locked_until FROM admin_auth WHERE id = 1",
   );
   if (!result.rows[0]) return null;
@@ -57,21 +57,21 @@ export async function isTotpConfigured() {
 export async function configureTotp(secret: string, force = false) {
   await initializeDatabase();
   if (!force && (await authRow())) throw new Error("TOTP is already configured; pass --force to rotate it");
-  await getDatabaseClient().execute({
-    sql: `INSERT INTO admin_auth (id, totp_secret) VALUES (1, ?)
+  await getDatabaseClient().query(
+    `INSERT INTO admin_auth (id, totp_secret) VALUES (1, $1)
       ON CONFLICT(id) DO UPDATE SET totp_secret = excluded.totp_secret, last_used_counter = -1,
       failed_attempts = 0, locked_until = 0`,
-    args: [encryptSecret(secret)],
-  });
+    [encryptSecret(secret)],
+  );
 }
 
 async function recordFailure(currentFailures: number, now: number) {
   const failures = currentFailures + 1;
   const lockedUntil = failures >= MAX_FAILURES ? now + LOCK_SECONDS : 0;
-  await getDatabaseClient().execute({
-    sql: "UPDATE admin_auth SET failed_attempts = ?, locked_until = ? WHERE id = 1",
-    args: [failures >= MAX_FAILURES ? 0 : failures, lockedUntil],
-  });
+  await getDatabaseClient().query(
+    "UPDATE admin_auth SET failed_attempts = $1, locked_until = $2 WHERE id = 1",
+    [failures >= MAX_FAILURES ? 0 : failures, lockedUntil],
+  );
 }
 
 export type TotpVerification = "valid" | "invalid" | "locked" | "not-configured";
@@ -100,10 +100,10 @@ export async function verifyTotp(code: string): Promise<TotpVerification> {
   }
 
   const counter = Math.floor(now / PERIOD_SECONDS) + delta;
-  const result = await getDatabaseClient().execute({
-    sql: `UPDATE admin_auth SET last_used_counter = ?, failed_attempts = 0, locked_until = 0
-      WHERE id = 1 AND last_used_counter < ?`,
-    args: [counter, counter],
-  });
-  return result.rowsAffected === 1 ? "valid" : "invalid";
+  const result = await getDatabaseClient().query(
+    `UPDATE admin_auth SET last_used_counter = $1, failed_attempts = 0, locked_until = 0
+      WHERE id = 1 AND last_used_counter < $2`,
+    [counter, counter],
+  );
+  return result.rowCount === 1 ? "valid" : "invalid";
 }

@@ -5,7 +5,9 @@ RUN npm ci
 
 FROM node:22-alpine AS build
 WORKDIR /app
+ARG SITE_URL=https://viraj.computer
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV SITE_URL=$SITE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build

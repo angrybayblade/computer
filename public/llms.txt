@@ -1,0 +1,18 @@
+# Viraj Patel
+
+> Personal site and interactive portfolio for Viraj Patel (angrybayblade), a software engineer in Bengaluru, India.
+
+Viraj builds developer platforms, SDKs, orchestration systems, and open-source infrastructure. The site presents his resume and personal collections through a desktop-style interface.
+
+## Primary information
+
+- [Full profile and experience](/llms-full.txt)
+- [GitHub](https://github.com/angrybayblade)
+- [LinkedIn](https://www.linkedin.com/in/angrybayblade/)
+
+## Site sections
+
+- Resume: Professional summary, experience, impact, and skills
+- Movies, music, comics, anime, books, and vines: Personal media collections
+
+Private editing and API routes are not intended for indexing.

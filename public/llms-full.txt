@@ -1,0 +1,35 @@
+# Viraj Patel — Software Engineer
+
+Viraj Patel, known online as angrybayblade, is a software engineer based in Bengaluru, India. He builds developer platforms, SDKs, orchestration systems, and open-source infrastructure at early-stage startups. He works across backend infrastructure and developer experience and is comfortable owning ambiguous problems from idea through production.
+
+## Selected impact
+
+- Rebuilt orchestration infrastructure for an 11× throughput improvement.
+- Developed deployment tooling that reduced deployment time by 95–99%.
+- Built a tool-execution runtime, versioning service, OpenAPI-to-tool generation pipeline, SDKs, and plugin ecosystems.
+- Built SWEKIT, which scored 48.6% on SWE Bench at the time.
+
+## Experience
+
+### Composio — Founding Engineer, May 2024 to September 2025
+
+Led tooling infrastructure and developer-experience work, including scalable tool execution, versioning, OpenAPI-based tool generation, reusable internal abstractions, SDKs, and early product experiments.
+
+### Valory AG — Engineering roles, September 2021 to May 2024
+
+Built open-source frameworks, orchestration and deployment tooling, static-analysis systems, autonomous-service prototypes, and plugins for blockchain networks and wallets. Progressed from junior Python developer to Python engineer and SDK engineering lead, then senior Python engineer.
+
+### Google Summer of Code — Intern, May 2021 to August 2021
+
+Worked with Emory School of Medicine on a low-code neural-network platform using TensorFlow. Improved the development workflow, built a JSON-to-Python transpiler, and introduced an in-browser code editor.
+
+## Skills
+
+Python, JavaScript, Go, Flask, Django, React, Next.js, MongoDB, PostgreSQL, Web3, IPFS, Linux, network programming, asynchronous programming, Git, Docker, and Kubernetes.
+
+## Profiles
+
+- GitHub: https://github.com/angrybayblade
+- LinkedIn: https://www.linkedin.com/in/angrybayblade/
+- X: https://x.com/angrybayblade
+- Instagram: https://www.instagram.com/angrybayblade/
