@@ -99,17 +99,20 @@ export function Desktop() {
         style={{
           position: "absolute",
           top: 64,
+          bottom: 0,
           left: 16,
           display: "flex",
           flexDirection: "column",
           gap: 12,
+          overflowY: "auto",
         }}
       >
         {APPS.map((app) => (
           <button
             key={app.id}
-            onClick={() => {
-              if (!isMobileViewport()) return;
+            onClick={(event) => {
+              // Native button activation from Enter/Space has no pointer clicks.
+              if (!isMobileViewport() && event.detail !== 0) return;
               openWindow(app.id, app.title, {
                 width: app.width,
                 height: app.height,
@@ -136,6 +139,7 @@ export function Desktop() {
               cursor: "pointer",
               padding: 8,
               width: 80,
+              flexShrink: 0,
             }}
           >
             <div style={{width: 48, height: 48}}>

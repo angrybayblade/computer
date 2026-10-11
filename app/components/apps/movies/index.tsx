@@ -188,10 +188,10 @@ function MovieDetail({
       </div>
 
       <div
+        className="movie-detail-body"
         style={{
           padding: "28px 24px 32px",
           display: "grid",
-          gridTemplateColumns: "minmax(180px, 240px) minmax(0, 1fr)",
           gap: 28,
           alignItems: "start",
         }}
@@ -253,6 +253,7 @@ function MovieDetail({
           </div>
 
           <h1
+            className="movie-detail-title"
             style={{
               margin: 0,
               fontSize: "clamp(2rem, 5vw, 3.4rem)",
@@ -280,6 +281,7 @@ function MovieDetail({
           </div>
 
           <div
+            className="movie-detail-footer"
             style={{
               marginTop: 32,
               paddingTop: 16,

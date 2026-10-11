@@ -82,5 +82,12 @@
     "thumb": "https://cdn.myanimelist.net/images/anime/1171/109222.jpg",
     "description": "Yuji Itadori swallows a cursed finger and joins Tokyo Jujutsu High, learning to exorcise curses while carrying a deadly secret inside him.",
     "rating": 8
+  },
+  {
+    "id": "Code Geass",
+    "name": "Code Geass",
+    "thumb": "https://cdn.myanimelist.net/images/anime/10/17405.jpg",
+    "description": "Code Geass is a Japanese anime television series produced by Sunrise and directed by Gorō Taniguchi. It is set in an alternate history of the world, where the Holy Britannian Empire has conquered most of the world and the Japanese are now known as Area 11.",
+    "rating": 10
   }
 ]

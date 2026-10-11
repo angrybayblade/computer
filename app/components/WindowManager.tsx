@@ -94,7 +94,12 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     function handleResize() {
       setWindows((prev) =>
-        prev.map((w) => (w.isMaximized ? { ...w, ...getFullscreenWindowBounds() } : w))
+        prev.map((w) => {
+          if (isMobileViewport() && !w.isMaximized) {
+            return { ...w, ...withMobileFullscreen(w) };
+          }
+          return w.isMaximized ? { ...w, ...getFullscreenWindowBounds() } : w;
+        })
       );
     }
 
@@ -191,6 +196,8 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleMaximize = useCallback((id: string) => {
+    // Phone windows stay fullscreen so desktop bounds cannot hide the controls.
+    if (isMobileViewport()) return;
     setWindows((prev) =>
       prev.map((w) => {
         if (w.id !== id) return w;

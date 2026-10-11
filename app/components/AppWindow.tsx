@@ -326,8 +326,11 @@ export function AppWindow({
 
       {/* Content area */}
       <div
+        className="app-window-content"
         style={{
           flex: 1,
+          minHeight: 0,
+          minWidth: 0,
           overflow: "auto",
           position: "relative",
           background: shellBackground,
