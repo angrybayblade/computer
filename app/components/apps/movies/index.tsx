@@ -388,27 +388,14 @@ export function MoviesApp() {
 
 function MoviesIcon() {
   return (
-    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden>
-      <defs>
-        <clipPath id="movies-clapper-stripes">
-          <polygon points="7,17 29,17 27,8 5,10" />
-        </clipPath>
-      </defs>
-      <rect x="3" y="3" width="30" height="30" fill="#F7F7F5" stroke="#111111" strokeWidth="1.25" />
-      <rect x="8" y="17" width="20" height="12" fill="#111111" />
-      <line x1="10" y1="20.5" x2="22" y2="20.5" stroke="#F7F7F5" strokeWidth="0.75" opacity="0.9" />
-      <line x1="10" y1="23.5" x2="19" y2="23.5" stroke="#F7F7F5" strokeWidth="0.75" opacity="0.7" />
-      <line x1="10" y1="26.5" x2="21" y2="26.5" stroke="#FFD200" strokeWidth="0.75" opacity="0.85" />
-      <polygon points="7,17 29,17 27,8 5,10" fill="#111111" />
-      <g clipPath="url(#movies-clapper-stripes)">
-        <rect x="-2" y="4" width="5" height="16" fill="#F7F7F5" transform="rotate(-13 18 12)" />
-        <rect x="3" y="4" width="5" height="16" fill="#111111" transform="rotate(-13 18 12)" />
-        <rect x="8" y="4" width="5" height="16" fill="#FFD200" transform="rotate(-13 18 12)" />
-        <rect x="13" y="4" width="5" height="16" fill="#F7F7F5" transform="rotate(-13 18 12)" />
-        <rect x="18" y="4" width="5" height="16" fill="#111111" transform="rotate(-13 18 12)" />
-        <rect x="23" y="4" width="5" height="16" fill="#FFD200" transform="rotate(-13 18 12)" />
-        <rect x="28" y="4" width="5" height="16" fill="#F7F7F5" transform="rotate(-13 18 12)" />
-      </g>
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
+      <path d="M5 20h38v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3Z" fill="#111111" />
+      <path d="M5 20h38v6H5z" fill="#FFD200" />
+      <path d="m5 12 35-8 2 9-35 8Z" fill="#111111" stroke="#111111" strokeWidth="2" strokeLinejoin="round" />
+      <path d="m11 11 6-1.37-3 9.92-6 1.37Z M24 8.03l6-1.37-3 9.92-6 1.37Z M37 5.06l3-.69 2 8.77-8 1.83Z" fill="#F7F7F5" />
+      <circle cx="8" cy="23" r="1.25" fill="#111111" />
+      <path d="M12 32h17M12 37h10" stroke="#F7F7F5" strokeWidth="2" strokeLinecap="round" />
+      <path d="m34 31 5 4-5 4Z" fill="#FFD200" />
     </svg>
   );
 }
