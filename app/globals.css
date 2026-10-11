@@ -119,6 +119,12 @@ body {
   animation: music-vinyl-spin 4s linear infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .music-vinyl-icon .music-vinyl-spin {
+    animation: none;
+  }
+}
+
 @keyframes music-tab-border {
   0% {
     background-position: 0% 50%;

@@ -550,19 +550,18 @@ export function MusicApp() {
 
 function MusicIcon() {
   return (
-    <svg viewBox="0 0 36 36" width="100%" height="100%" aria-hidden className="music-vinyl-icon">
-      <rect x="2" y="2" width="32" height="32" fill="#F5EDE3" stroke="#1A1A1A" strokeWidth="1" />
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true" className="music-vinyl-icon">
+      <path d="M4 7h29v34H4z" fill="#E8EFE5" stroke="#1A1A1A" strokeWidth="1.5" />
+      <path d="M4 7h6v34H4z" fill="#8FA888" />
+      <path d="M14 12h14M14 16h8" stroke="#8FA888" strokeWidth="1.5" strokeLinecap="round" />
       <g className="music-vinyl-spin">
-        <circle cx="18" cy="18" r="12" fill="#1A1A1A" />
-        <circle cx="18" cy="18" r="10" fill="none" stroke="#6B5E54" strokeWidth="0.5" opacity="0.45" />
-        <circle cx="18" cy="18" r="7.5" fill="none" stroke="#6B5E54" strokeWidth="0.5" opacity="0.35" />
-        <circle cx="18" cy="18" r="5" fill="none" stroke="#6B5E54" strokeWidth="0.5" opacity="0.25" />
-        <circle cx="18" cy="18" r="4.2" fill="#F4C4C4" stroke="#1A1A1A" strokeWidth="0.75" />
-        <circle cx="18" cy="18" r="1.1" fill="#1A1A1A" />
-        <line x1="18" y1="6" x2="18" y2="10" stroke="#8FA888" strokeWidth="0.75" opacity="0.8" />
-        <line x1="18" y1="26" x2="18" y2="30" stroke="#8FA888" strokeWidth="0.75" opacity="0.8" />
-        <line x1="6" y1="18" x2="10" y2="18" stroke="#9AABB5" strokeWidth="0.75" opacity="0.8" />
-        <line x1="26" y1="18" x2="30" y2="18" stroke="#9AABB5" strokeWidth="0.75" opacity="0.8" />
+        <circle cx="28" cy="27" r="17" fill="#1A1A1A" />
+        <circle cx="28" cy="27" r="13.5" fill="none" stroke="#635B55" strokeWidth="0.75" />
+        <circle cx="28" cy="27" r="10.5" fill="none" stroke="#635B55" strokeWidth="0.75" />
+        <path d="M17 20a13 13 0 0 1 8-5M31 39a13 13 0 0 0 8-5" fill="none" stroke="#9AABB5" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="28" cy="27" r="6.5" fill="#F4C4C4" />
+        <path d="M25 24h6M26 30h4" stroke="#A66C70" strokeWidth="1" strokeLinecap="round" />
+        <circle cx="28" cy="27" r="1.5" fill="#1A1A1A" />
       </g>
     </svg>
   );
