@@ -12,8 +12,6 @@ run_with_secrets() {
   fi
 }
 
-mkdir -p .data
-
 echo "==> Building and starting container"
 run_with_secrets docker compose up -d --build --remove-orphans
 

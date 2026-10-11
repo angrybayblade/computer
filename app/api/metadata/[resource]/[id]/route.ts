@@ -15,7 +15,7 @@ export async function GET(_request: Request, context: RouteContext) {
   try {
     const { resource, id } = await context.params;
     const slug = assertResourceSlug(resource);
-    const row = getResourceRow(slug, id);
+    const row = await getResourceRow(slug, id);
 
     if (!row) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -38,7 +38,7 @@ export async function PUT(request: Request, context: RouteContext) {
     const { resource, id } = await context.params;
     const slug = assertResourceSlug(resource);
     const body = (await request.json()) as Record<string, unknown>;
-    const updated = updateResource(slug, id, body);
+    const updated = await updateResource(slug, id, body);
 
     if (!updated) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -60,7 +60,7 @@ export async function DELETE(_request: Request, context: RouteContext) {
 
     const { resource, id } = await context.params;
     const slug = assertResourceSlug(resource);
-    const deleted = deleteResource(slug, id);
+    const deleted = await deleteResource(slug, id);
 
     if (!deleted) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });

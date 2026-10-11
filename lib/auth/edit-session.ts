@@ -1,43 +1,52 @@
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 
 export const EDIT_COOKIE_NAME = "edit-session";
+const SESSION_SECONDS = 60 * 60 * 8;
 
 function sessionSecret() {
-  return process.env.EDIT_SESSION_SECRET || process.env.EDIT_PASSWORD || "dev-edit-secret";
+  const secret = process.env.EDIT_SESSION_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error("EDIT_SESSION_SECRET must be set to at least 32 characters");
+  }
+  return secret;
+}
+
+function signature(payload: string) {
+  return createHmac("sha256", sessionSecret()).update(payload).digest("base64url");
 }
 
 export function createEditToken() {
-  return createHmac("sha256", sessionSecret()).update("edit-access").digest("hex");
+  const expires = Math.floor(Date.now() / 1000) + SESSION_SECONDS;
+  const payload = `${expires}.${randomBytes(16).toString("base64url")}`;
+  return `${payload}.${signature(payload)}`;
 }
 
 export function verifyEditToken(token: string) {
   try {
-    const expected = createEditToken();
-    return timingSafeEqual(Buffer.from(token), Buffer.from(expected));
+    const [expires, nonce, supplied] = token.split(".");
+    if (!expires || !nonce || !supplied || Number(expires) <= Date.now() / 1000) return false;
+    const expected = signature(`${expires}.${nonce}`);
+    const suppliedBytes = Buffer.from(supplied);
+    const expectedBytes = Buffer.from(expected);
+    return suppliedBytes.length === expectedBytes.length && timingSafeEqual(suppliedBytes, expectedBytes);
   } catch {
     return false;
   }
 }
 
-export function verifyEditPassword(password: string) {
-  const expected = process.env.EDIT_PASSWORD;
-  if (!expected) return password === "bauhaus";
-  return password === expected;
-}
-
 export async function isEditAuthenticated() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(EDIT_COOKIE_NAME)?.value;
+  const token = (await cookies()).get(EDIT_COOKIE_NAME)?.value;
   return token ? verifyEditToken(token) : false;
 }
 
 export function editCookieOptions() {
   return {
     httpOnly: true,
-    sameSite: "lax" as const,
+    sameSite: "strict" as const,
     path: "/",
-    maxAge: 60 * 60 * 24,
+    maxAge: SESSION_SECONDS,
     secure: process.env.NODE_ENV === "production",
+    priority: "high" as const,
   };
 }

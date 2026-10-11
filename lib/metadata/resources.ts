@@ -144,6 +144,8 @@ export const RESOURCE_CONFIGS: ResourceConfig[] = [
   },
 ];
 
+export const RESOURCE_SLUGS = RESOURCE_CONFIGS.map(({ slug }) => slug);
+
 export function getResourceConfig(slug: string): ResourceConfig | undefined {
   return RESOURCE_CONFIGS.find((config) => config.slug === slug);
 }

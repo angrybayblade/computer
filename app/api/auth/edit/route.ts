@@ -5,22 +5,28 @@ import {
   editCookieOptions,
   EDIT_COOKIE_NAME,
   isEditAuthenticated,
-  verifyEditPassword,
 } from "@/lib/auth/edit-session";
+import { isTotpConfigured, verifyTotp } from "@/lib/auth/totp";
 
 export const runtime = "nodejs";
 
 export async function GET() {
   const authenticated = await isEditAuthenticated();
-  return NextResponse.json({ authenticated });
+  return NextResponse.json({ authenticated, configured: await isTotpConfigured() });
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as { password?: string };
-  const password = body.password ?? "";
+  const body = (await request.json()) as { code?: string };
+  const result = await verifyTotp((body.code ?? "").replace(/\s/g, ""));
 
-  if (!verifyEditPassword(password)) {
-    return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+  if (result === "not-configured") {
+    return NextResponse.json({ error: "Authenticator login is not configured" }, { status: 503 });
+  }
+  if (result === "locked") {
+    return NextResponse.json({ error: "Too many attempts. Try again in five minutes." }, { status: 429 });
+  }
+  if (result !== "valid") {
+    return NextResponse.json({ error: "Invalid or already used code" }, { status: 401 });
   }
 
   const cookieStore = await cookies();

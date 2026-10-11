@@ -1,5 +1,5 @@
 import type { ResourceSlug } from "@/lib/metadata/resources";
-import { type StorageRow, resourceRowCount, writeResourceRows } from "./client";
+import { type StorageRow, replaceResourceRows, resourceRowCount } from "./client";
 import {
   loadAllSeedData,
   type SeedAnime,
@@ -16,13 +16,13 @@ type SeedOptions = {
   force?: boolean;
 };
 
-function shouldSeed(slug: ResourceSlug, force?: boolean) {
-  return force || resourceRowCount(slug) === 0;
+async function shouldSeed(slug: ResourceSlug, force?: boolean) {
+  return force || (await resourceRowCount(slug)) === 0;
 }
 
-function seedRows(slug: ResourceSlug, rows: StorageRow[], force?: boolean) {
-  if (!shouldSeed(slug, force)) return 0;
-  writeResourceRows(slug, rows);
+async function seedRows(slug: ResourceSlug, rows: StorageRow[], force?: boolean) {
+  if (!(await shouldSeed(slug, force))) return 0;
+  await replaceResourceRows(slug, rows);
   return rows.length;
 }
 
@@ -79,22 +79,28 @@ function seedVineRows(items: SeedVine[]): StorageRow[] {
   }));
 }
 
-export function seedDatabase(options: SeedOptions = {}) {
+export async function seedDatabase(options: SeedOptions = {}) {
   const { force = false } = options;
   const data = loadAllSeedData();
 
   return {
-    movies: seedRows("movies", seedMovieRows(data.movies), force),
-    comics: seedRows("comics", seedComicRows(data.comics), force),
-    anime: seedRows("anime", seedAnimeRows(data.anime), force),
-    songs: seedRows("songs", seedSongRows(data.songs), force),
-    playlists: seedRows("playlists", seedPlaylistRows(data.playlists), force),
-    lyrics: seedRows("lyrics", seedLyricRows(data.lyrics), force),
-    books: seedRows("books", seedBookRows(data.books), force),
-    vines: seedRows("vines", seedVineRows(data.vines), force),
+    movies: await seedRows("movies", seedMovieRows(data.movies), force),
+    comics: await seedRows("comics", seedComicRows(data.comics), force),
+    anime: await seedRows("anime", seedAnimeRows(data.anime), force),
+    songs: await seedRows("songs", seedSongRows(data.songs), force),
+    playlists: await seedRows("playlists", seedPlaylistRows(data.playlists), force),
+    lyrics: await seedRows("lyrics", seedLyricRows(data.lyrics), force),
+    books: await seedRows("books", seedBookRows(data.books), force),
+    vines: await seedRows("vines", seedVineRows(data.vines), force),
   };
 }
 
-export function seedDatabaseIfEmpty() {
-  return seedDatabase({ force: false });
+let initialSeed: Promise<Awaited<ReturnType<typeof seedDatabase>>> | undefined;
+
+export async function seedDatabaseIfEmpty() {
+  initialSeed ??= seedDatabase({ force: false }).catch((error) => {
+    initialSeed = undefined;
+    throw error;
+  });
+  return initialSeed;
 }

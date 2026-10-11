@@ -1,17 +1,19 @@
 import { seedDatabase } from "../lib/db/seed";
 
-const force = process.argv.includes("--force");
+async function main() {
+  const force = process.argv.includes("--force");
+  const counts = await seedDatabase({ force });
+  const seeded = Object.entries(counts).filter(([, count]) => count > 0);
 
-const counts = seedDatabase({ force });
-
-const seeded = Object.entries(counts).filter(([, count]) => count > 0);
-
-if (seeded.length === 0) {
-  console.log("Data already seeded. Use --force to reset and re-seed.");
-} else {
-  for (const [table, count] of seeded) {
-    console.log(`Seeded ${count} ${table}`);
+  if (seeded.length === 0) {
+    console.log("Data already seeded. Use --force to reset and re-seed.");
+  } else {
+    for (const [table, count] of seeded) {
+      console.log(`Seeded ${count} ${table}`);
+    }
   }
+
+  console.log("Done.");
 }
 
-console.log("Done.");
+void main();

@@ -22,10 +22,10 @@ export async function GET(_request: Request, context: RouteContext) {
       if (!authenticated) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
-      return NextResponse.json(listResourceRowsForEditor(slug));
+      return NextResponse.json(await listResourceRowsForEditor(slug));
     }
 
-    return NextResponse.json(listResource(slug));
+    return NextResponse.json(await listResource(slug));
   } catch (error) {
     const message = error instanceof Error ? error.message : "Request failed";
     return NextResponse.json({ error: message }, { status: 400 });
@@ -42,7 +42,7 @@ export async function POST(request: Request, context: RouteContext) {
     const { resource } = await context.params;
     const slug = assertResourceSlug(resource);
     const body = (await request.json()) as Record<string, unknown>;
-    const created = createResource(slug, body);
+    const created = await createResource(slug, body);
 
     return NextResponse.json(created, { status: 201 });
   } catch (error) {

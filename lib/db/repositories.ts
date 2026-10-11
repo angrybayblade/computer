@@ -4,14 +4,21 @@ import type { Comic } from "@/lib/comics/types";
 import type { Movie } from "@/lib/movies/types";
 import type { Lyric, Playlist, Song } from "@/lib/music/types";
 import type { Vine } from "@/lib/vines/types";
-import { readResourceRows, type StorageRow, writeResourceRows } from "./client";
+import {
+  deleteResourceRow,
+  insertResourceRow,
+  readResourceRow,
+  readResourceRows,
+  type StorageRow,
+  updateResourceRow,
+} from "./client";
 import { seedDatabaseIfEmpty } from "./seed";
 import { getResourceConfig, isResourceSlug, type ResourceSlug } from "@/lib/metadata/resources";
 
 type Row = StorageRow;
 
-function ensureReady() {
-  seedDatabaseIfEmpty();
+async function ensureReady() {
+  await seedDatabaseIfEmpty();
 }
 
 function mapMovie(row: Row): Movie {
@@ -149,15 +156,15 @@ function normalizeInput(slug: ResourceSlug, input: Record<string, unknown>): Row
   return normalized;
 }
 
-function readRows(slug: ResourceSlug) {
+async function readRows(slug: ResourceSlug) {
   return readResourceRows(slug);
 }
 
-export function listResource(slug: ResourceSlug) {
-  ensureReady();
+export async function listResource(slug: ResourceSlug) {
+  await ensureReady();
   if (!getResourceConfig(slug)) throw new Error("Unknown resource");
 
-  const rows = readRows(slug);
+  const rows = await readRows(slug);
 
   if (slug === "movies" || slug === "anime" || slug === "comics") {
     return rows.map((row) => mapResource(slug, row)).sort((a, b) => {
@@ -172,67 +179,61 @@ export function listResource(slug: ResourceSlug) {
   return rows.map((row) => mapResource(slug, row));
 }
 
-export function getResourceRow(slug: ResourceSlug, id: string) {
-  ensureReady();
+export async function getResourceRow(slug: ResourceSlug, id: string) {
+  await ensureReady();
   if (!getResourceConfig(slug)) throw new Error("Unknown resource");
 
-  const row = readRows(slug).find((item) => String(item.id) === id);
+  const row = await readResourceRow(slug, id);
   return row ? mapResource(slug, row) : null;
 }
 
-export function createResource(slug: ResourceSlug, input: Record<string, unknown>) {
-  ensureReady();
+export async function createResource(slug: ResourceSlug, input: Record<string, unknown>) {
+  await ensureReady();
   const config = getResourceConfig(slug);
   if (!config) throw new Error("Unknown resource");
 
   const data = normalizeInput(slug, input);
-  const rows = readRows(slug);
+  if (data.id == null) throw new Error("Resource id is required");
 
-  if (rows.some((row) => String(row.id) === String(data.id))) {
-    throw new Error("Resource already exists");
+  try {
+    await insertResourceRow(slug, data);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("UNIQUE constraint failed")) {
+      throw new Error("Resource already exists");
+    }
+    throw error;
   }
 
-  rows.push(data);
-  writeResourceRows(slug, rows);
-
-  return getResourceRow(slug, String(data.id));
+  return await getResourceRow(slug, String(data.id));
 }
 
-export function updateResource(slug: ResourceSlug, id: string, input: Record<string, unknown>) {
-  ensureReady();
+export async function updateResource(slug: ResourceSlug, id: string, input: Record<string, unknown>) {
+  await ensureReady();
   const config = getResourceConfig(slug);
   if (!config) throw new Error("Unknown resource");
 
   const data = normalizeInput(slug, input);
-  const rows = readRows(slug);
-  const index = rows.findIndex((row) => String(row.id) === id);
+  const current = await readResourceRow(slug, id);
+  if (!current) return null;
 
-  if (index === -1) return null;
+  const updated = { ...current, ...data, id };
+  await updateResourceRow(slug, id, updated);
 
-  rows[index] = { ...rows[index], ...data, id };
-  writeResourceRows(slug, rows);
-
-  return getResourceRow(slug, id);
+  return await getResourceRow(slug, id);
 }
 
-export function deleteResource(slug: ResourceSlug, id: string) {
-  ensureReady();
+export async function deleteResource(slug: ResourceSlug, id: string) {
+  await ensureReady();
   if (!getResourceConfig(slug)) throw new Error("Unknown resource");
 
-  const rows = readRows(slug);
-  const nextRows = rows.filter((row) => String(row.id) !== id);
-
-  if (nextRows.length === rows.length) return false;
-
-  writeResourceRows(slug, nextRows);
-  return true;
+  return deleteResourceRow(slug, id);
 }
 
-export function listResourceRowsForEditor(slug: ResourceSlug) {
-  ensureReady();
+export async function listResourceRowsForEditor(slug: ResourceSlug) {
+  await ensureReady();
   if (!getResourceConfig(slug)) throw new Error("Unknown resource");
 
-  return readRows(slug);
+  return await readRows(slug);
 }
 
 export function assertResourceSlug(slug: string): ResourceSlug {

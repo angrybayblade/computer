@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { verifyEditPassword } from "@/lib/metadata/client";
+import { verifyEditCode } from "@/lib/metadata/client";
 
 export function EditAuthGate() {
   const router = useRouter();
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -15,11 +15,11 @@ export function EditAuthGate() {
     setSubmitting(true);
     setError("");
 
-    const ok = await verifyEditPassword(password);
+    const result = await verifyEditCode(code);
     setSubmitting(false);
 
-    if (!ok) {
-      setError("Incorrect password");
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
 
@@ -37,19 +37,22 @@ export function EditAuthGate() {
         <h1 className="edit-page-title">Metadata Editor</h1>
         <p className="edit-page-subtitle">Authentication required</p>
         <input
-          type="password"
+          type="text"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          maxLength={6}
           className="edit-field"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          value={code}
+          onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
           autoFocus
-          placeholder="Password"
+          placeholder="6-digit code"
         />
         {error ? <p className="edit-error">{error}</p> : null}
         <div className="edit-modal-actions">
           <button type="button" className="edit-btn edit-btn-secondary" onClick={() => router.push("/")}>
             Back
           </button>
-          <button type="submit" className="edit-btn edit-btn-primary" disabled={submitting}>
+          <button type="submit" className="edit-btn edit-btn-primary" disabled={submitting || code.length !== 6}>
             {submitting ? "Checking…" : "Unlock"}
           </button>
         </div>

@@ -53,11 +53,13 @@ export async function deleteMetadataRow(resource: ResourceSlug, id: string) {
   }
 }
 
-export async function verifyEditPassword(password: string) {
+export async function verifyEditCode(code: string) {
   const response = await fetch("/api/auth/edit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password }),
+    body: JSON.stringify({ code }),
   });
-  return response.ok;
+  if (response.ok) return { ok: true as const };
+  const body = (await response.json()) as { error?: string };
+  return { ok: false as const, error: body.error ?? "Authentication failed" };
 }

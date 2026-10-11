@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { verifyEditPassword } from "@/lib/metadata/client";
+import { verifyEditCode } from "@/lib/metadata/client";
 
 type EditPasswordModalProps = {
   open: boolean;
@@ -17,7 +17,7 @@ function getPortalRoot() {
 export function EditPasswordModal({ open, onClose }: EditPasswordModalProps) {
   const router = useRouter();
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -27,7 +27,7 @@ export function EditPasswordModal({ open, onClose }: EditPasswordModalProps) {
 
   useEffect(() => {
     if (!open) {
-      setPassword("");
+      setCode("");
       setError("");
       setSubmitting(false);
       return;
@@ -52,11 +52,11 @@ export function EditPasswordModal({ open, onClose }: EditPasswordModalProps) {
     setSubmitting(true);
     setError("");
 
-    const ok = await verifyEditPassword(password);
+    const result = await verifyEditCode(code);
     setSubmitting(false);
 
-    if (!ok) {
-      setError("Incorrect password");
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
 
@@ -91,25 +91,28 @@ export function EditPasswordModal({ open, onClose }: EditPasswordModalProps) {
           </div>
 
           <div className="edit-password-body">
-            <p className="edit-password-copy">Enter the edit password to open the metadata editor.</p>
+            <p className="edit-password-copy">Enter the current code from your authenticator app.</p>
             <label className="edit-password-label" htmlFor="edit-password-input">
-              Password
+              Authenticator code
             </label>
             <input
               id="edit-password-input"
-              type="password"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
               className="edit-field edit-password-input"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              value={code}
+              onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
               autoFocus
-              placeholder="••••••••"
+              placeholder="000000"
             />
             {error ? <p className="edit-error edit-password-error">{error}</p> : null}
             <div className="edit-password-actions">
               <button type="button" className="edit-btn edit-btn-secondary" onClick={onClose}>
                 Cancel
               </button>
-              <button type="submit" className="edit-btn edit-btn-primary" disabled={submitting || !password}>
+              <button type="submit" className="edit-btn edit-btn-primary" disabled={submitting || code.length !== 6}>
                 {submitting ? "Checking…" : "Unlock Editor"}
               </button>
             </div>
