@@ -321,13 +321,14 @@ function MovieDetail({
   );
 }
 
-function MoviesAppContent() {
-  const [movies, setMovies] = useState<Movie[]>([]);
+function MoviesAppContent({ initialMovies }: { initialMovies?: Movie[] }) {
+  const [movies, setMovies] = useState<Movie[]>(initialMovies ?? []);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialMovies) return;
     void fetchMetadata<Movie>("movies").then(setMovies);
-  }, []);
+  }, [initialMovies]);
 
   const selectedMovie = movies.find((movie) => movie.id === selectedId) ?? null;
   const regularMovies = movies.filter((movie) => movie.rating >= 0);
@@ -426,10 +427,10 @@ function MoviesAppContent() {
   );
 }
 
-export function MoviesApp() {
+export function MoviesApp({ initialMovies }: { initialMovies?: Movie[] }) {
   return (
     <AppContent theme={utilitarianTheme.content}>
-      <MoviesAppContent />
+      <MoviesAppContent initialMovies={initialMovies} />
     </AppContent>
   );
 }

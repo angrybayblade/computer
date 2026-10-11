@@ -8,6 +8,8 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { getPublicAppRouteById } from "@/lib/app-routes";
 import {
   getFullscreenWindowBounds,
   isMobileViewport,
@@ -50,6 +52,15 @@ interface WindowManagerContextValue {
 
 const WindowManagerContext = createContext<WindowManagerContextValue | null>(null);
 
+export type InitialWindow = {
+  id: string;
+  title: string;
+  width?: number;
+  height?: number;
+  minWidth?: number;
+  minHeight?: number;
+};
+
 function buildWindowBounds(
   opts: Partial<
     Pick<WindowState, "x" | "y" | "width" | "height" | "minWidth" | "minHeight">
@@ -87,9 +98,41 @@ export function useWindowManager() {
   return ctx;
 }
 
-export function WindowManagerProvider({ children }: { children: ReactNode }) {
-  const [windows, setWindows] = useState<WindowState[]>([]);
-  const [topZ, setTopZ] = useState(10);
+function createInitialWindow(initialWindow: InitialWindow): WindowState {
+  const bounds = buildWindowBounds(initialWindow, 0);
+  return {
+    id: initialWindow.id,
+    title: initialWindow.title,
+    ...bounds,
+    zIndex: 11,
+    isMinimized: false,
+    isMaximized: false,
+  };
+}
+
+export function WindowManagerProvider({
+  children,
+  initialWindow,
+  activeWindowId,
+}: {
+  children: ReactNode;
+  initialWindow?: InitialWindow;
+  activeWindowId?: string;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [windows, setWindows] = useState<WindowState[]>(() =>
+    initialWindow ? [createInitialWindow(initialWindow)] : [],
+  );
+  const [topZ, setTopZ] = useState(initialWindow ? 11 : 10);
+
+  const navigateToWindow = useCallback(
+    (id: string) => {
+      const route = getPublicAppRouteById(id);
+      if (route && pathname !== route.path) router.push(route.path, { scroll: false });
+    },
+    [pathname, router],
+  );
 
   useEffect(() => {
     function handleResize() {
@@ -103,8 +146,12 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
       );
     }
 
+    const frame = window.requestAnimationFrame(handleResize);
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const openWindow: WindowManagerContextValue["openWindow"] = useCallback(
@@ -135,7 +182,9 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
                 : w
             );
           }
-          return prev;
+          return prev.map((w) =>
+            w.id === id ? { ...w, zIndex: topZ + 1 } : w,
+          );
         }
         const offset = prev.length * 28;
         const bounds = buildWindowBounds(opts, offset);
@@ -160,19 +209,24 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
     [topZ]
   );
 
-  const closeWindow = useCallback((id: string) => {
-    setWindows((prev) => prev.filter((w) => w.id !== id));
-  }, []);
+  const closeWindow = useCallback(
+    (id: string) => {
+      setWindows((prev) => prev.filter((w) => w.id !== id));
+      if (activeWindowId === id) router.push("/", { scroll: false });
+    },
+    [activeWindowId, router],
+  );
 
   const focusWindow = useCallback(
     (id: string) => {
+      navigateToWindow(id);
       const nextZ = topZ + 1;
       setTopZ(nextZ);
       setWindows((prev) =>
         prev.map((w) => (w.id === id ? { ...w, zIndex: nextZ } : w))
       );
     },
-    [topZ]
+    [navigateToWindow, topZ]
   );
 
   const moveWindow = useCallback((id: string, x: number, y: number) => {
@@ -229,6 +283,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
 
   const restoreWindow = useCallback(
     (id: string) => {
+      navigateToWindow(id);
       const nextZ = topZ + 1;
       setTopZ(nextZ);
       setWindows((prev) =>
@@ -256,7 +311,7 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
         })
       );
     },
-    [topZ]
+    [navigateToWindow, topZ]
   );
 
   return (

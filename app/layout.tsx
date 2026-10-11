@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Crimson_Text, Geist, Geist_Mono, Open_Sans, Playfair_Display, Roboto_Mono } from "next/font/google";
+import { DesktopExperience } from "./components/DesktopExperience";
 import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
@@ -73,17 +74,6 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     creator: "@angrybayblade",
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
   category: "technology",
 };
 
@@ -141,7 +131,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        {children}
+        <DesktopExperience>{children}</DesktopExperience>
         <div id="portal-root" />
       </body>
     </html>

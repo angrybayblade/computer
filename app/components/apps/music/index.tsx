@@ -494,18 +494,24 @@ function EmbeddedPlayer({ song, onClose }: { song: Song; onClose: () => void }) 
   );
 }
 
-function MusicAppContent() {
+type MusicAppProps = {
+  initialSongs?: Song[];
+  initialPlaylists?: Playlist[];
+  initialLyrics?: Lyric[];
+};
+
+function MusicAppContent({ initialSongs, initialPlaylists, initialLyrics }: MusicAppProps) {
   const [tab, setTab] = useState<MusicTab>("songs");
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [lyrics, setLyrics] = useState<Lyric[]>([]);
+  const [songs, setSongs] = useState<Song[]>(initialSongs ?? []);
+  const [playlists, setPlaylists] = useState<Playlist[]>(initialPlaylists ?? []);
+  const [lyrics, setLyrics] = useState<Lyric[]>(initialLyrics ?? []);
 
   useEffect(() => {
-    void fetchSongs().then(setSongs);
-    void fetchPlaylists().then(setPlaylists);
-    void fetchLyrics().then(setLyrics);
-  }, []);
+    if (!initialSongs) void fetchSongs().then(setSongs);
+    if (!initialPlaylists) void fetchPlaylists().then(setPlaylists);
+    if (!initialLyrics) void fetchLyrics().then(setLyrics);
+  }, [initialLyrics, initialPlaylists, initialSongs]);
 
   const playingSong = playingId ? (songs.find((s) => s.id === playingId) ?? null) : null;
 
@@ -540,10 +546,10 @@ function MusicAppContent() {
   );
 }
 
-export function MusicApp() {
+export function MusicApp(props: MusicAppProps = {}) {
   return (
     <AppContent theme={etherealTheme.content}>
-      <MusicAppContent />
+      <MusicAppContent {...props} />
     </AppContent>
   );
 }

@@ -86,13 +86,14 @@ function AnimeDetail({
   );
 }
 
-function AnimeAppContent() {
-  const [anime, setAnime] = useState<Anime[]>([]);
+function AnimeAppContent({ initialAnime }: { initialAnime?: Anime[] }) {
+  const [anime, setAnime] = useState<Anime[]>(initialAnime ?? []);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialAnime) return;
     void fetchMetadata<Anime>("anime").then(setAnime);
-  }, []);
+  }, [initialAnime]);
 
   const selectedAnime = anime.find((entry) => entry.id === selectedId) ?? null;
 
@@ -118,10 +119,10 @@ function AnimeAppContent() {
   );
 }
 
-export function AnimeApp() {
+export function AnimeApp({ initialAnime }: { initialAnime?: Anime[] }) {
   return (
     <AppContent theme={animeTheme.content}>
-      <AnimeAppContent />
+      <AnimeAppContent initialAnime={initialAnime} />
     </AppContent>
   );
 }

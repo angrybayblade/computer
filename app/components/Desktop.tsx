@@ -1,18 +1,32 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useWindowManager } from "./WindowManager";
 import { AppWindow } from "./AppWindow";
 import { APPS } from "./apps";
 import { resolveAppUiTheme } from "./apps/themes";
 import { isMobileViewport, TOP_BAR_HEIGHT } from "@/lib/viewport";
+import { getPublicAppRouteById } from "@/lib/app-routes";
 
-export function Desktop() {
+export function Desktop({
+  routedAppId,
+  routedContent,
+}: {
+  routedAppId?: string;
+  routedContent?: ReactNode;
+}) {
+  const router = useRouter();
   const { windows, openWindow } = useWindowManager();
   const openedWelcome = useRef(false);
 
   useEffect(() => {
-    if (openedWelcome.current) return;
+    if (routedAppId === "welcome") {
+      openedWelcome.current = true;
+      return;
+    }
+    if (openedWelcome.current || routedAppId) return;
     openedWelcome.current = true;
     if (isMobileViewport()) return;
 
@@ -33,7 +47,7 @@ export function Desktop() {
         Math.round((window.innerHeight - TOP_BAR_HEIGHT - height) / 2)
       ),
     });
-  }, [openWindow]);
+  }, [openWindow, routedAppId]);
 
   return (
     <div
@@ -107,57 +121,50 @@ export function Desktop() {
           overflowY: "auto",
         }}
       >
-        {APPS.map((app) => (
-          <button
-            key={app.id}
-            onClick={(event) => {
-              // Native button activation from Enter/Space has no pointer clicks.
-              if (!isMobileViewport() && event.detail !== 0) return;
-              openWindow(app.id, app.title, {
-                width: app.width,
-                height: app.height,
-                minWidth: app.minWidth,
-                minHeight: app.minHeight,
-              });
-            }}
-            onDoubleClick={() => {
-              if (isMobileViewport()) return;
-              openWindow(app.id, app.title, {
-                width: app.width,
-                height: app.height,
-                minWidth: app.minWidth,
-                minHeight: app.minHeight,
-              });
-            }}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 6,
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 8,
-              width: 80,
-              flexShrink: 0,
-            }}
-          >
-            <div style={{width: 48, height: 48}}>
-              {app.icon}
-            </div>
-            <span
+        {APPS.map((app) => {
+          const route = getPublicAppRouteById(app.id);
+          if (!route) return null;
+          return (
+            <Link
+              key={app.id}
+              href={route.path}
+              scroll={false}
+              onClick={(event) => {
+                // Desktop icons retain their familiar double-click behavior.
+                if (!isMobileViewport() && event.detail !== 0) event.preventDefault();
+              }}
+              onDoubleClick={() => {
+                if (!isMobileViewport()) router.push(route.path, { scroll: false });
+              }}
               style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                color: "var(--color-bauhaus-black)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 6,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 8,
+                width: 80,
+                flexShrink: 0,
+                textDecoration: "none",
               }}
             >
-              {app.title}
-            </span>
-          </button>
-        ))}
+              <div style={{ width: 48, height: 48 }}>{app.icon}</div>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: "var(--color-bauhaus-black)",
+                }}
+              >
+                {app.title}
+              </span>
+            </Link>
+          );
+        })}
       </div>
 
       {/* Window rendering */}
@@ -171,11 +178,11 @@ export function Desktop() {
             chrome={ui.chrome}
             contentBackground={ui.content?.background}
           >
-            {appDef?.content ?? (
+            {routedAppId === ws.id && routedContent ? routedContent : (appDef?.content ?? (
               <div style={{ padding: 24, color: "var(--color-bauhaus-dark-gray)" }}>
                 Unknown application
               </div>
-            )}
+            ))}
           </AppWindow>
         );
       })}

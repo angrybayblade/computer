@@ -36,24 +36,25 @@ function VinePlayer({ vine }: { vine: Vine }) {
   );
 }
 
-function VinesAppContent() {
-  const [vine, setVine] = useState<Vine | null>(null);
+function VinesAppContent({ initialVine }: { initialVine?: Vine }) {
+  const [vine, setVine] = useState<Vine | null>(initialVine ?? null);
 
   useEffect(() => {
+    if (initialVine) return;
     void fetchMetadata<Vine>("vines").then((list) => {
       setVine(pickRandom(list));
     });
-  }, []);
+  }, [initialVine]);
 
   if (!vine) return null;
 
   return <VinePlayer key={vine.id} vine={vine} />;
 }
 
-export function VinesApp() {
+export function VinesApp({ initialVine }: { initialVine?: Vine }) {
   return (
     <AppContent theme={surrealismTheme.content}>
-      <VinesAppContent />
+      <VinesAppContent initialVine={initialVine} />
     </AppContent>
   );
 }

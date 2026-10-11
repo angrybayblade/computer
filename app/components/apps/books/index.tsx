@@ -83,13 +83,14 @@ function BookDetail({ book, onBack }: { book: Book; onBack: () => void }) {
   );
 }
 
-function BooksAppContent() {
-  const [books, setBooks] = useState<Book[]>([]);
+function BooksAppContent({ initialBooks }: { initialBooks?: Book[] }) {
+  const [books, setBooks] = useState<Book[]>(initialBooks ?? []);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialBooks) return;
     void fetchMetadata<Book>("books").then(setBooks);
-  }, []);
+  }, [initialBooks]);
 
   const selectedBook = books.find((book) => book.id === selectedId) ?? null;
 
@@ -116,10 +117,10 @@ function BooksAppContent() {
   );
 }
 
-export function BooksApp() {
+export function BooksApp({ initialBooks }: { initialBooks?: Book[] }) {
   return (
     <AppContent theme={booksTheme.content}>
-      <BooksAppContent />
+      <BooksAppContent initialBooks={initialBooks} />
     </AppContent>
   );
 }

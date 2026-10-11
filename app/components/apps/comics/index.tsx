@@ -26,12 +26,13 @@ function ComicCard({ comic, index }: { comic: Comic; index: number }) {
   );
 }
 
-function ComicsAppContent() {
-  const [comics, setComics] = useState<Comic[]>([]);
+function ComicsAppContent({ initialComics }: { initialComics?: Comic[] }) {
+  const [comics, setComics] = useState<Comic[]>(initialComics ?? []);
 
   useEffect(() => {
+    if (initialComics) return;
     void fetchMetadata<Comic>("comics").then(setComics);
-  }, []);
+  }, [initialComics]);
 
   return (
     <div className="midcentury-grid-wrap">
@@ -44,10 +45,10 @@ function ComicsAppContent() {
   );
 }
 
-export function ComicsApp() {
+export function ComicsApp({ initialComics }: { initialComics?: Comic[] }) {
   return (
     <AppContent theme={midcenturyTheme.content}>
-      <ComicsAppContent />
+      <ComicsAppContent initialComics={initialComics} />
     </AppContent>
   );
 }

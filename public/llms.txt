@@ -12,7 +12,8 @@ Viraj builds developer platforms, SDKs, orchestration systems, and open-source i
 
 ## Site sections
 
-- Resume: Professional summary, experience, impact, and skills
-- Movies, music, comics, anime, books, and vines: Personal media collections
+- [About](/about): Introduction and profile links
+- [Resume](/resume): Professional summary, experience, impact, and skills
+- [Movies](/movies), [music](/music), [comics](/comics), [anime](/anime), [books](/books), and [vines](/vines): Personal media collections
 
 Private editing and API routes are not intended for indexing.
