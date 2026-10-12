@@ -8,13 +8,14 @@ import { verifyEditCode } from "@/lib/metadata/client";
 type EditPasswordModalProps = {
   open: boolean;
   onClose: () => void;
+  onAuthenticated?: () => void;
 };
 
 function getPortalRoot() {
   return document.getElementById("portal-root") ?? document.body;
 }
 
-export function EditPasswordModal({ open, onClose }: EditPasswordModalProps) {
+export function EditPasswordModal({ open, onClose, onAuthenticated }: EditPasswordModalProps) {
   const router = useRouter();
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
   const [code, setCode] = useState("");
@@ -61,6 +62,10 @@ export function EditPasswordModal({ open, onClose }: EditPasswordModalProps) {
     }
 
     onClose();
+    if (onAuthenticated) {
+      onAuthenticated();
+      return;
+    }
     router.push("/edit");
   }
 
