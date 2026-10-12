@@ -8,6 +8,7 @@ import { type Book } from "@/lib/books/types";
 import { fetchMetadata } from "@/lib/metadata/client";
 
 function formatRating(value: number) {
+  if (value < 0) return "-";
   return String(value).padStart(2, "0");
 }
 
