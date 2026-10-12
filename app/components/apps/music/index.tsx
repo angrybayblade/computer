@@ -5,15 +5,18 @@ import { FastAverageColor } from "fast-average-color";
 import { AppContent } from "../AppContent";
 import { type AppDefinition } from "../types";
 import { etherealTheme } from "../themes";
-import { fetchLyrics, fetchPlaylists, fetchSongs, groupPlaylistsByMood } from "@/lib/music/storage";
-import { type Lyric, type Playlist, type Song } from "@/lib/music/types";
+import { fetchListeningHistory, fetchLyrics, fetchPlaylists, fetchSongs } from "@/lib/music/storage";
+import { type ListeningHistoryTrack, type Lyric, type Playlist, type Song } from "@/lib/music/types";
 
-type MusicTab = "songs" | "playlists" | "lyrics";
+type MusicTab = "songs" | "history" | "playlists" | "lyrics";
+type HistorySort = "playCount" | "lastPlayed" | "title" | "artist";
 
 const fac = new FastAverageColor();
+const historyDateFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" });
 
 const tabs: { id: MusicTab; label: string; icon: string; accent: string }[] = [
-  { id: "songs", label: "Songs", icon: "♫", accent: "var(--app-sage)" },
+  { id: "songs", label: "Gems", icon: "♫", accent: "var(--app-sage)" },
+  { id: "history", label: "History", icon: "↻", accent: "var(--app-pink)" },
   { id: "playlists", label: "Playlists", icon: "◎", accent: "var(--app-slate)" },
   { id: "lyrics", label: "Lyrics", icon: "✦", accent: "var(--app-peach)" },
 ];
@@ -242,6 +245,100 @@ function SongsTab({
   );
 }
 
+function HistoryTab({ history }: { history: ListeningHistoryTrack[] }) {
+  const [sortBy, setSortBy] = useState<HistorySort>("playCount");
+  const [query, setQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(100);
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const sortedHistory = useMemo(() => {
+    const filtered = normalizedQuery
+      ? history.filter((track) =>
+          `${track.title} ${track.artists.join(" ")} ${track.genres.join(" ")}`
+            .toLocaleLowerCase()
+            .includes(normalizedQuery),
+        )
+      : history;
+
+    return filtered.toSorted((left, right) => {
+      if (sortBy === "title") return left.title.localeCompare(right.title);
+      if (sortBy === "artist") return left.artists.join(", ").localeCompare(right.artists.join(", "));
+      if (sortBy === "lastPlayed") return right.lastPlayed.localeCompare(left.lastPlayed);
+      return right.playCount - left.playCount || right.lastPlayed.localeCompare(left.lastPlayed);
+    });
+  }, [history, normalizedQuery, sortBy]);
+
+  return (
+    <section style={{ padding: "0 20px 24px" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, marginBottom: 14 }}>
+          <div>
+            <p style={{ margin: "0 0 4px", color: "var(--app-muted)", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>From YouTube Music</p>
+            <h2 style={{ margin: 0, color: "var(--app-fg)", fontSize: 21 }}>Listening history</h2>
+          </div>
+          <span style={{ color: "var(--app-muted)", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>{history.length.toLocaleString()} tracks</span>
+        </div>
+        <div style={{ display: "flex", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
+          <label style={{ flex: "1 1 260px" }}>
+            <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0, 0, 0, 0)" }}>Search listening history</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setVisibleCount(100);
+              }}
+              placeholder="Search songs or artists"
+              style={{ width: "100%", minHeight: 36, border: "1px dotted var(--app-border)", borderRadius: 0, background: "var(--app-card)", color: "var(--app-fg)", font: "inherit", padding: "0 11px" }}
+            />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", gap: 8, color: "var(--app-muted)", fontSize: 11 }}>
+            <span>Sort by</span>
+            <select value={sortBy} onChange={(event) => setSortBy(event.target.value as HistorySort)} style={{ minHeight: 36, border: "1px dotted var(--app-border)", borderRadius: 0, background: "var(--app-card)", color: "var(--app-fg)", font: "inherit", padding: "0 11px" }}>
+              <option value="playCount">Most played</option>
+              <option value="lastPlayed">Recently played</option>
+              <option value="title">Title</option>
+              <option value="artist">Artist</option>
+            </select>
+          </label>
+        </div>
+        <div style={{ border: "1px dotted var(--app-border)", background: "var(--app-card)", overflowX: "auto" }}>
+          <div aria-hidden style={{ display: "grid", gridTemplateColumns: "36px minmax(220px, 2fr) minmax(110px, 1fr) 60px 110px", alignItems: "center", gap: 10, minWidth: 650, minHeight: 34, padding: "7px 12px", borderBottom: "1px dotted var(--app-border)", color: "var(--app-muted)", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            <span>#</span><span>Song</span><span>Genre</span><span>Plays</span><span>Last played</span>
+          </div>
+          {sortedHistory.slice(0, visibleCount).map((track, index) => (
+            <a
+              href={track.youtubeMusicUrl}
+              target="_blank"
+              rel="noreferrer"
+              key={track.id}
+              style={{ display: "grid", gridTemplateColumns: "36px minmax(220px, 2fr) minmax(110px, 1fr) 60px 110px", alignItems: "center", gap: 10, minWidth: 650, minHeight: 54, padding: "7px 12px", borderBottom: "1px dotted var(--app-border)", color: "var(--app-muted)", fontSize: 11, textDecoration: "none" }}
+            >
+              <span style={{ color: "var(--app-fg)", fontVariantNumeric: "tabular-nums" }}>{index + 1}</span>
+              <span style={{ minWidth: 0 }}>
+                <strong style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--app-fg)", fontSize: 13 }}>{track.title}</strong>
+                <small style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: 3, color: "var(--app-muted)", fontSize: 11, fontStyle: "italic" }}>{track.artists.join(", ")}</small>
+              </span>
+              <span>{track.genres.length ? track.genres.join(", ") : "Unclassified"}</span>
+              <strong style={{ color: "var(--app-fg)", fontVariantNumeric: "tabular-nums" }}>{track.playCount}</strong>
+              <time dateTime={track.lastPlayed}>
+                {historyDateFormatter.format(new Date(track.lastPlayed))}
+              </time>
+            </a>
+          ))}
+        </div>
+        {visibleCount < sortedHistory.length ? (
+          <button
+            type="button"
+            onClick={() => setVisibleCount((count) => count + 100)}
+            style={{ display: "block", margin: "14px auto 0", border: "1px dotted var(--app-border)", background: "var(--app-card)", color: "var(--app-fg)", padding: "9px 16px", font: "inherit", fontSize: 11, fontWeight: 700, cursor: "pointer" }}
+          >
+            Show 100 more
+          </button>
+        ) : null}
+        {sortedHistory.length === 0 ? <p style={{ color: "var(--app-muted)", fontSize: 12, textAlign: "center" }}>No matching tracks.</p> : null}
+    </section>
+  );
+}
+
 function PlaylistCard({
   playlist,
   colorIndex,
@@ -257,9 +354,16 @@ function PlaylistCard({
   return (
     <div
       className="pointillism-panel"
-      style={{ "--panel-accent": accent, animationDelay: `${index * 0.08}s` } as CSSProperties}
+      style={{
+        "--panel-accent": accent,
+        animationDelay: `${index * 0.08}s`,
+        height: 186,
+      } as CSSProperties}
     >
-      <div className="pointillism-panel-inner" style={{ "--panel-bg": bg } as CSSProperties}>
+      <div
+        className="pointillism-panel-inner"
+        style={{ "--panel-bg": bg, height: "100%", minHeight: 0 } as CSSProperties}
+      >
         <div
           style={{
             width: 36,
@@ -276,12 +380,12 @@ function PlaylistCard({
         >
           ◎
         </div>
-        <div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--app-fg)", marginBottom: 4 }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "var(--app-fg)", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {playlist.name}
           </div>
           {playlist.description ? (
-            <div style={{ fontSize: 12, color: "var(--app-muted)", lineHeight: 1.55, fontStyle: "italic" }}>
+            <div style={{ fontSize: 12, color: "var(--app-muted)", lineHeight: 1.55, fontStyle: "italic", display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2, overflow: "hidden" }}>
               {playlist.description}
             </div>
           ) : null}
@@ -298,48 +402,22 @@ function PlaylistCard({
 }
 
 function PlaylistsTab({ playlists }: { playlists: Playlist[] }) {
-  const moodGroups = useMemo(() => groupPlaylistsByMood(playlists), [playlists]);
-
   return (
-    <div style={{ display: "grid", gap: 28, padding: "0 20px 24px" }}>
-      {moodGroups.map(({ mood, playlists: moodPlaylists }, groupIndex) => (
-        <section key={mood}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-            <span
-              className="pointillism-section-dot"
-              style={{ "--section-accent": moodAccents[groupIndex % moodAccents.length] } as CSSProperties}
-            />
-            <h2
-              style={{
-                margin: 0,
-                fontSize: 15,
-                fontWeight: 700,
-                color: "var(--app-fg)",
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-              }}
-            >
-              {mood}
-            </h2>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gap: 14,
-            }}
-          >
-            {moodPlaylists.map((playlist, index) => (
-              <PlaylistCard
-                key={playlist.id}
-                playlist={playlist}
-                colorIndex={groupIndex}
-                index={index}
-              />
-            ))}
-          </div>
-        </section>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+        gap: 14,
+        padding: "0 20px 24px",
+      }}
+    >
+      {playlists.map((playlist, index) => (
+        <PlaylistCard
+          key={playlist.id}
+          playlist={playlist}
+          colorIndex={index}
+          index={index}
+        />
       ))}
     </div>
   );
@@ -504,6 +582,7 @@ function MusicAppContent({ initialSongs, initialPlaylists, initialLyrics }: Musi
   const [tab, setTab] = useState<MusicTab>("songs");
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [songs, setSongs] = useState<Song[]>(initialSongs ?? []);
+  const [history, setHistory] = useState<ListeningHistoryTrack[]>([]);
   const [playlists, setPlaylists] = useState<Playlist[]>(initialPlaylists ?? []);
   const [lyrics, setLyrics] = useState<Lyric[]>(initialLyrics ?? []);
 
@@ -511,6 +590,7 @@ function MusicAppContent({ initialSongs, initialPlaylists, initialLyrics }: Musi
     if (!initialSongs) void fetchSongs().then(setSongs);
     if (!initialPlaylists) void fetchPlaylists().then(setPlaylists);
     if (!initialLyrics) void fetchLyrics().then(setLyrics);
+    void fetchListeningHistory().then(setHistory);
   }, [initialLyrics, initialPlaylists, initialSongs]);
 
   const playingSong = playingId ? (songs.find((s) => s.id === playingId) ?? null) : null;
@@ -533,6 +613,7 @@ function MusicAppContent({ initialSongs, initialPlaylists, initialLyrics }: Musi
             {tab === "songs" ? (
               <SongsTab songs={songs} playingId={playingId} onToggle={handleToggle} />
             ) : null}
+            {tab === "history" ? <HistoryTab history={history} /> : null}
             {tab === "playlists" ? <PlaylistsTab playlists={playlists} /> : null}
             {tab === "lyrics" ? <LyricsTab lyrics={lyrics} /> : null}
           </div>

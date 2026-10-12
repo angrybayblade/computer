@@ -11,6 +11,17 @@ export type Song = {
   spotifyUrl?: string;
 };
 
+export type ListeningHistoryTrack = {
+  id: string;
+  title: string;
+  artists: string[];
+  genres: string[];
+  playCount: number;
+  firstPlayed: string;
+  lastPlayed: string;
+  youtubeMusicUrl: string;
+};
+
 export type Playlist = {
   id: string;
   mood: string;

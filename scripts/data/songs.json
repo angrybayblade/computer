@@ -19,5 +19,29 @@
     "artist": "Pawan Singh",
     "playConfig": { "id": "ftUWLRU5rVM" },
     "spotifyUrl": "https://open.spotify.com/track/0U0ldCRjknR9Y0V1Huxrdt"
+  },
+  {
+    "id": "killshot-magdalena-bay",
+    "title": "Killshot",
+    "artist": "Magdalena Bay",
+    "playConfig": { "id": "mQvJVHWNBoo" }
+  },
+  {
+    "id": "mujhe-tumse-mohabbat-hai-shreya-ghoshal",
+    "title": "Mujhe Tumse Mohabbat Hai",
+    "artist": "Shreya Ghoshal",
+    "playConfig": { "id": "UU4J20swc_M" }
+  },
+  {
+    "id": "sau-rab-di",
+    "title": "Sau Rab Di",
+    "artist": "Abhijeet Bhattacharya & Alka Yagnik",
+    "playConfig": { "id": "AQfQYx3eR6Q" }
+  },
+  {
+    "id": "diet-coke-pusha-t",
+    "title": "Diet Coke",
+    "artist": "Pusha T",
+    "playConfig": { "id": "unRSQs7aABE" }
   }
 ]

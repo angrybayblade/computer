@@ -1,11 +1,74 @@
 [
   {
-    "id": "night-drive",
-    "mood": "Night Drive",
-    "name": "Orange Light Trails",
-    "description": "Long exposure energy for empty highways after midnight.",
-    "cover": "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=800&fit=crop",
-    "spotifyUrl": "https://open.spotify.com/playlist/37i9dQZF1DX4WYpdgoIcn6",
-    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=RDCLAK5uy_kmPRjHDECIcuVInwzg-vJtC_3jBL1"
+    "id": "japanese-citypop",
+    "mood": "City Pop",
+    "name": "japanese-citypop",
+    "description": "Japanese city pop favorites for neon-lit evenings.",
+    "cover": "https://i.ytimg.com/vi/4X7ZvpwBiKA/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLvxVseC_KOxNDVt9v54YdEhBll7W9jz4C"
+  },
+  {
+    "id": "punkkkkk",
+    "mood": "Punk",
+    "name": "PUNKKKK!!!",
+    "description": "High-energy punk, rap, and nu-metal cuts.",
+    "cover": "https://i.ytimg.com/vi/UPqDWj-RxV8/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLekCzPyxJx7I"
+  },
+  {
+    "id": "haryanvi-bop",
+    "mood": "Haryanvi",
+    "name": "haryanvi-bop",
+    "description": "Haryanvi dance-floor favorites and regional hits.",
+    "cover": "https://i.ytimg.com/vi/KT3j4fk_4Xg/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLvxVseC_KOxPiftS0RXWBQQiMRzdhr8wb"
+  },
+  {
+    "id": "big-poppa",
+    "mood": "Hip-Hop",
+    "name": "big poppa",
+    "description": "Classic hip-hop and R&B essentials.",
+    "cover": "https://i.ytimg.com/vi/k1qpgQr8wXk/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLvxVseC_KOxOf1R-1zVp8hbA8CGLA7cyi"
+  },
+  {
+    "id": "2000s-club-bop",
+    "mood": "Club",
+    "name": "2000s club bop",
+    "description": "2000s club-pop, R&B, and dance-floor staples.",
+    "cover": "https://i.ytimg.com/vi/g_V6wqBlADw/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLvxVseC_KOxM-oNPROd06ef4osP3CNgUs"
+  },
+  {
+    "id": "anime-openings",
+    "mood": "Anime",
+    "name": "anime-openings",
+    "description": "Anime openings, endings, and soundtrack favorites.",
+    "cover": "https://i.ytimg.com/vi/0NJCpJZ19n8/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLvxVseC_KOxNFW2LJPPV4Sh-1Mnn1zger"
+  },
+  {
+    "id": "bhojpuri-bop",
+    "mood": "Bhojpuri",
+    "name": "bhojpuri-bop",
+    "description": "Bhojpuri dance-floor favorites and regional hits.",
+    "cover": "https://i.ytimg.com/vi/r-lqfzq9TVM/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLvxVseC_KOxN674BKCG8w3e6Uxtv2agX3"
+  },
+  {
+    "id": "wwe",
+    "mood": "Wrestling",
+    "name": "WWE",
+    "description": "WWE entrance themes and arena anthems.",
+    "cover": "https://i.ytimg.com/vi/kW_IJztcphE/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLvxVseC_KOxP7O1W69tXONGSUJA1sIq5g"
+  },
+  {
+    "id": "house-disco",
+    "mood": "House",
+    "name": "house-disco",
+    "description": "House and disco grooves for the dance floor.",
+    "cover": "https://i.ytimg.com/vi/Hf244LCkkLc/hqdefault.jpg",
+    "youtubeMusicUrl": "https://music.youtube.com/playlist?list=PLeCP1RACbS_Y"
   }
 ]

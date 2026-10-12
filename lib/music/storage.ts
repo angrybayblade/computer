@@ -1,5 +1,5 @@
 import { fetchMetadata } from "@/lib/metadata/client";
-import { type Lyric, type Playlist, type Song } from "./types";
+import { type ListeningHistoryTrack, type Lyric, type Playlist, type Song } from "./types";
 
 export function groupPlaylistsByMood(playlists: Playlist[]) {
   const groups = new Map<string, Playlist[]>();
@@ -23,4 +23,10 @@ export async function fetchPlaylists(): Promise<Playlist[]> {
 
 export async function fetchLyrics(): Promise<Lyric[]> {
   return fetchMetadata<Lyric>("lyrics");
+}
+
+export async function fetchListeningHistory(): Promise<ListeningHistoryTrack[]> {
+  const response = await fetch("/api/music/history", { cache: "no-store" });
+  if (!response.ok) throw new Error("Failed to load listening history");
+  return response.json() as Promise<ListeningHistoryTrack[]>;
 }
