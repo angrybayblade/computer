@@ -22,9 +22,13 @@ const desktopAppColumns = [
 ].filter((column) => column.length > 0);
 
 export function Desktop({
+  fullscreenMode = false,
+  onToggleFullscreen,
   routedAppId,
   routedContent,
 }: {
+  fullscreenMode?: boolean;
+  onToggleFullscreen?: (appId: string) => void;
   routedAppId?: string;
   routedContent?: ReactNode;
 }) {
@@ -172,6 +176,8 @@ export function Desktop({
             windowState={ws}
             chrome={ui.chrome}
             contentBackground={ui.content?.background}
+            fullscreenMode={fullscreenMode && routedAppId === ws.id}
+            onToggleFullscreen={onToggleFullscreen}
           >
             {routedAppId === ws.id && routedContent ? routedContent : (appDef?.content ?? (
               <div style={{ padding: 24, color: "var(--color-bauhaus-dark-gray)" }}>

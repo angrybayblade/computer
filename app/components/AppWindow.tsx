@@ -15,13 +15,54 @@ interface AppWindowProps {
   windowState: WindowState;
   chrome?: AppChromeTheme;
   contentBackground?: string;
+  fullscreenMode?: boolean;
+  onToggleFullscreen?: (appId: string) => void;
   children: ReactNode;
+}
+
+type WindowControlGlyphName = "minimize" | "maximize" | "fullscreen" | "close";
+
+function WindowControlGlyph({
+  name,
+  active = false,
+}: {
+  name: WindowControlGlyphName;
+  active?: boolean;
+}) {
+  const paths: Record<WindowControlGlyphName, string> = {
+    minimize: "M2 7h10",
+    maximize: active ? "M4 2h8v8H4zM2 4v8h8" : "M2.5 2.5h9v9h-9z",
+    fullscreen: active
+      ? "M1 5h4V1M13 5H9V1M1 9h4v4M13 9H9v4"
+      : "M5 1H1v4M9 1h4v4M1 9v4h4M13 9v4H9",
+    close: "M3 3l8 8M11 3l-8 8",
+  };
+
+  return (
+    <svg
+      className="app-window-control-icon"
+      viewBox="0 0 14 14"
+      width="14"
+      height="14"
+      aria-hidden="true"
+    >
+      <path
+        d={paths[name]}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="square"
+      />
+    </svg>
+  );
 }
 
 export function AppWindow({
   windowState,
   chrome = bauhausTheme.chrome,
   contentBackground,
+  fullscreenMode = false,
+  onToggleFullscreen,
   children,
 }: AppWindowProps) {
   const {
@@ -47,7 +88,7 @@ export function AppWindow({
 
   const handleTitlePointerDown = useCallback(
     (e: ReactPointerEvent) => {
-      if (windowState.isMaximized) return;
+      if (fullscreenMode || windowState.isMaximized) return;
       e.preventDefault();
       focusWindow(windowState.id);
       dragState.current = {
@@ -58,7 +99,7 @@ export function AppWindow({
       };
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
-    [windowState.id, windowState.x, windowState.y, windowState.isMaximized, focusWindow]
+    [fullscreenMode, windowState.id, windowState.x, windowState.y, windowState.isMaximized, focusWindow]
   );
 
   const handleTitlePointerMove = useCallback(
@@ -81,7 +122,7 @@ export function AppWindow({
 
   const handleEdgePointerDown = useCallback(
     (edge: string) => (e: ReactPointerEvent) => {
-      if (windowState.isMaximized) return;
+      if (fullscreenMode || windowState.isMaximized) return;
       e.preventDefault();
       e.stopPropagation();
       focusWindow(windowState.id);
@@ -96,7 +137,7 @@ export function AppWindow({
       };
       (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
-    [windowState, focusWindow]
+    [fullscreenMode, windowState, focusWindow]
   );
 
   const handleEdgePointerMove = useCallback(
@@ -142,13 +183,13 @@ export function AppWindow({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && windowState.isMaximized) {
+      if (!fullscreenMode && e.key === "Escape" && windowState.isMaximized) {
         toggleMaximize(windowState.id);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [windowState.id, windowState.isMaximized, toggleMaximize]);
+  }, [fullscreenMode, windowState.id, windowState.isMaximized, toggleMaximize]);
 
   if (windowState.isMinimized) return null;
 
@@ -186,6 +227,10 @@ export function AppWindow({
       background: "var(--color-bauhaus-blue)",
       color: "var(--color-bauhaus-white)",
     },
+    fullscreen: chrome.controls?.fullscreen ?? chrome.controls?.maximize ?? {
+      background: "var(--color-bauhaus-blue)",
+      color: "var(--color-bauhaus-white)",
+    },
     close: chrome.controls?.close ?? {
       background: "var(--color-bauhaus-red)",
       color: "var(--color-bauhaus-white)",
@@ -201,16 +246,16 @@ export function AppWindow({
       onPointerDown={() => focusWindow(windowState.id)}
       style={{
         position: "absolute",
-        left: windowState.x,
-        top: windowState.y,
-        width: windowState.width,
-        height: windowState.height,
+        left: fullscreenMode ? 0 : windowState.x,
+        top: fullscreenMode ? 0 : windowState.y,
+        width: fullscreenMode ? "100%" : windowState.width,
+        height: fullscreenMode ? "100%" : windowState.height,
         zIndex: windowState.zIndex,
         display: "flex",
         flexDirection: "column",
-        border: windowState.isMaximized ? "none" : (chrome.windowBorder ?? "3px solid var(--color-bauhaus-black)"),
+        border: fullscreenMode || windowState.isMaximized ? "none" : (chrome.windowBorder ?? "3px solid var(--color-bauhaus-black)"),
         background: chrome.windowBackground ?? "var(--color-bauhaus-white)",
-        boxShadow: windowState.isMaximized ? "none" : (chrome.windowShadow ?? "6px 6px 0 var(--color-bauhaus-black)"),
+        boxShadow: fullscreenMode || windowState.isMaximized ? "none" : (chrome.windowShadow ?? "6px 6px 0 var(--color-bauhaus-black)"),
       }}
     >
       {/* Title bar */}
@@ -219,19 +264,22 @@ export function AppWindow({
         onPointerDown={handleTitlePointerDown}
         onPointerMove={handleTitlePointerMove}
         onPointerUp={handleTitlePointerUp}
-        onDoubleClick={() => toggleMaximize(windowState.id)}
+        onDoubleClick={() => {
+          if (!fullscreenMode) toggleMaximize(windowState.id);
+        }}
         style={{
           display: "flex",
           alignItems: "center",
           height: chrome.titleBarHeight ?? 36,
           background: chrome.titleBarBackground ?? chrome.accentColor,
-          cursor: windowState.isMaximized ? "default" : "grab",
+          cursor: fullscreenMode || windowState.isMaximized ? "default" : "grab",
           userSelect: "none",
           flexShrink: 0,
           borderBottom: chrome.titleBarBorderBottom ?? "3px solid var(--color-bauhaus-black)",
         }}
       >
         <span
+          className="app-window-title"
           style={{
             flex: 1,
             paddingLeft: 12,
@@ -246,7 +294,7 @@ export function AppWindow({
           {windowState.title}
         </span>
         <div
-          className={chrome.controlsClassName}
+          className={`app-window-controls${chrome.controlsClassName ? ` ${chrome.controlsClassName}` : ""}`}
           style={{ display: "flex", gap: 0, height: "100%" }}
         >
           <button
@@ -264,19 +312,40 @@ export function AppWindow({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontFamily: chrome.titleBarFontFamily,
-              fontSize: 16,
-              fontWeight: 600,
               color: controls.minimize.color,
             }}
             aria-label="Minimize"
           >
-            &#8722;
+            <WindowControlGlyph name="minimize" />
           </button>
+          {onToggleFullscreen ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFullscreen(windowState.id);
+              }}
+              style={{
+                width: controls.width,
+                height: "100%",
+                border: "none",
+                borderLeft: controls.borderLeft,
+                background: controls.fullscreen.background,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: controls.fullscreen.color,
+              }}
+              aria-label={fullscreenMode ? "Exit fullscreen" : "Enter fullscreen"}
+              title={fullscreenMode ? "Exit fullscreen (Esc)" : "Enter fullscreen"}
+            >
+              <WindowControlGlyph name="fullscreen" active={fullscreenMode} />
+            </button>
+          ) : null}
           <button
             onClick={(e) => {
               e.stopPropagation();
-              toggleMaximize(windowState.id);
+              if (!fullscreenMode) toggleMaximize(windowState.id);
             }}
             style={{
               width: controls.width,
@@ -284,18 +353,15 @@ export function AppWindow({
               border: "none",
               borderLeft: controls.borderLeft,
               background: controls.maximize.background,
-              cursor: "pointer",
+              cursor: fullscreenMode ? "default" : "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontFamily: chrome.titleBarFontFamily,
-              fontSize: 13,
-              fontWeight: 600,
               color: controls.maximize.color,
             }}
             aria-label="Maximize"
           >
-            {windowState.isMaximized ? "◇" : "□"}
+            <WindowControlGlyph name="maximize" active={windowState.isMaximized} />
           </button>
           <button
             onClick={(e) => {
@@ -312,14 +378,11 @@ export function AppWindow({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontFamily: chrome.titleBarFontFamily,
-              fontSize: 14,
-              fontWeight: 600,
               color: controls.close.color,
             }}
             aria-label="Close"
           >
-            &#x2715;
+            <WindowControlGlyph name="close" />
           </button>
         </div>
       </div>
@@ -340,7 +403,7 @@ export function AppWindow({
       </div>
 
       {/* Resize handles */}
-      {!windowState.isMaximized &&
+      {!fullscreenMode && !windowState.isMaximized &&
         edges.map((edge) => (
           <div
             key={edge}

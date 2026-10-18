@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { getPublicAppRouteById } from "@/lib/app-routes";
+import { getPublicAppRouteById, getPublicAppRouteByPath } from "@/lib/app-routes";
 import {
   getFullscreenWindowBounds,
   isMobileViewport,
@@ -129,7 +129,8 @@ export function WindowManagerProvider({
   const navigateToWindow = useCallback(
     (id: string) => {
       const route = getPublicAppRouteById(id);
-      if (route && pathname !== route.path) router.push(route.path, { scroll: false });
+      const currentRoute = getPublicAppRouteByPath(pathname);
+      if (route && currentRoute?.id !== id) router.push(route.path, { scroll: false });
     },
     [pathname, router],
   );

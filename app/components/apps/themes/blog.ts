@@ -24,6 +24,7 @@ export const blogTheme: AppUiTheme = {
       borderLeft: "1px solid #3f3a34",
       minimize: { background: "#fff9ed", color: "#181818" },
       maximize: { background: "#ff5c35", color: "#181818" },
+      fullscreen: { background: "#fff9ed", color: "#181818" },
       close: { background: "#181818", color: "#fff9ed" },
     },
   },

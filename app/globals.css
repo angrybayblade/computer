@@ -27,6 +27,35 @@ body {
   width: 100vw;
 }
 
+.app-window-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-window-controls {
+  flex: 0 0 auto;
+}
+
+.app-window-controls button {
+  box-sizing: border-box;
+  padding: 0;
+  touch-action: manipulation;
+}
+
+.app-window-controls button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
+}
+
+.app-window-control-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+}
+
 ::selection {
   background: var(--color-bauhaus-red);
   color: var(--color-bauhaus-white);
@@ -2449,6 +2478,8 @@ body {
 /* Blog */
 .blog-window {
   border-radius: 0;
+  container-name: blog-window;
+  container-type: inline-size;
   overflow: hidden;
 }
 
@@ -2463,7 +2494,7 @@ body {
 .blog-title-bar::before {
   content: "VIRAJ PATEL / WRITING DESK";
   position: absolute;
-  right: 142px;
+  right: 184px;
   color: #ff5c35;
   font-family: var(--font-roboto-mono), monospace;
   font-size: 0.57rem;
@@ -2585,6 +2616,10 @@ body {
   .blog-title-bar::before { display: none; }
   .blog-post-card { grid-template-columns: 28px minmax(0, 1fr); gap: 10px; }
   .blog-read-link { grid-column: 2; justify-self: start; }
+}
+
+@container blog-window (max-width: 720px) {
+  .blog-title-bar::before { display: none; }
 }
 
 @media (max-width: 640px) {

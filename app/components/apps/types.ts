@@ -5,6 +5,7 @@ export type AppWindowControlsTheme = {
   borderLeft?: string;
   minimize?: { background: string; color: string };
   maximize?: { background: string; color: string };
+  fullscreen?: { background: string; color: string };
   close?: { background: string; color: string };
 };
 

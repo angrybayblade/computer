@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
-import { usePathname } from "next/navigation";
+import { Suspense, useCallback, useEffect, useRef, type ReactNode } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Desktop } from "./Desktop";
 import { TopBar } from "./TopBar";
 import {
@@ -10,7 +10,7 @@ import {
   type InitialWindow,
 } from "./WindowManager";
 import { APPS } from "./apps";
-import { getPublicAppRouteByPath } from "@/lib/app-routes";
+import { getPublicAppRouteById, getPublicAppRouteByPath } from "@/lib/app-routes";
 
 function descriptorForApp(id: string): InitialWindow | undefined {
   const app = APPS.find((candidate) => candidate.id === id);
@@ -43,10 +43,48 @@ function RouteWindowSync({ activeWindow }: { activeWindow?: InitialWindow }) {
   return null;
 }
 
-export function DesktopExperience({ children }: { children: ReactNode }) {
+function DesktopExperienceRouter({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const route = getPublicAppRouteByPath(pathname);
   const isDesktopRoute = pathname === "/" || route !== undefined;
+  const fullscreenMode = route !== undefined && searchParams.get("fs") === "true";
+
+  const toggleFullscreen = useCallback(
+    (appId: string) => {
+      const appRoute = getPublicAppRouteById(appId);
+      if (!appRoute) return;
+
+      const currentRoute = getPublicAppRouteByPath(pathname);
+      const isCurrentApp = currentRoute?.id === appId;
+      const isExiting = isCurrentApp && fullscreenMode;
+      const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+      if (isExiting) nextSearchParams.delete("fs");
+      else nextSearchParams.set("fs", "true");
+
+      const targetPath = isCurrentApp ? pathname : appRoute.path;
+      const query = nextSearchParams.toString();
+      router.push(query ? `${targetPath}?${query}` : targetPath, { scroll: false });
+    },
+    [fullscreenMode, pathname, router, searchParams],
+  );
+
+  useEffect(() => {
+    if (!fullscreenMode) return;
+
+    function exitFullscreen(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      const nextSearchParams = new URLSearchParams(searchParams.toString());
+      nextSearchParams.delete("fs");
+      const query = nextSearchParams.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    }
+
+    window.addEventListener("keydown", exitFullscreen);
+    return () => window.removeEventListener("keydown", exitFullscreen);
+  }, [fullscreenMode, pathname, router, searchParams]);
 
   if (!isDesktopRoute) return children;
 
@@ -55,9 +93,22 @@ export function DesktopExperience({ children }: { children: ReactNode }) {
   return (
     <WindowManagerProvider initialWindow={activeWindow} activeWindowId={route?.id}>
       <RouteWindowSync activeWindow={activeWindow} />
-      <TopBar />
-      <Desktop routedAppId={route?.id} routedContent={route ? children : undefined} />
+      {fullscreenMode ? null : <TopBar />}
+      <Desktop
+        fullscreenMode={fullscreenMode}
+        onToggleFullscreen={toggleFullscreen}
+        routedAppId={route?.id}
+        routedContent={route ? children : undefined}
+      />
       {route ? null : children}
     </WindowManagerProvider>
+  );
+}
+
+export function DesktopExperience({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={children}>
+      <DesktopExperienceRouter>{children}</DesktopExperienceRouter>
+    </Suspense>
   );
 }
