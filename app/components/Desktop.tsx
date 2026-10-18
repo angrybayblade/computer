@@ -9,6 +9,18 @@ import { resolveAppUiTheme } from "./apps/themes";
 import { isMobileViewport, TOP_BAR_HEIGHT } from "@/lib/viewport";
 import { getPublicAppRouteById } from "@/lib/app-routes";
 
+const desktopApps = APPS.filter((app) => getPublicAppRouteById(app.id));
+const firstColumnIds = ["welcome", "resume", "blog", "books", "vines"];
+const firstColumnIdSet = new Set(firstColumnIds);
+const desktopAppById = new Map(desktopApps.map((app) => [app.id, app]));
+const desktopAppColumns = [
+  firstColumnIds.flatMap((id) => {
+    const app = desktopAppById.get(id);
+    return app ? [app] : [];
+  }),
+  desktopApps.filter((app) => !firstColumnIdSet.has(app.id)),
+].filter((column) => column.length > 0);
+
 export function Desktop({
   routedAppId,
   routedContent,
@@ -108,42 +120,46 @@ export function Desktop({
 
       {/* Desktop app icons */}
       <div className="desktop-icon-grid">
-        {APPS.map((app) => {
-          const route = getPublicAppRouteById(app.id);
-          if (!route) return null;
-          return (
-            <Link
-              key={app.id}
-              href={route.path}
-              scroll={false}
-              className="desktop-icon"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 6,
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: 8,
-                textDecoration: "none",
-              }}
-            >
-              <div style={{ width: 48, height: 48 }}>{app.icon}</div>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  color: "var(--color-bauhaus-black)",
-                }}
-              >
-                {app.title}
-              </span>
-            </Link>
-          );
-        })}
+        {desktopAppColumns.map((column) => (
+          <div className="desktop-icon-column" key={column[0].id}>
+            {column.map((app) => {
+              const route = getPublicAppRouteById(app.id);
+              if (!route) return null;
+              return (
+                <Link
+                  key={app.id}
+                  href={route.path}
+                  scroll={false}
+                  className="desktop-icon"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 6,
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 8,
+                    textDecoration: "none",
+                  }}
+                >
+                  <div style={{ width: 48, height: 48 }}>{app.icon}</div>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      color: "var(--color-bauhaus-black)",
+                    }}
+                  >
+                    {app.title}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </div>
 
       {/* Window rendering */}

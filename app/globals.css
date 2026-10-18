@@ -2153,7 +2153,7 @@ body {
 .wabisabi-window-controls button:last-child:hover {
   filter: brightness(1.06);
 }
-/* Icons fill downward first and wrap into a new column when the viewport is full. */
+/* Icons fill downward first, with exactly five items before starting a new column. */
 .desktop-icon-grid {
   position: absolute;
   top: 64px;
@@ -2161,17 +2161,22 @@ body {
   bottom: 0;
   left: 16px;
   display: flex;
-  flex-flow: column wrap;
-  align-content: flex-start;
+  align-items: flex-start;
   gap: 12px;
   overflow: auto;
   padding-bottom: 16px;
 }
 
+.desktop-icon-column {
+  display: flex;
+  flex: 0 0 80px;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .desktop-icon {
   width: 80px;
   min-height: 88px;
-  flex: 0 0 88px;
   outline: none;
 }
 
@@ -2591,9 +2596,13 @@ body {
     gap: 8px;
   }
 
+  .desktop-icon-column {
+    flex-basis: 72px;
+    gap: 8px;
+  }
+
   .desktop-icon {
     width: 72px;
     min-height: 82px;
-    flex-basis: 82px;
   }
 }
