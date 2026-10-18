@@ -18,6 +18,7 @@ export default function Home() {
           <Link href="/comics">Comics</Link>{" "}
           <Link href="/anime">Anime</Link>{" "}
           <Link href="/books">Books</Link>{" "}
+          <Link href="/blog">Blog</Link>{" "}
           <Link href="/vines">Vines</Link>
         </nav>
       </main>

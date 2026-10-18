@@ -5,6 +5,7 @@ import { musicApp } from "./music";
 import { comicsApp } from "./comics";
 import { animeApp } from "./anime";
 import { booksApp } from "./books";
+import { blogApp } from "./blog";
 import { vinesApp } from "./vines";
 import { resumeApp } from "./resume";
 
@@ -16,6 +17,7 @@ export const APPS: AppDefinition[] = [
   comicsApp,
   animeApp,
   booksApp,
+  blogApp,
   vinesApp,
 ];
 

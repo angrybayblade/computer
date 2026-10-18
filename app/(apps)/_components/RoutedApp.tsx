@@ -7,6 +7,7 @@ import { MusicApp } from "@/app/components/apps/music";
 import { ComicsApp } from "@/app/components/apps/comics";
 import { AnimeApp } from "@/app/components/apps/anime";
 import { BooksApp } from "@/app/components/apps/books";
+import { BlogApp } from "@/app/components/apps/blog";
 import { VinesApp } from "@/app/components/apps/vines";
 import { listResource } from "@/lib/db/repositories";
 import { getPublicAppRouteById, type PublicAppId } from "@/lib/app-routes";
@@ -74,6 +75,8 @@ export async function RoutedApp({ id }: { id: PublicAppId }) {
       return <AnimeApp initialAnime={await getResource<Anime>("anime")} />;
     case "books":
       return <BooksApp initialBooks={await getResource<Book>("books")} />;
+    case "blog":
+      return <BlogApp />;
     case "vines": {
       const vines = await getResource<Vine>("vines");
       return <VinesApp initialVine={vines[0]} />;

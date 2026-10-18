@@ -7,6 +7,7 @@ export { etherealTheme } from "./ethereal";
 export { midcenturyTheme } from "./midcentury";
 export { animeTheme } from "./anime";
 export { booksTheme } from "./books";
+export { blogTheme } from "./blog";
 export { surrealismTheme } from "./surrealism";
 export { wabisabiTheme } from "./wabisabi";
 

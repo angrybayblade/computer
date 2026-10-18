@@ -28,6 +28,7 @@ export function TopBar() {
   const openWindows = windows.filter((w) => !w.isMinimized);
   const minimizedWindows = windows.filter((w) => w.isMinimized);
   const isMaximized = windows.some((w) => w.isMaximized);
+  const hasBlogWindow = openWindows.some((w) => w.id === "blog");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const logoClickCount = useRef(0);
   const logoClickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -58,7 +59,11 @@ export function TopBar() {
         display: "flex",
         alignItems: "center",
         background: "var(--color-bauhaus-black)",
-        borderBottom: isMaximized ? "3px solid var(--color-bauhaus-black)" : "3px solid var(--color-bauhaus-red)",
+        borderBottom: hasBlogWindow
+          ? "1px solid var(--color-bauhaus-gray)"
+          : isMaximized
+            ? "3px solid var(--color-bauhaus-black)"
+            : "3px solid var(--color-bauhaus-red)",
         userSelect: "none",
         gap: 0,
       }}

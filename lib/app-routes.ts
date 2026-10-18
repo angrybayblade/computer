@@ -6,6 +6,7 @@ export type PublicAppId =
   | "comics"
   | "anime"
   | "books"
+  | "blog"
   | "vines";
 
 export type PublicAppRoute = {
@@ -59,6 +60,12 @@ export const PUBLIC_APP_ROUTES: readonly PublicAppRoute[] = [
     description: "Books Viraj Patel recommends, with ratings and notes.",
   },
   {
+    id: "blog",
+    path: "/blog",
+    title: "Blog",
+    description: "Essays on software, systems, and practical engineering by Viraj Patel.",
+  },
+  {
     id: "vines",
     path: "/vines",
     title: "Vines",
@@ -72,6 +79,7 @@ export function getPublicAppRouteById(id: string) {
 
 export function getPublicAppRouteByPath(pathname: string) {
   const normalizedPath = pathname.length > 1 ? pathname.replace(/\/$/, "") : pathname;
+  if (normalizedPath.startsWith("/blog/")) return getPublicAppRouteById("blog");
   return PUBLIC_APP_ROUTES.find((route) => route.path === normalizedPath);
 }
 
