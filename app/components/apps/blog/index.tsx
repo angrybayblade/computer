@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { AppContent } from "../AppContent";
 import { type AppDefinition } from "../types";
 import { blogTheme } from "../themes/blog";
@@ -10,7 +13,11 @@ function dateLabel(date: string) {
   );
 }
 
-function BlogIndex() {
+function withQuery(path: string, query: string) {
+  return query ? `${path}?${query}` : path;
+}
+
+function BlogIndex({ query }: { query: string }) {
   return (
     <main className="blog-index">
       <header className="blog-masthead">
@@ -24,10 +31,10 @@ function BlogIndex() {
             <span className="blog-post-number">0{index + 1}</span>
             <div>
               <time dateTime={post.publishedAt}>{dateLabel(post.publishedAt)}</time>
-              <h2><Link href={`/blog/${post.slug}`}>{post.title}</Link></h2>
+              <h2><Link href={withQuery(`/blog/${post.slug}`, query)}>{post.title}</Link></h2>
               <p>{post.description}</p>
             </div>
-            <Link className="blog-read-link" href={`/blog/${post.slug}`} aria-label={`Read ${post.title}`}>Read →</Link>
+            <Link className="blog-read-link" href={withQuery(`/blog/${post.slug}`, query)} aria-label={`Read ${post.title}`}>Read →</Link>
           </article>
         ))}
       </section>
@@ -36,10 +43,10 @@ function BlogIndex() {
   );
 }
 
-function BlogArticle({ post }: { post: BlogPost }) {
+function BlogArticle({ post, query }: { post: BlogPost; query: string }) {
   return (
     <article className="blog-article">
-      <Link href="/blog" className="blog-back">← All writing</Link>
+      <Link href={withQuery("/blog", query)} className="blog-back">← All writing</Link>
       <header>
         <span className="blog-kicker">Essay / 001</span>
         <h1>{post.title}</h1>
@@ -58,7 +65,12 @@ function BlogArticle({ post }: { post: BlogPost }) {
 }
 
 export function BlogApp({ post }: { post?: BlogPost }) {
-  return <AppContent theme={blogTheme.content}>{post ? <BlogArticle post={post} /> : <BlogIndex />}</AppContent>;
+  const query = useSearchParams().toString();
+  return (
+    <AppContent theme={blogTheme.content}>
+      {post ? <BlogArticle post={post} query={query} /> : <BlogIndex query={query} />}
+    </AppContent>
+  );
 }
 
 function BlogIcon() {

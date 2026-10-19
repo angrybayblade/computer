@@ -43,13 +43,18 @@ function RouteWindowSync({ activeWindow }: { activeWindow?: InitialWindow }) {
   return null;
 }
 
-function DesktopExperienceRouter({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
+function DesktopExperienceRouter({
+  children,
+  pathname,
+  route,
+}: {
+  children: ReactNode;
+  pathname: string;
+  route: NonNullable<ReturnType<typeof getPublicAppRouteByPath>>;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const route = getPublicAppRouteByPath(pathname);
-  const isDesktopRoute = pathname === "/" || route !== undefined;
-  const fullscreenMode = route !== undefined && searchParams.get("fs") === "true";
+  const fullscreenMode = searchParams.get("fs") === "true";
 
   const toggleFullscreen = useCallback(
     (appId: string) => {
@@ -86,6 +91,24 @@ function DesktopExperienceRouter({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("keydown", exitFullscreen);
   }, [fullscreenMode, pathname, router, searchParams]);
 
+  return (
+    <>
+      {fullscreenMode ? null : <TopBar />}
+      <Desktop
+        fullscreenMode={fullscreenMode}
+        onToggleFullscreen={toggleFullscreen}
+        routedAppId={route.id}
+        routedContent={children}
+      />
+    </>
+  );
+}
+
+export function DesktopExperience({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const route = getPublicAppRouteByPath(pathname);
+  const isDesktopRoute = pathname === "/" || route !== undefined;
+
   if (!isDesktopRoute) return children;
 
   const activeWindow = route ? descriptorForApp(route.id) : undefined;
@@ -93,22 +116,26 @@ function DesktopExperienceRouter({ children }: { children: ReactNode }) {
   return (
     <WindowManagerProvider initialWindow={activeWindow} activeWindowId={route?.id}>
       <RouteWindowSync activeWindow={activeWindow} />
-      {fullscreenMode ? null : <TopBar />}
-      <Desktop
-        fullscreenMode={fullscreenMode}
-        onToggleFullscreen={toggleFullscreen}
-        routedAppId={route?.id}
-        routedContent={route ? children : undefined}
-      />
-      {route ? null : children}
+      {route ? (
+        <Suspense
+          fallback={
+            <>
+              <TopBar />
+              <Desktop routedAppId={route.id} routedContent={<div />} />
+            </>
+          }
+        >
+          <DesktopExperienceRouter pathname={pathname} route={route}>
+            {children}
+          </DesktopExperienceRouter>
+        </Suspense>
+      ) : (
+        <>
+          <TopBar />
+          <Desktop />
+          {children}
+        </>
+      )}
     </WindowManagerProvider>
-  );
-}
-
-export function DesktopExperience({ children }: { children: ReactNode }) {
-  return (
-    <Suspense fallback={children}>
-      <DesktopExperienceRouter>{children}</DesktopExperienceRouter>
-    </Suspense>
   );
 }
