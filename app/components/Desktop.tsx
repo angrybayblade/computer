@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useWindowManager } from "./WindowManager";
 import { AppWindow } from "./AppWindow";
@@ -20,6 +21,35 @@ const desktopAppColumns = [
   }),
   desktopApps.filter((app) => !firstColumnIdSet.has(app.id)),
 ].filter((column) => column.length > 0);
+
+const externalDesktopApps = [
+  {
+    id: "bobby",
+    title: "Bobby",
+    href: "https://bobby.viraj.computer",
+    iconSrc: "/bobby.svg",
+  },
+];
+
+const desktopIconStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 6,
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 8,
+  textDecoration: "none",
+} as const;
+
+const desktopIconLabelStyle = {
+  fontSize: 11,
+  fontWeight: 700,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  color: "var(--color-bauhaus-black)",
+} as const;
 
 export function Desktop({
   fullscreenMode = false,
@@ -135,28 +165,10 @@ export function Desktop({
                   href={route.path}
                   scroll={false}
                   className="desktop-icon"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 6,
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 8,
-                    textDecoration: "none",
-                  }}
+                  style={desktopIconStyle}
                 >
                   <div style={{ width: 48, height: 48 }}>{app.icon}</div>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                      color: "var(--color-bauhaus-black)",
-                    }}
-                  >
+                  <span style={desktopIconLabelStyle}>
                     {app.title}
                   </span>
                 </Link>
@@ -164,6 +176,22 @@ export function Desktop({
             })}
           </div>
         ))}
+        <div className="desktop-icon-column">
+          {externalDesktopApps.map((app) => (
+            <a
+              key={app.id}
+              href={app.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="desktop-icon"
+              style={desktopIconStyle}
+              aria-label={`${app.title} (opens in a new tab)`}
+            >
+              <Image src={app.iconSrc} alt="" width={48} height={48} />
+              <span style={desktopIconLabelStyle}>{app.title}</span>
+            </a>
+          ))}
+        </div>
       </div>
 
       {/* Window rendering */}
