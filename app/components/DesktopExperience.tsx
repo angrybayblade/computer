@@ -50,11 +50,11 @@ function DesktopExperienceRouter({
 }: {
   children: ReactNode;
   pathname: string;
-  route: NonNullable<ReturnType<typeof getPublicAppRouteByPath>>;
+  route?: ReturnType<typeof getPublicAppRouteByPath>;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const fullscreenMode = searchParams.get("fs") === "true";
+  const fullscreenMode = route !== undefined && searchParams.get("fs") === "true";
 
   const toggleFullscreen = useCallback(
     (appId: string) => {
@@ -97,9 +97,10 @@ function DesktopExperienceRouter({
       <Desktop
         fullscreenMode={fullscreenMode}
         onToggleFullscreen={toggleFullscreen}
-        routedAppId={route.id}
-        routedContent={children}
+        routedAppId={route?.id}
+        routedContent={route ? children : undefined}
       />
+      {route ? null : children}
     </>
   );
 }
@@ -116,26 +117,22 @@ export function DesktopExperience({ children }: { children: ReactNode }) {
   return (
     <WindowManagerProvider initialWindow={activeWindow} activeWindowId={route?.id}>
       <RouteWindowSync activeWindow={activeWindow} />
-      {route ? (
-        <Suspense
-          fallback={
-            <>
-              <TopBar />
-              <Desktop routedAppId={route.id} routedContent={<div />} />
-            </>
-          }
-        >
-          <DesktopExperienceRouter pathname={pathname} route={route}>
-            {children}
-          </DesktopExperienceRouter>
-        </Suspense>
-      ) : (
-        <>
-          <TopBar />
-          <Desktop />
+      <Suspense
+        fallback={
+          <>
+            <TopBar />
+            <Desktop
+              routedAppId={route?.id}
+              routedContent={route ? <div /> : undefined}
+            />
+            {route ? null : children}
+          </>
+        }
+      >
+        <DesktopExperienceRouter pathname={pathname} route={route}>
           {children}
-        </>
-      )}
+        </DesktopExperienceRouter>
+      </Suspense>
     </WindowManagerProvider>
   );
 }
