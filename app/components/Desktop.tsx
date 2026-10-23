@@ -187,7 +187,7 @@ export function Desktop({
               style={desktopIconStyle}
               aria-label={`${app.title} (opens in a new tab)`}
             >
-              <Image src={app.iconSrc} alt="" width={48} height={48} />
+              <Image src={app.iconSrc} alt="" width={48} height={48} loading="eager" />
               <span style={desktopIconLabelStyle}>{app.title}</span>
             </a>
           ))}
