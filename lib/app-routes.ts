@@ -7,7 +7,8 @@ export type PublicAppId =
   | "anime"
   | "books"
   | "blog"
-  | "vines";
+  | "vines"
+  | "gallery";
 
 export type PublicAppRoute = {
   id: PublicAppId;
@@ -70,6 +71,12 @@ export const PUBLIC_APP_ROUTES: readonly PublicAppRoute[] = [
     path: "/vines",
     title: "Vines",
     description: "A collection of short-form video favorites curated by Viraj Patel.",
+  },
+  {
+    id: "gallery",
+    path: "/gallery",
+    title: "Gallery",
+    description: "A personal gallery of photographs by Viraj Patel.",
   },
 ];
 

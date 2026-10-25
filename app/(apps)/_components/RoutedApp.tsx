@@ -9,6 +9,7 @@ import { AnimeApp } from "@/app/components/apps/anime";
 import { BooksApp } from "@/app/components/apps/books";
 import { BlogApp } from "@/app/components/apps/blog";
 import { VinesApp } from "@/app/components/apps/vines";
+import { GalleryApp } from "@/app/components/apps/gallery";
 import { listResource } from "@/lib/db/repositories";
 import { getPublicAppRouteById, type PublicAppId } from "@/lib/app-routes";
 import { SITE_NAME } from "@/lib/site";
@@ -18,6 +19,7 @@ import type { Comic } from "@/lib/comics/types";
 import type { Anime } from "@/lib/anime/types";
 import type { Book } from "@/lib/books/types";
 import type { Vine } from "@/lib/vines/types";
+import { listPhotos } from "@/lib/photos/repository";
 
 export function metadataForApp(id: PublicAppId): Metadata {
   const route = getPublicAppRouteById(id);
@@ -81,5 +83,7 @@ export async function RoutedApp({ id }: { id: PublicAppId }) {
       const vines = await getResource<Vine>("vines");
       return <VinesApp initialVine={vines[0]} />;
     }
+    case "gallery":
+      return <GalleryApp initialPhotos={await listPhotos()} />;
   }
 }

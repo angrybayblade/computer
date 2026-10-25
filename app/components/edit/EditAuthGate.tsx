@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { verifyEditCode } from "@/lib/metadata/client";
 
-export function EditAuthGate() {
+export function EditAuthGate({ title = "Metadata Editor" }: { title?: string }) {
   const router = useRouter();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
@@ -34,7 +34,7 @@ export function EditAuthGate() {
           <span />
           <span />
         </div>
-        <h1 className="edit-page-title">Metadata Editor</h1>
+        <h1 className="edit-page-title">{title}</h1>
         <p className="edit-page-subtitle">Authentication required</p>
         <input
           type="text"

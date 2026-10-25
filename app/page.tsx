@@ -20,6 +20,7 @@ export default function Home() {
           <Link href="/books">Books</Link>{" "}
           <Link href="/blog">Blog</Link>{" "}
           <Link href="/vines">Vines</Link>
+          {" "}<Link href="/gallery">Gallery</Link>
         </nav>
       </main>
     </noscript>

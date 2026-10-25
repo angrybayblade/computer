@@ -60,7 +60,7 @@ function FieldInput({
 export function MetadataEditor() {
   const [activeSlug, setActiveSlug] = useState<ResourceSlug>("movies");
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
-  const [form, setForm] = useState<Record<string, string>>({});
+  const [form, setForm] = useState<Record<string, string>>(() => emptyForm(RESOURCE_CONFIGS[0]));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -86,11 +86,33 @@ export function MetadataEditor() {
   }, []);
 
   useEffect(() => {
-    const current = RESOURCE_CONFIGS.find((entry) => entry.slug === activeSlug)!;
+    let cancelled = false;
+    void fetchEditorRows(activeSlug)
+      .then((data) => {
+        if (!cancelled) setRows(data);
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load rows");
+          setRows([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeSlug]);
+
+  function selectResource(slug: ResourceSlug) {
+    const nextConfig = RESOURCE_CONFIGS.find((entry) => entry.slug === slug)!;
+    setActiveSlug(slug);
     setSelectedId(null);
-    setForm(emptyForm(current));
-    void loadRows(activeSlug);
-  }, [activeSlug, loadRows]);
+    setForm(emptyForm(nextConfig));
+    setLoading(true);
+    setError("");
+  }
 
   function startCreate() {
     setSelectedId(null);
@@ -171,11 +193,12 @@ export function MetadataEditor() {
               key={entry.slug}
               type="button"
               className={entry.slug === activeSlug ? "edit-nav-item edit-nav-item-active" : "edit-nav-item"}
-              onClick={() => setActiveSlug(entry.slug)}
+              onClick={() => selectResource(entry.slug)}
             >
               {entry.label}
             </button>
           ))}
+          <Link href="/edit/photos" className="edit-nav-item">Photos</Link>
         </aside>
 
         <main className="edit-main">

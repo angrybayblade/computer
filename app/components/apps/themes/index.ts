@@ -8,6 +8,7 @@ export { midcenturyTheme } from "./midcentury";
 export { animeTheme } from "./anime";
 export { booksTheme } from "./books";
 export { blogTheme } from "./blog";
+export { galleryTheme } from "./gallery";
 export { surrealismTheme } from "./surrealism";
 export { wabisabiTheme } from "./wabisabi";
 

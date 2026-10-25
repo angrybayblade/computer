@@ -33,7 +33,11 @@ services:
     environment:
       - EDIT_SESSION_SECRET
       - DATABASE_URL=${DATABASE_URL:-postgresql://me:me@db:5432/me}
+      - PHOTO_STORAGE_DIR=/app/data/photos
       - SITE_URL=${SITE_URL:-https://viraj.computer}
+    volumes:
+      - photo-data:/app/data/photos
 
 volumes:
   postgres-data:
+  photo-data:

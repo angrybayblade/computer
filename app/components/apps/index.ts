@@ -8,6 +8,7 @@ import { booksApp } from "./books";
 import { blogApp } from "./blog";
 import { vinesApp } from "./vines";
 import { resumeApp } from "./resume";
+import { galleryApp } from "./gallery";
 
 export const APPS: AppDefinition[] = [
   welcomeApp,
@@ -19,6 +20,7 @@ export const APPS: AppDefinition[] = [
   booksApp,
   blogApp,
   vinesApp,
+  galleryApp,
 ];
 
 export type { AppDefinition, AppUiTheme, AppChromeTheme, AppContentTheme } from "./types";
