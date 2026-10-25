@@ -48,6 +48,7 @@ export function TopBar() {
 
   return (
     <div
+      className="system-top-bar"
       style={{
         position: "fixed",
         top: 0,

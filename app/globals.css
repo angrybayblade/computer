@@ -2370,6 +2370,10 @@ body {
   gap: 8px;
 }
 
+body:has(.system-top-bar) .gallery-lightbox-actions {
+  top: 54px;
+}
+
 .gallery-lightbox-action {
   border: 1px solid var(--gallery-paper);
   background: rgba(5, 31, 64, 0.86);
@@ -2730,6 +2734,10 @@ body {
     right: 10px;
     left: 10px;
     justify-content: flex-end;
+  }
+
+  body:has(.system-top-bar) .gallery-lightbox-actions {
+    top: 50px;
   }
 
   .gallery-lightbox-action {

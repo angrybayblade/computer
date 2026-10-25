@@ -22,15 +22,33 @@ export function GalleryApp({
 
   useEffect(() => {
     if (!selectedPhoto) return;
-    function closeOnEscape(event: KeyboardEvent) {
+    const selectedPhotoId = selectedPhoto.id;
+
+    function handleViewerKeyboard(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setSelectedPhoto(null);
         setCopiedPhotoId(null);
+        return;
       }
+
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+      const currentIndex = initialPhotos.findIndex(
+        (photo) => photo.id === selectedPhotoId,
+      );
+      if (currentIndex === -1 || initialPhotos.length < 2) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      const direction = event.key === "ArrowLeft" ? -1 : 1;
+      const nextIndex =
+        (currentIndex + direction + initialPhotos.length) % initialPhotos.length;
+      setSelectedPhoto(initialPhotos[nextIndex]);
+      setCopiedPhotoId(null);
     }
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [selectedPhoto]);
+    window.addEventListener("keydown", handleViewerKeyboard);
+    return () => window.removeEventListener("keydown", handleViewerKeyboard);
+  }, [initialPhotos, selectedPhoto]);
 
   async function copyShareLink(photo: Photo) {
     const url = new URL("/gallery", window.location.origin);
@@ -143,7 +161,7 @@ export function GalleryApp({
             className="gallery-lightbox"
             role="dialog"
             aria-modal="true"
-            aria-label="Photograph preview"
+            aria-label="Photograph preview. Use the left and right arrow keys to navigate."
             onClick={() => {
               setSelectedPhoto(null);
               setCopiedPhotoId(null);
