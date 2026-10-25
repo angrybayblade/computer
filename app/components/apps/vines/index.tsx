@@ -62,13 +62,15 @@ export function VinesApp({ initialVine }: { initialVine?: Vine }) {
 function VinesIcon() {
   return (
     <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
-      <rect x="6" y="15" width="37" height="28" rx="7" fill="#1A1228" />
-      <rect x="3" y="12" width="37" height="28" rx="7" fill="#392B54" stroke="#1A1228" strokeWidth="2" />
-      <path d="M10 18h23" stroke="#64527E" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="m18 20 11 7-11 7Z" fill="#F27670" stroke="#F27670" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M12 10a13 13 0 0 1 23-1" fill="none" stroke="#E84545" strokeWidth="3" strokeLinecap="round" />
-      <path d="m30 9 6 2 1-6" fill="none" stroke="#E84545" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="10" cy="34" r="1" fill="#F27670" />
+      <rect x="7" y="8" width="36" height="36" rx="3" fill="#1A1228" />
+      <rect x="4" y="5" width="36" height="36" rx="3" fill="#392B54" stroke="#1A1228" strokeWidth="2" />
+      <path d="M4 13h36" stroke="#1A1228" strokeWidth="2" />
+      <circle cx="9" cy="9" r="1.5" fill="#F27670" />
+      <circle cx="14" cy="9" r="1.5" fill="#D9A33A" />
+      <path d="m17 19 13 8-13 8Z" fill="#F27670" stroke="#1A1228" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M10 36h24" stroke="#64527E" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M31 17a7 7 0 0 1 2 7" fill="none" stroke="#F27670" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="m31 17 4 1-2-4" fill="none" stroke="#F27670" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   );
 }

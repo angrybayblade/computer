@@ -216,11 +216,13 @@ export function GalleryApp({
 function GalleryIcon() {
   return (
     <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
-      <path d="M8 15h8l3-5h10l3 5h8a3 3 0 0 1 3 3v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V18a3 3 0 0 1 3-3Z" fill="#f4e5d2" stroke="#082f60" strokeWidth="2" />
-      <path d="M6 20h36" stroke="#c96d5b" strokeWidth="2" />
-      <circle cx="24" cy="28" r="9" fill="#f4e8d8" stroke="#c96d5b" strokeWidth="2.5" />
-      <circle cx="24" cy="28" r="4.5" fill="#082f60" />
-      <circle cx="37" cy="18" r="2" fill="#d9a33a" />
+      <rect x="7" y="7" width="36" height="36" rx="2" fill="#082F60" />
+      <rect x="4" y="4" width="36" height="36" rx="2" fill="#F4E5D2" stroke="#082F60" strokeWidth="2" />
+      <path d="M8 8h28v20H8z" fill="#0D3A70" />
+      <path d="m8 24 8-8 6 6 5-5 9 9v2H8Z" fill="#C96D5B" />
+      <circle cx="29" cy="13" r="3" fill="#D9A33A" />
+      <path d="M8 33h17M8 36h10" stroke="#C96D5B" strokeWidth="2" strokeLinecap="square" />
+      <path d="M29 32h7v5h-7z" fill="#D9A33A" />
     </svg>
   );
 }
