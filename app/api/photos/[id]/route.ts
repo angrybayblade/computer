@@ -7,16 +7,22 @@ export const runtime = "nodejs";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-export async function GET(_request: Request, context: RouteContext) {
+export async function GET(request: Request, context: RouteContext) {
   const { id } = await context.params;
   const photo = await getStoredPhoto(id);
   if (!photo) return new Response("Not found", { status: 404 });
 
   try {
     const data = await readPhotoFile(photo.fileName);
+    const download = new URL(request.url).searchParams.get("download") === "1";
     return new Response(new Uint8Array(data), {
       headers: {
         "Cache-Control": "public, max-age=31536000, immutable",
+        ...(download
+          ? {
+              "Content-Disposition": `attachment; filename="viraj-photo-${id}.webp"`,
+            }
+          : {}),
         "Content-Type": "image/webp",
         "X-Content-Type-Options": "nosniff",
       },

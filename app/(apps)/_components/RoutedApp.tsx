@@ -47,7 +47,13 @@ async function getResource<T>(slug: Parameters<typeof listResource>[0]) {
   return (await listResource(slug)) as T[];
 }
 
-export async function RoutedApp({ id }: { id: PublicAppId }) {
+export async function RoutedApp({
+  id,
+  galleryPhotoId,
+}: {
+  id: PublicAppId;
+  galleryPhotoId?: string;
+}) {
   await connection();
 
   switch (id) {
@@ -84,6 +90,11 @@ export async function RoutedApp({ id }: { id: PublicAppId }) {
       return <VinesApp initialVine={vines[0]} />;
     }
     case "gallery":
-      return <GalleryApp initialPhotos={await listPhotos()} />;
+      return (
+        <GalleryApp
+          initialPhotos={await listPhotos()}
+          initialSelectedPhotoId={galleryPhotoId}
+        />
+      );
   }
 }

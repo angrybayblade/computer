@@ -7,17 +7,50 @@ import type { AppDefinition } from "../types";
 import { galleryTheme } from "../themes/gallery";
 import type { Photo } from "@/lib/photos/types";
 
-export function GalleryApp({ initialPhotos = [] }: { initialPhotos?: Photo[] }) {
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+export function GalleryApp({
+  initialPhotos = [],
+  initialSelectedPhotoId,
+}: {
+  initialPhotos?: Photo[];
+  initialSelectedPhotoId?: string;
+}) {
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(
+    () =>
+      initialPhotos.find((photo) => photo.id === initialSelectedPhotoId) ?? null,
+  );
+  const [copiedPhotoId, setCopiedPhotoId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!selectedPhoto) return;
     function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") setSelectedPhoto(null);
+      if (event.key === "Escape") {
+        setSelectedPhoto(null);
+        setCopiedPhotoId(null);
+      }
     }
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [selectedPhoto]);
+
+  async function copyShareLink(photo: Photo) {
+    const url = new URL("/gallery", window.location.origin);
+    url.searchParams.set("photo", photo.id);
+
+    try {
+      await navigator.clipboard.writeText(url.toString());
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = url.toString();
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
+
+    setCopiedPhotoId(photo.id);
+  }
 
   return (
     <AppContent theme={galleryTheme.content}>
@@ -62,23 +95,45 @@ export function GalleryApp({ initialPhotos = [] }: { initialPhotos?: Photo[] }) 
         ) : (
           <section className="gallery-grid" aria-label="Photo gallery">
             {initialPhotos.map((photo, index) => (
-              <button
-                type="button"
-                className="gallery-photo"
-                key={photo.id}
-                onClick={() => setSelectedPhoto(photo)}
-                aria-label={`Open photograph ${index + 1}`}
-              >
-                <Image
-                  src={photo.src}
-                  alt=""
-                  width={photo.width}
-                  height={photo.height}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                  unoptimized
-                />
-                <span>{String(index + 1).padStart(2, "0")}</span>
-              </button>
+              <div className="gallery-photo" key={photo.id}>
+                <button
+                  type="button"
+                  className="gallery-photo-open"
+                  onClick={() => {
+                    setSelectedPhoto(photo);
+                    setCopiedPhotoId(null);
+                  }}
+                  aria-label={`Open photograph ${index + 1}`}
+                >
+                  <Image
+                    src={photo.src}
+                    alt=""
+                    width={photo.width}
+                    height={photo.height}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                    unoptimized
+                  />
+                  <span className="gallery-photo-index">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </button>
+                <div className="gallery-photo-actions">
+                  <button
+                    type="button"
+                    onClick={() => copyShareLink(photo)}
+                    aria-label={`Copy link to photograph ${index + 1}`}
+                  >
+                    {copiedPhotoId === photo.id ? "Copied" : "Share"}
+                  </button>
+                  <a
+                    href={`/api/photos/${photo.id}?download=1`}
+                    download={`viraj-photo-${photo.id}.webp`}
+                    aria-label={`Download photograph ${index + 1}`}
+                  >
+                    Download
+                  </a>
+                </div>
+              </div>
             ))}
           </section>
         )}
@@ -89,16 +144,41 @@ export function GalleryApp({ initialPhotos = [] }: { initialPhotos?: Photo[] }) 
             role="dialog"
             aria-modal="true"
             aria-label="Photograph preview"
-            onClick={() => setSelectedPhoto(null)}
+            onClick={() => {
+              setSelectedPhoto(null);
+              setCopiedPhotoId(null);
+            }}
           >
-            <button
-              type="button"
-              className="gallery-lightbox-close"
-              onClick={() => setSelectedPhoto(null)}
-              aria-label="Close photograph"
+            <div
+              className="gallery-lightbox-actions"
+              onClick={(event) => event.stopPropagation()}
             >
-              Close ×
-            </button>
+              <button
+                type="button"
+                className="gallery-lightbox-action"
+                onClick={() => copyShareLink(selectedPhoto)}
+              >
+                {copiedPhotoId === selectedPhoto.id ? "Link copied" : "Copy link"}
+              </button>
+              <a
+                className="gallery-lightbox-action"
+                href={`/api/photos/${selectedPhoto.id}?download=1`}
+                download={`viraj-photo-${selectedPhoto.id}.webp`}
+              >
+                Download
+              </a>
+              <button
+                type="button"
+                className="gallery-lightbox-action gallery-lightbox-close"
+                onClick={() => {
+                  setSelectedPhoto(null);
+                  setCopiedPhotoId(null);
+                }}
+                aria-label="Close photograph"
+              >
+                Close ×
+              </button>
+            </div>
             <Image
               src={selectedPhoto.src}
               alt="Selected photograph"
