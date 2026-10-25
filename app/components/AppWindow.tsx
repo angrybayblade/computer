@@ -295,6 +295,7 @@ export function AppWindow({
         </span>
         <div
           className={`app-window-controls${chrome.controlsClassName ? ` ${chrome.controlsClassName}` : ""}`}
+          onPointerDown={(event) => event.stopPropagation()}
           style={{ display: "flex", gap: 0, height: "100%" }}
         >
           <button

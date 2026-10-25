@@ -199,6 +199,7 @@ export function MetadataEditor() {
             </button>
           ))}
           <Link href="/edit/photos" className="edit-nav-item">Photos</Link>
+          <Link href="/edit/stickers" className="edit-nav-item">Stickers</Link>
         </aside>
 
         <main className="edit-main">

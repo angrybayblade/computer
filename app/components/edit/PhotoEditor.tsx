@@ -118,7 +118,7 @@ export function PhotoEditor() {
   }
 
   return (
-    <div className="edit-shell photo-editor-shell">
+    <div className="edit-shell">
       <header className="edit-header">
         <div className="edit-header-left">
           <div className="edit-auth-mark" aria-hidden><span /><span /><span /></div>
@@ -131,6 +131,7 @@ export function PhotoEditor() {
         <aside className="edit-sidebar">
           <Link href="/edit" className="edit-nav-item">Metadata</Link>
           <span className="edit-nav-item edit-nav-item-active">Photos</span>
+          <Link href="/edit/stickers" className="edit-nav-item">Stickers</Link>
         </aside>
 
         <main className="edit-main photo-editor-main">

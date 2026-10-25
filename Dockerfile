@@ -22,7 +22,7 @@ ENV NODE_ENV=production \
 COPY --from=build --chown=node:node /app/.next/standalone ./
 COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
-RUN mkdir -p /app/data/photos && chown -R node:node /app/data
+RUN mkdir -p /app/data/photos /app/data/stickers && chown -R node:node /app/data
 
 USER node
 EXPOSE 3000

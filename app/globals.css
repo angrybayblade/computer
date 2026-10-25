@@ -2425,124 +2425,426 @@ body:has(.system-top-bar) .gallery-lightbox-actions {
   }
 }
 
+/* ── Sticker drawer ── */
+
+.stickers-window {
+  container: stickers-window / inline-size;
+}
+
+.stickers-title-bar {
+  background-image: linear-gradient(90deg, transparent 0 18px, rgba(37, 34, 31, 0.08) 18px 19px, transparent 19px 37px) !important;
+  background-size: 38px 100% !important;
+}
+
+.stickers-title-bar .app-window-title::after {
+  content: "  /  REUSABLE IMAGE DRAWER";
+  color: #ff6b57;
+}
+
+.stickers-app {
+  --sticker-ink: #25221f;
+  --sticker-paper: #f7edda;
+  --sticker-blue: #8aa7ff;
+  --sticker-coral: #ff6b57;
+  --sticker-yellow: #ffcf4a;
+  --sticker-mint: #67c9bf;
+  min-height: 100%;
+  background-color: var(--sticker-paper);
+  background-image:
+    linear-gradient(rgba(37, 34, 31, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 34, 31, 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.stickers-shell {
+  min-height: 100%;
+  padding: clamp(18px, 4vw, 42px);
+}
+
+.stickers-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 320px) 54px;
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 30px;
+  padding: clamp(20px, 4vw, 38px);
+  border: 2px solid var(--sticker-ink);
+  background: var(--sticker-blue);
+  box-shadow: 7px 7px 0 var(--sticker-ink);
+  overflow: hidden;
+}
+
+.stickers-header::before,
+.stickers-header::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.stickers-header::before {
+  width: 90px;
+  height: 90px;
+  top: -38px;
+  right: 18%;
+  border: 12px solid var(--sticker-yellow);
+  border-radius: 50%;
+}
+
+.stickers-header::after {
+  width: 120px;
+  height: 24px;
+  right: -34px;
+  bottom: 10px;
+  background: repeating-linear-gradient(135deg, var(--sticker-coral) 0 10px, transparent 10px 18px);
+  transform: rotate(-7deg);
+}
+
+.stickers-kicker {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.stickers-header h1 {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(2.7rem, 7vw, 5.7rem);
+  font-weight: 900;
+  line-height: 0.78;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+}
+
+.stickers-header p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+}
+
+.stickers-count {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border: 2px solid var(--sticker-ink);
+  background: var(--sticker-yellow);
+  font-size: 17px;
+  font-weight: 900;
+  box-shadow: 3px 3px 0 var(--sticker-ink);
+}
+
+.stickers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 22px;
+}
+
+.sticker-card {
+  min-width: 0;
+  padding: 8px;
+  border: 2px solid var(--sticker-ink);
+  background: #fff9ed;
+  box-shadow: 5px 5px 0 var(--sticker-ink);
+}
+
+.sticker-card:nth-child(3n + 2) {
+  background: #fff4c5;
+}
+
+.sticker-card:nth-child(3n) {
+  background: #dff5f1;
+}
+
+.sticker-preview {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.sticker-checkerboard,
+.sticker-editor-preview {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  background-color: #f6f1e7;
+  background-image:
+    linear-gradient(45deg, #ddd7cc 25%, transparent 25%),
+    linear-gradient(-45deg, #ddd7cc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ddd7cc 75%),
+    linear-gradient(-45deg, transparent 75%, #ddd7cc 75%);
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-size: 16px 16px;
+  overflow: hidden;
+}
+
+.sticker-checkerboard img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 88%;
+  max-height: 210px;
+  object-fit: contain;
+  filter: drop-shadow(2px 3px 0 rgba(37, 34, 31, 0.18));
+  transition: transform 160ms ease;
+}
+
+.sticker-preview:hover img,
+.sticker-preview:focus-visible img {
+  transform: rotate(-2deg) scale(1.04);
+}
+
+.sticker-preview:focus-visible {
+  outline: 3px solid var(--sticker-coral);
+  outline-offset: 2px;
+}
+
+.sticker-number {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  padding: 4px 6px;
+  border: 1px solid var(--sticker-ink);
+  background: var(--sticker-yellow);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.sticker-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 8px;
+  border: 1px solid var(--sticker-ink);
+}
+
+.sticker-actions button,
+.sticker-actions a,
+.sticker-viewer-actions button,
+.sticker-viewer-actions a {
+  display: grid;
+  min-width: 0;
+  place-items: center;
+  border: 0;
+  border-right: 1px solid var(--sticker-ink);
+  background: var(--sticker-paper);
+  color: var(--sticker-ink);
+  padding: 8px 5px;
+  font: inherit;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sticker-actions > :last-child,
+.sticker-viewer-actions > :last-child {
+  border-right: 0;
+}
+
+.sticker-actions button:hover,
+.sticker-actions button:focus-visible,
+.sticker-actions a:hover,
+.sticker-actions a:focus-visible,
+.sticker-viewer-actions button:hover,
+.sticker-viewer-actions button:focus-visible,
+.sticker-viewer-actions a:hover,
+.sticker-viewer-actions a:focus-visible {
+  background: var(--sticker-yellow);
+}
+
+.sticker-feedback {
+  min-height: 13px;
+  margin: 5px 2px 0;
+  color: #7b4138;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stickers-empty {
+  display: grid;
+  min-height: 280px;
+  place-items: center;
+  align-content: center;
+  border: 2px dashed var(--sticker-ink);
+  background: rgba(255, 249, 237, 0.7);
+  text-align: center;
+}
+
+.stickers-empty span {
+  color: var(--sticker-coral);
+  font-size: 52px;
+}
+
+.stickers-empty h2 {
+  margin: 5px 0 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+.stickers-empty p {
+  font-size: 10px;
+}
+
+.sticker-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 70px 30px 30px;
+  background: rgba(18, 17, 16, 0.95);
+  cursor: zoom-out;
+}
+
+.sticker-viewer-image {
+  display: grid;
+  width: min(76vw, 760px);
+  height: min(76vh, 760px);
+  place-items: center;
+  background-color: #262522;
+  background-image:
+    linear-gradient(45deg, #3e3c39 25%, transparent 25%),
+    linear-gradient(-45deg, #3e3c39 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #3e3c39 75%),
+    linear-gradient(-45deg, transparent 75%, #3e3c39 75%);
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+  background-size: 24px 24px;
+  cursor: default;
+}
+
+.sticker-viewer-image img {
+  width: auto;
+  height: auto;
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.sticker-viewer-actions {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  display: flex;
+  border: 1px solid var(--sticker-paper);
+}
+
+body:has(.system-top-bar) .sticker-viewer-actions {
+  top: 54px;
+}
+
+.sticker-viewer-actions button,
+.sticker-viewer-actions a {
+  border-right-color: var(--sticker-paper);
+  background: var(--sticker-ink);
+  color: var(--sticker-paper);
+  padding: 9px 10px;
+}
+
+.sticker-editor-preview {
+  min-height: 150px;
+}
+
+.sticker-editor-shell .sticker-editor-preview {
+  border: 2px solid var(--color-bauhaus-black);
+}
+
+.sticker-editor-shell .sticker-editor-preview img {
+  width: auto;
+  height: auto;
+  max-width: 88%;
+  max-height: 138px;
+  border: 0;
+  object-fit: contain;
+}
+
+@container stickers-window (max-width: 620px) {
+  .stickers-header {
+    grid-template-columns: 1fr 48px;
+  }
+
+  .stickers-header > p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .stickers-count {
+    width: 48px;
+    height: 48px;
+  }
+
+  .stickers-grid {
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 14px;
+  }
+
+  .sticker-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .sticker-actions button,
+  .sticker-actions a {
+    border-right: 0;
+    border-bottom: 1px solid var(--sticker-ink);
+  }
+
+  .sticker-actions > :last-child {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .sticker-viewer {
+    padding: 96px 14px 14px;
+  }
+
+  .sticker-viewer-actions {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    justify-content: flex-end;
+  }
+
+  body:has(.system-top-bar) .sticker-viewer-actions {
+    top: 50px;
+  }
+
+  .sticker-viewer-actions button,
+  .sticker-viewer-actions a {
+    padding: 8px 7px;
+    font-size: 7px;
+  }
+
+  .sticker-viewer-image {
+    width: 92vw;
+    height: 72vh;
+  }
+}
+
 /* ── Photo editor ── */
 
 .edit-nav-item {
   color: inherit;
   text-decoration: none;
-}
-
-.photo-editor-shell {
-  --photo-editor-ink: #363732;
-  --photo-editor-rule: #8a887f;
-  --photo-editor-paper: #f2eee5;
-  --photo-editor-surface: #faf7f0;
-  --photo-editor-muted: #ddd7cc;
-  --photo-editor-accent: #a9b5b3;
-  --photo-editor-topbar: #d8d1c6;
-  background: var(--photo-editor-paper);
-  color: var(--photo-editor-ink);
-}
-
-.photo-editor-shell .edit-header {
-  border-bottom: 1px solid var(--photo-editor-rule);
-  background: var(--photo-editor-topbar);
-  color: var(--photo-editor-ink);
-}
-
-.photo-editor-shell .edit-auth-mark {
-  gap: 5px;
-}
-
-.photo-editor-shell .edit-auth-mark span:nth-child(1),
-.photo-editor-shell .edit-auth-mark span:nth-child(2),
-.photo-editor-shell .edit-auth-mark span:nth-child(3) {
-  width: 8px;
-  height: 8px;
-  border-radius: 0;
-  clip-path: none;
-}
-
-.photo-editor-shell .edit-auth-mark span:nth-child(1) {
-  background: var(--photo-editor-accent);
-}
-
-.photo-editor-shell .edit-auth-mark span:nth-child(2) {
-  background: var(--photo-editor-muted);
-}
-
-.photo-editor-shell .edit-auth-mark span:nth-child(3) {
-  background: var(--photo-editor-rule);
-}
-
-.photo-editor-shell .edit-sidebar {
-  border-right: 1px solid var(--photo-editor-rule);
-  background: var(--photo-editor-muted);
-}
-
-.photo-editor-shell .edit-nav-item {
-  border: 1px solid var(--photo-editor-rule);
-  background: var(--photo-editor-surface);
-}
-
-.photo-editor-shell .edit-nav-item-active {
-  border-color: var(--photo-editor-ink);
-  background: var(--photo-editor-accent);
-  box-shadow: none;
-}
-
-.photo-editor-shell .edit-panel {
-  border: 1px solid var(--photo-editor-rule);
-  background: var(--photo-editor-surface);
-  box-shadow: none;
-}
-
-.photo-editor-shell .edit-btn {
-  border-width: 1px;
-}
-
-.photo-editor-shell .edit-btn-primary {
-  background: var(--photo-editor-ink);
-  color: var(--photo-editor-paper);
-}
-
-.photo-editor-shell .edit-btn-secondary {
-  border-color: var(--photo-editor-rule);
-  background: var(--photo-editor-surface);
-  color: var(--photo-editor-ink);
-}
-
-.photo-editor-shell .photo-upload-dropzone {
-  border: 1px dashed var(--photo-editor-rule);
-  background: color-mix(in srgb, var(--photo-editor-accent) 12%, var(--photo-editor-surface));
-}
-
-.photo-editor-shell .photo-upload-dropzone:hover,
-.photo-editor-shell .photo-upload-dropzone:focus-within {
-  background: color-mix(in srgb, var(--photo-editor-accent) 22%, var(--photo-editor-surface));
-  box-shadow: inset 0 0 0 1px var(--photo-editor-rule);
-}
-
-.photo-editor-shell .photo-upload-symbol {
-  background: var(--photo-editor-accent);
-  color: var(--photo-editor-ink);
-}
-
-.photo-editor-shell .photo-upload-choose,
-.photo-editor-shell .photo-upload-selection li,
-.photo-editor-shell .photo-editor-card img {
-  border-width: 1px;
-  border-color: var(--photo-editor-rule);
-}
-
-.photo-editor-shell .photo-upload-selection button {
-  background: var(--photo-editor-ink);
-  color: var(--photo-editor-paper);
-}
-
-.photo-editor-shell .photo-upload-status .edit-error,
-.photo-editor-shell .photo-upload-success {
-  border-width: 1px;
 }
 
 .photo-editor-main {
@@ -2715,13 +3017,6 @@ body:has(.system-top-bar) .gallery-lightbox-actions {
   height: 150px;
   border: 2px solid var(--color-bauhaus-black);
   object-fit: cover;
-}
-
-@media (max-width: 900px) {
-  .photo-editor-shell .edit-sidebar {
-    border-right: 0;
-    border-bottom: 1px solid var(--photo-editor-rule);
-  }
 }
 
 @media (max-width: 640px) {

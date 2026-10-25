@@ -10,6 +10,7 @@ import { BooksApp } from "@/app/components/apps/books";
 import { BlogApp } from "@/app/components/apps/blog";
 import { VinesApp } from "@/app/components/apps/vines";
 import { GalleryApp } from "@/app/components/apps/gallery";
+import { StickersApp } from "@/app/components/apps/stickers";
 import { listResource } from "@/lib/db/repositories";
 import { getPublicAppRouteById, type PublicAppId } from "@/lib/app-routes";
 import { SITE_NAME } from "@/lib/site";
@@ -20,6 +21,7 @@ import type { Anime } from "@/lib/anime/types";
 import type { Book } from "@/lib/books/types";
 import type { Vine } from "@/lib/vines/types";
 import { listPhotos } from "@/lib/photos/repository";
+import { listStickers } from "@/lib/stickers/repository";
 
 export function metadataForApp(id: PublicAppId): Metadata {
   const route = getPublicAppRouteById(id);
@@ -50,9 +52,11 @@ async function getResource<T>(slug: Parameters<typeof listResource>[0]) {
 export async function RoutedApp({
   id,
   galleryPhotoId,
+  selectedStickerId,
 }: {
   id: PublicAppId;
   galleryPhotoId?: string;
+  selectedStickerId?: string;
 }) {
   await connection();
 
@@ -94,6 +98,13 @@ export async function RoutedApp({
         <GalleryApp
           initialPhotos={await listPhotos()}
           initialSelectedPhotoId={galleryPhotoId}
+        />
+      );
+    case "stickers":
+      return (
+        <StickersApp
+          initialStickers={await listStickers()}
+          initialSelectedStickerId={selectedStickerId}
         />
       );
   }

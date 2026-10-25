@@ -9,6 +9,7 @@ export { animeTheme } from "./anime";
 export { booksTheme } from "./books";
 export { blogTheme } from "./blog";
 export { galleryTheme } from "./gallery";
+export { stickersTheme } from "./stickers";
 export { surrealismTheme } from "./surrealism";
 export { wabisabiTheme } from "./wabisabi";
 

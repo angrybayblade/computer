@@ -12,14 +12,27 @@ import { getPublicAppRouteById } from "@/lib/app-routes";
 
 const desktopApps = APPS.filter((app) => getPublicAppRouteById(app.id));
 const firstColumnIds = ["welcome", "resume", "blog", "books", "vines"];
+const thirdColumnIds = ["stickers"];
+const iconsPerColumn = 5;
 const firstColumnIdSet = new Set(firstColumnIds);
+const thirdColumnIdSet = new Set(thirdColumnIds);
 const desktopAppById = new Map(desktopApps.map((app) => [app.id, app]));
+const remainingDesktopApps = desktopApps.filter(
+  (app) => !firstColumnIdSet.has(app.id) && !thirdColumnIdSet.has(app.id),
+);
 const desktopAppColumns = [
   firstColumnIds.flatMap((id) => {
     const app = desktopAppById.get(id);
     return app ? [app] : [];
   }),
-  desktopApps.filter((app) => !firstColumnIdSet.has(app.id)),
+  ...Array.from(
+    { length: Math.ceil(remainingDesktopApps.length / iconsPerColumn) },
+    (_, index) =>
+      remainingDesktopApps.slice(
+        index * iconsPerColumn,
+        (index + 1) * iconsPerColumn,
+      ),
+  ),
 ].filter((column) => column.length > 0);
 
 const externalDesktopApps = [
@@ -191,6 +204,24 @@ export function Desktop({
               <span style={desktopIconLabelStyle}>{app.title}</span>
             </a>
           ))}
+          {thirdColumnIds.flatMap((id) => {
+            const app = desktopAppById.get(id);
+            const route = app ? getPublicAppRouteById(app.id) : undefined;
+            if (!app || !route) return [];
+
+            return [
+              <Link
+                key={app.id}
+                href={route.path}
+                scroll={false}
+                className="desktop-icon"
+                style={desktopIconStyle}
+              >
+                <div style={{ width: 48, height: 48 }}>{app.icon}</div>
+                <span style={desktopIconLabelStyle}>{app.title}</span>
+              </Link>,
+            ];
+          })}
         </div>
       </div>
 

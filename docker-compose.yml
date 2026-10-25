@@ -34,10 +34,13 @@ services:
       - EDIT_SESSION_SECRET
       - DATABASE_URL=${DATABASE_URL:-postgresql://me:me@db:5432/me}
       - PHOTO_STORAGE_DIR=/app/data/photos
+      - STICKER_STORAGE_DIR=/app/data/stickers
       - SITE_URL=${SITE_URL:-https://viraj.computer}
     volumes:
       - photo-data:/app/data/photos
+      - sticker-data:/app/data/stickers
 
 volumes:
   postgres-data:
   photo-data:
+  sticker-data:
