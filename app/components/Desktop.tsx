@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useWindowManager } from "./WindowManager";
@@ -63,6 +63,29 @@ const desktopIconLabelStyle = {
   textTransform: "uppercase",
   color: "var(--color-bauhaus-black)",
 } as const;
+
+function PersistedWindowContent({
+  isActive,
+  routedContent,
+  fallback,
+}: {
+  isActive: boolean;
+  routedContent?: ReactNode;
+  fallback: ReactNode;
+}) {
+  const [cachedContent, setCachedContent] = useState<ReactNode>(routedContent);
+
+  if (
+    isActive &&
+    routedContent !== undefined &&
+    cachedContent !== routedContent
+  ) {
+    setCachedContent(routedContent);
+  }
+
+  if (isActive && routedContent !== undefined) return routedContent;
+  return cachedContent ?? fallback;
+}
 
 export function Desktop({
   fullscreenMode = false,
@@ -238,11 +261,15 @@ export function Desktop({
             fullscreenMode={fullscreenMode && routedAppId === ws.id}
             onToggleFullscreen={onToggleFullscreen}
           >
-            {routedAppId === ws.id && routedContent ? routedContent : (appDef?.content ?? (
-              <div style={{ padding: 24, color: "var(--color-bauhaus-dark-gray)" }}>
-                Unknown application
-              </div>
-            ))}
+            <PersistedWindowContent
+              isActive={routedAppId === ws.id}
+              routedContent={routedContent}
+              fallback={appDef?.content ?? (
+                <div style={{ padding: 24, color: "var(--color-bauhaus-dark-gray)" }}>
+                  Unknown application
+                </div>
+              )}
+            />
           </AppWindow>
         );
       })}
