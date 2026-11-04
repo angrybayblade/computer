@@ -2,13 +2,15 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import { md5Hex } from "@/lib/media/checksum";
 import type { StoredSticker } from "./types";
 
 export const MAX_STICKERS_PER_UPLOAD = 20;
 export const MAX_STICKER_BYTES = 20 * 1024 * 1024;
 export const MAX_STICKER_UPLOAD_BYTES = 100 * 1024 * 1024;
 
-const MAX_INPUT_PIXELS = 40_000_000;
+// Match photo uploads so 48 MP phone HEIC files do not fail before resizing.
+const MAX_INPUT_PIXELS = 80_000_000;
 const MAX_OUTPUT_EDGE = 2000;
 const SUPPORTED_IMAGE_TYPES = new Set([
   "image/avif",
@@ -22,7 +24,10 @@ const SUPPORTED_IMAGE_TYPES = new Set([
 const SUPPORTED_IMAGE_EXTENSIONS = /\.(?:avif|heic|heif|jpe?g|png|tiff?|webp)$/i;
 const HEIC_IMAGE_EXTENSIONS = /\.(?:heic|heif)$/i;
 
-type PreparedSticker = StoredSticker & { data: Buffer };
+type PreparedSticker = Omit<StoredSticker, "contentMd5"> & {
+  contentMd5: string;
+  data: Buffer;
+};
 
 function isHeicFile(file: File) {
   return (
@@ -129,6 +134,7 @@ export async function prepareSticker(file: File): Promise<PreparedSticker> {
     width: info.width,
     height: info.height,
     createdAt: new Date().toISOString(),
+    contentMd5: md5Hex(data),
     data,
   };
 }
@@ -169,6 +175,7 @@ export function stickerRecords(stickers: PreparedSticker[]): StoredSticker[] {
     width: sticker.width,
     height: sticker.height,
     createdAt: sticker.createdAt,
+    contentMd5: sticker.contentMd5,
   }));
 }
 

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { isEditAuthenticated } from "@/lib/auth/edit-session";
-import { insertPhotos, listPhotos } from "@/lib/photos/repository";
+import {
+  findPhotosByContentMd5,
+  insertPhotos,
+  listPhotos,
+} from "@/lib/photos/repository";
 import {
   deletePhotoFile,
   photoRecords,
@@ -52,14 +56,45 @@ export async function POST(request: Request) {
       );
     }
 
-    await writePreparedPhotos(prepared);
-    const records = photoRecords(prepared);
+    const existingByChecksum = await findPhotosByContentMd5(
+      prepared.map((photo) => photo.contentMd5),
+    );
+    const duplicates = prepared.flatMap((photo) => {
+      const existing = existingByChecksum.get(photo.contentMd5);
+      return existing ? [existing] : [];
+    });
+    const newPhotos = prepared.filter(
+      (photo) => !existingByChecksum.has(photo.contentMd5),
+    );
+
+    if (newPhotos.length === 0) {
+      return NextResponse.json(
+        { photos: [], duplicates, failures },
+        { status: failures.length > 0 ? 207 : 200 },
+      );
+    }
+
+    await writePreparedPhotos(newPhotos);
+    const records = photoRecords(newPhotos);
 
     try {
-      const photos = await insertPhotos(records);
+      const result = await insertPhotos(records);
+      const insertedIds = new Set(result.insertedIds);
+      await Promise.all(
+        records
+          .filter((photo) => !insertedIds.has(photo.id))
+          .map((photo) => deletePhotoFile(photo.fileName)),
+      );
       return NextResponse.json(
-        { photos, failures },
-        { status: failures.length > 0 ? 207 : 201 },
+        {
+          photos: result.photos,
+          duplicates: [...duplicates, ...result.duplicates],
+          failures,
+        },
+        {
+          status:
+            failures.length > 0 ? 207 : result.photos.length > 0 ? 201 : 200,
+        },
       );
     } catch (error) {
       await Promise.all(records.map((photo) => deletePhotoFile(photo.fileName)));

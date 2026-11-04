@@ -8,4 +8,5 @@ export type Sticker = {
 
 export type StoredSticker = Sticker & {
   fileName: string;
+  contentMd5: string | null;
 };

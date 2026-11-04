@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { isEditAuthenticated } from "@/lib/auth/edit-session";
-import { insertStickers, listStickers } from "@/lib/stickers/repository";
+import {
+  findStickersByContentMd5,
+  insertStickers,
+  listStickers,
+} from "@/lib/stickers/repository";
 import {
   deleteStickerFile,
   prepareSticker,
@@ -52,14 +56,49 @@ export async function POST(request: Request) {
       );
     }
 
-    await writePreparedStickers(prepared);
-    const records = stickerRecords(prepared);
+    const existingByChecksum = await findStickersByContentMd5(
+      prepared.map((sticker) => sticker.contentMd5),
+    );
+    const duplicates = prepared.flatMap((sticker) => {
+      const existing = existingByChecksum.get(sticker.contentMd5);
+      return existing ? [existing] : [];
+    });
+    const newStickers = prepared.filter(
+      (sticker) => !existingByChecksum.has(sticker.contentMd5),
+    );
+
+    if (newStickers.length === 0) {
+      return NextResponse.json(
+        { stickers: [], duplicates, failures },
+        { status: failures.length > 0 ? 207 : 200 },
+      );
+    }
+
+    await writePreparedStickers(newStickers);
+    const records = stickerRecords(newStickers);
 
     try {
-      const stickers = await insertStickers(records);
+      const result = await insertStickers(records);
+      const insertedIds = new Set(result.insertedIds);
+      await Promise.all(
+        records
+          .filter((sticker) => !insertedIds.has(sticker.id))
+          .map((sticker) => deleteStickerFile(sticker.fileName)),
+      );
       return NextResponse.json(
-        { stickers, failures },
-        { status: failures.length > 0 ? 207 : 201 },
+        {
+          stickers: result.stickers,
+          duplicates: [...duplicates, ...result.duplicates],
+          failures,
+        },
+        {
+          status:
+            failures.length > 0
+              ? 207
+              : result.stickers.length > 0
+                ? 201
+                : 200,
+        },
       );
     } catch (error) {
       await Promise.all(

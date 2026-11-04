@@ -1,17 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Sticker } from "@/lib/stickers/types";
 
+const MAX_FILES_PER_SELECTION = 20;
+
 async function responseError(response: Response) {
   const body = (await response.json().catch(() => ({}))) as {
     error?: string;
-    failures?: Array<{ name: string }>;
+    failures?: Array<{ name: string; error?: string }>;
   };
-  const failedNames = body.failures?.map((failure) => failure.name).join(", ");
-  return [body.error || `Request failed (${response.status})`, failedNames]
+  const failedFiles = body.failures
+    ?.map((failure) =>
+      failure.error ? `${failure.name}: ${failure.error}` : failure.name,
+    )
+    .join(", ");
+  return [body.error || `Request failed (${response.status})`, failedFiles]
     .filter(Boolean)
     .join(": ");
 }
@@ -34,20 +40,9 @@ export function StickerEditor() {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{ current: number; total: number } | null>(null);
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState("");
-
-  const loadStickers = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      setStickers(await fetchStickers());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load stickers");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -75,30 +70,75 @@ export function StickerEditor() {
     setUploading(true);
     setError("");
     setFeedback("");
-    const formData = new FormData();
-    for (const file of files) formData.append("stickers", file);
+    const selectedFiles = files;
+    const failedFiles: File[] = [];
+    const failureMessages: string[] = [];
+    const uploadedStickers: Sticker[] = [];
+    let duplicateCount = 0;
 
     try {
-      const response = await fetch("/api/stickers", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) throw new Error(await responseError(response));
-      const result = (await response.json()) as {
-        stickers: Sticker[];
-        failures?: Array<{ name: string }>;
-      };
-      setFiles([]);
+      for (const [index, file] of selectedFiles.entries()) {
+        setUploadProgress({ current: index + 1, total: selectedFiles.length });
+        setFeedback(`Uploading ${index + 1} of ${selectedFiles.length}: ${file.name}`);
+
+        const formData = new FormData();
+        formData.append("stickers", file);
+
+        try {
+          const response = await fetch("/api/stickers", {
+            method: "POST",
+            body: formData,
+          });
+          if (!response.ok) {
+            const message = await responseError(response);
+            failedFiles.push(file);
+            failureMessages.push(`${file.name}: ${message}`);
+
+            if (response.status === 401) {
+              failedFiles.push(...selectedFiles.slice(index + 1));
+              break;
+            }
+            continue;
+          }
+
+          const result = (await response.json()) as {
+            stickers: Sticker[];
+            duplicates?: Sticker[];
+          };
+          uploadedStickers.push(...result.stickers);
+          duplicateCount += result.duplicates?.length ?? 0;
+        } catch (err) {
+          failedFiles.push(file);
+          failureMessages.push(
+            `${file.name}: ${err instanceof Error ? err.message : "Upload failed"}`,
+          );
+        }
+      }
+
+      setFiles(failedFiles);
       if (inputRef.current) inputRef.current.value = "";
-      await loadStickers();
-      setFeedback(
-        result.failures?.length
-          ? `${result.stickers.length} uploaded. Could not process: ${result.failures.map((failure) => failure.name).join(", ")}`
-          : `${result.stickers.length} ${result.stickers.length === 1 ? "sticker" : "stickers"} uploaded`,
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      if (uploadedStickers.length > 0) {
+        setStickers((current) => [...[...uploadedStickers].reverse(), ...current]);
+      }
+
+      setError(failureMessages.join(" · "));
+      const summary = [];
+      if (uploadedStickers.length > 0) {
+        summary.push(
+          `${uploadedStickers.length} ${uploadedStickers.length === 1 ? "sticker" : "stickers"} uploaded`,
+        );
+      }
+      if (duplicateCount > 0) {
+        summary.push(
+          `${duplicateCount} duplicate ${duplicateCount === 1 ? "was" : "were"} already published`,
+        );
+      }
+      if (failedFiles.length > 0) {
+        summary.push(`${failedFiles.length} ready to retry`);
+      }
+      setFeedback(summary.join(" · "));
     } finally {
+      setUploadProgress(null);
       setUploading(false);
     }
   }
@@ -145,7 +185,9 @@ export function StickerEditor() {
                 <p className="edit-muted">Choose up to 20 images. They are resized when needed, stored as lossless WebP, and stripped of metadata.</p>
               </div>
               <button className="edit-btn edit-btn-primary" type="submit" disabled={uploading || files.length === 0}>
-                {uploading ? "Processing…" : `Upload ${files.length || ""}`.trim()}
+                {uploadProgress
+                  ? `Uploading ${uploadProgress.current}/${uploadProgress.total}`
+                  : `Upload ${files.length || ""}`.trim()}
               </button>
             </div>
 
@@ -162,8 +204,13 @@ export function StickerEditor() {
                 multiple
                 disabled={uploading}
                 onChange={(event) => {
-                  setFiles(Array.from(event.target.files ?? []));
-                  setError("");
+                  const selectedFiles = Array.from(event.target.files ?? []);
+                  setFiles(selectedFiles.slice(0, MAX_FILES_PER_SELECTION));
+                  setError(
+                    selectedFiles.length > MAX_FILES_PER_SELECTION
+                      ? `Choose up to ${MAX_FILES_PER_SELECTION} stickers at a time`
+                      : "",
+                  );
                   setFeedback("");
                 }}
               />

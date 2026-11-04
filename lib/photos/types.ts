@@ -8,4 +8,5 @@ export type Photo = {
 
 export type StoredPhoto = Photo & {
   fileName: string;
+  contentMd5: string | null;
 };

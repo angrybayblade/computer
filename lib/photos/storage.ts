@@ -2,13 +2,16 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import { md5Hex } from "@/lib/media/checksum";
 import type { StoredPhoto } from "./types";
 
 export const MAX_PHOTOS_PER_UPLOAD = 20;
 export const MAX_PHOTO_BYTES = 20 * 1024 * 1024;
 export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
 
-const MAX_INPUT_PIXELS = 40_000_000;
+// Current iPhones can produce 48 MP HEIC photos and panoramas above 50 MP.
+// Keep a ceiling to bound decoder memory while allowing those originals.
+const MAX_INPUT_PIXELS = 80_000_000;
 const MAX_OUTPUT_EDGE = 3200;
 const SUPPORTED_IMAGE_TYPES = new Set([
   "image/avif",
@@ -22,7 +25,10 @@ const SUPPORTED_IMAGE_TYPES = new Set([
 const SUPPORTED_IMAGE_EXTENSIONS = /\.(?:avif|heic|heif|jpe?g|png|tiff?|webp)$/i;
 const HEIC_IMAGE_EXTENSIONS = /\.(?:heic|heif)$/i;
 
-type PreparedPhoto = StoredPhoto & { data: Buffer };
+type PreparedPhoto = Omit<StoredPhoto, "contentMd5"> & {
+  contentMd5: string;
+  data: Buffer;
+};
 
 function isHeicFile(file: File) {
   return file.type === "image/heic" || file.type === "image/heif" || HEIC_IMAGE_EXTENSIONS.test(file.name);
@@ -114,6 +120,7 @@ export async function preparePhoto(file: File): Promise<PreparedPhoto> {
     width: info.width,
     height: info.height,
     createdAt: new Date().toISOString(),
+    contentMd5: md5Hex(data),
     data,
   };
 }
@@ -154,6 +161,7 @@ export function photoRecords(photos: PreparedPhoto[]): StoredPhoto[] {
     width: photo.width,
     height: photo.height,
     createdAt: photo.createdAt,
+    contentMd5: photo.contentMd5,
   }));
 }
 
