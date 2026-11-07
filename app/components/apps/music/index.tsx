@@ -14,11 +14,11 @@ type HistorySort = "playCount" | "lastPlayed" | "title" | "artist";
 const fac = new FastAverageColor();
 const historyDateFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" });
 
-const tabs: { id: MusicTab; label: string; icon: string; accent: string }[] = [
-  { id: "songs", label: "Gems", icon: "♫", accent: "var(--app-sage)" },
-  { id: "history", label: "History", icon: "↻", accent: "var(--app-pink)" },
-  { id: "playlists", label: "Playlists", icon: "◎", accent: "var(--app-slate)" },
-  { id: "lyrics", label: "Lyrics", icon: "✦", accent: "var(--app-peach)" },
+const tabs: { id: MusicTab; label: string; icon: string }[] = [
+  { id: "songs", label: "Gems", icon: "♫" },
+  { id: "history", label: "History", icon: "↻" },
+  { id: "playlists", label: "Playlists", icon: "◎" },
+  { id: "lyrics", label: "Lyrics", icon: "✦" },
 ];
 
 const moodAccents = ["var(--app-sage)", "var(--app-slate)", "var(--app-peach)", "var(--app-pink)"];
@@ -43,6 +43,10 @@ function songCover(song: Song): string {
 
 function songYTMusicUrl(song: Song): string {
   return `https://music.youtube.com/watch?v=${song.playConfig.id}`;
+}
+
+function trackNumber(index: number): string {
+  return String(index + 1).padStart(2, "0");
 }
 
 function useAccentColor(src: string): string | null {
@@ -106,12 +110,26 @@ function StippleWave({ dark = false }: { dark?: boolean }) {
   );
 }
 
-function StippleAtmosphere() {
+function IPodClickWheel() {
   return (
-    <div className="pointillism-atmosphere" aria-hidden>
-      <div className="pointillism-orb pointillism-orb--1" />
-      <div className="pointillism-orb pointillism-orb--2" />
-      <div className="pointillism-orb pointillism-orb--3" />
+    <div className="ipod-click-wheel" aria-hidden>
+      <span className="ipod-wheel-menu">Menu</span>
+      <span className="ipod-wheel-back">◀◀</span>
+      <span className="ipod-wheel-next">▶▶</span>
+      <span className="ipod-wheel-play">▶❚❚</span>
+      <i />
+    </div>
+  );
+}
+
+function SectionNote({ index, title, note }: { index: string; title: string; note: string }) {
+  return (
+    <div className="music-section-note">
+      <span>{index}</span>
+      <div>
+        <h2>{title}</h2>
+        <p>{note}</p>
+      </div>
     </div>
   );
 }
@@ -124,14 +142,13 @@ function TabBar({
   onChange: (tab: MusicTab) => void;
 }) {
   return (
-    <div style={{ display: "flex", gap: 10, padding: "0 20px 16px", flexWrap: "wrap" }}>
+    <div className="ipod-menu">
       {tabs.map((tab) => {
         const isActive = active === tab.id;
         return (
           <div
             key={tab.id}
             className={isActive ? "pointillism-tab pointillism-tab--active" : "pointillism-tab"}
-            style={{ "--tab-accent": tab.accent } as CSSProperties}
           >
             <button
               type="button"
@@ -140,6 +157,7 @@ function TabBar({
             >
               <span className="pointillism-tab-icon">{tab.icon}</span>
               {tab.label}
+              <span className="ipod-menu-chevron">›</span>
             </button>
           </div>
         );
@@ -187,6 +205,7 @@ function SongCard({
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={coverUrl} alt="" crossOrigin="anonymous" />
+          <span className="music-card-index">{trackNumber(index)}</span>
           {showOverlay ? (
             <div className="pointillism-cover-overlay">
               {isPlaying ? (
@@ -224,24 +243,20 @@ function SongsTab({
   onToggle: (songId: string) => void;
 }) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(168px, 1fr))",
-        gap: 14,
-        padding: "0 20px 24px",
-      }}
-    >
-      {songs.map((song, index) => (
-        <SongCard
-          key={song.id}
-          song={song}
-          index={index}
-          isPlaying={playingId === song.id}
-          onToggle={() => onToggle(song.id)}
-        />
-      ))}
-    </div>
+    <section className="music-tab-section">
+      <SectionNote index="01" title="The gems" note="Handpicked tracks for the permanent rotation." />
+      <div className="music-song-grid">
+        {songs.map((song, index) => (
+          <SongCard
+            key={song.id}
+            song={song}
+            index={index}
+            isPlaying={playingId === song.id}
+            onToggle={() => onToggle(song.id)}
+          />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -269,12 +284,10 @@ function HistoryTab({ history }: { history: ListeningHistoryTrack[] }) {
 
   return (
     <section style={{ padding: "0 20px 24px" }}>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, marginBottom: 14 }}>
-          <div>
-            <p style={{ margin: "0 0 4px", color: "var(--app-muted)", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>From YouTube Music</p>
-            <h2 style={{ margin: 0, color: "var(--app-fg)", fontSize: 21 }}>Listening history</h2>
-          </div>
-          <span style={{ color: "var(--app-muted)", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>{history.length.toLocaleString()} tracks</span>
+        <SectionNote index="02" title="The replay log" note="Every return visit, sorted your way." />
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 16, marginBottom: 10, color: "var(--app-muted)", fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          <span>From YouTube Music</span>
+          <span>{history.length.toLocaleString()} tracks</span>
         </div>
         <div style={{ display: "flex", gap: 10, marginBottom: 12, flexWrap: "wrap" }}>
           <label style={{ flex: "1 1 260px" }}>
@@ -364,21 +377,12 @@ function PlaylistCard({
         className="pointillism-panel-inner"
         style={{ "--panel-bg": bg, height: "100%", minHeight: 0 } as CSSProperties}
       >
-        <div
-          style={{
-            width: 36,
-            height: 36,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 18,
-            color: "var(--app-ink)",
-            backgroundImage: "radial-gradient(circle, rgba(26,26,26,0.15) 0.8px, transparent 0.8px)",
-            backgroundSize: "3px 3px",
-            border: "1px dotted var(--app-border)",
-          }}
-        >
-          ◎
+        <div className="music-playlist-heading">
+          <div className="music-playlist-cover">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={playlist.cover} alt="" />
+          </div>
+          <span>{trackNumber(index)}</span>
         </div>
         <div style={{ minWidth: 0 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: "var(--app-fg)", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -403,23 +407,19 @@ function PlaylistCard({
 
 function PlaylistsTab({ playlists }: { playlists: Playlist[] }) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-        gap: 14,
-        padding: "0 20px 24px",
-      }}
-    >
-      {playlists.map((playlist, index) => (
-        <PlaylistCard
-          key={playlist.id}
-          playlist={playlist}
-          colorIndex={index}
-          index={index}
-        />
-      ))}
-    </div>
+    <section className="music-tab-section">
+      <SectionNote index="03" title="The mixtape shelf" note="Small worlds, arranged for a specific frequency." />
+      <div className="music-playlist-grid">
+        {playlists.map((playlist, index) => (
+          <PlaylistCard
+            key={playlist.id}
+            playlist={playlist}
+            colorIndex={index}
+            index={index}
+          />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -433,6 +433,9 @@ function LyricCard({ lyric, index }: { lyric: Lyric; index: number }) {
       style={{ animationDelay: `${index * 0.08}s` } as CSSProperties}
     >
       <div className="pointillism-lyric-inner" style={{ background: bg }}>
+        <span className={`music-lyric-index${isDark ? " music-lyric-index--dark" : ""}`}>
+          Fragment {String(index + 1).padStart(2, "0")}
+        </span>
         <p
           style={{
             margin: 0,
@@ -475,18 +478,14 @@ function LyricCard({ lyric, index }: { lyric: Lyric; index: number }) {
 
 function LyricsTab({ lyrics }: { lyrics: Lyric[] }) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-        gap: 14,
-        padding: "0 20px 24px",
-      }}
-    >
-      {lyrics.map((lyric, index) => (
-        <LyricCard key={lyric.id} lyric={lyric} index={index} />
-      ))}
-    </div>
+    <section className="music-tab-section">
+      <SectionNote index="04" title="Lines worth keeping" note="Fragments that followed the music home." />
+      <div className="music-lyric-grid">
+        {lyrics.map((lyric, index) => (
+          <LyricCard key={lyric.id} lyric={lyric} index={index} />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -531,6 +530,7 @@ function EmbeddedPlayer({ song, onClose }: { song: Song; onClose: () => void }) 
         </div>
         <div style={{ minWidth: 0 }}>
           <div
+            className="ipod-player-title"
             style={{
               fontSize: 13,
               fontWeight: 700,
@@ -543,6 +543,7 @@ function EmbeddedPlayer({ song, onClose }: { song: Song; onClose: () => void }) 
             {song.title}
           </div>
           <div
+            className="ipod-player-artist"
             style={{
               fontSize: 11,
               color: "var(--app-muted)",
@@ -594,21 +595,25 @@ function MusicAppContent({ initialSongs, initialPlaylists, initialLyrics }: Musi
   }, [initialLyrics, initialPlaylists, initialSongs]);
 
   const playingSong = playingId ? (songs.find((s) => s.id === playingId) ?? null) : null;
-
   const handleToggle = useCallback((songId: string) => {
     setPlayingId((prev) => (prev === songId ? null : songId));
   }, []);
 
   return (
     <>
-      <StippleAtmosphere />
-      <div className="pointillism-content">
-        <header className="pointillism-header">
-          <p className="pointillism-header-sub">Personal collection</p>
-        </header>
-
-        <TabBar active={tab} onChange={setTab} />
-        <div style={{ flex: 1, overflow: "auto" }}>
+      <div className="pointillism-content ipod-content">
+        <div className="ipod-control-deck">
+          <div className="ipod-screen">
+            <div className="ipod-screen-status">
+              <strong>Music</strong>
+              <span>{tabs.find((item) => item.id === tab)?.label}</span>
+              <i aria-hidden />
+            </div>
+            <TabBar active={tab} onChange={setTab} />
+          </div>
+          <IPodClickWheel />
+        </div>
+        <div className="ipod-library-panel">
           <div key={tab} className="pointillism-tab-panel">
             {tab === "songs" ? (
               <SongsTab songs={songs} playingId={playingId} onToggle={handleToggle} />
@@ -637,19 +642,13 @@ export function MusicApp(props: MusicAppProps = {}) {
 
 function MusicIcon() {
   return (
-    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true" className="music-vinyl-icon">
-      <path d="M4 7h29v34H4z" fill="#E8EFE5" stroke="#1A1A1A" strokeWidth="1.5" />
-      <path d="M4 7h6v34H4z" fill="#8FA888" />
-      <path d="M14 12h14M14 16h8" stroke="#8FA888" strokeWidth="1.5" strokeLinecap="round" />
-      <g className="music-vinyl-spin">
-        <circle cx="28" cy="27" r="17" fill="#1A1A1A" />
-        <circle cx="28" cy="27" r="13.5" fill="none" stroke="#635B55" strokeWidth="0.75" />
-        <circle cx="28" cy="27" r="10.5" fill="none" stroke="#635B55" strokeWidth="0.75" />
-        <path d="M17 20a13 13 0 0 1 8-5M31 39a13 13 0 0 0 8-5" fill="none" stroke="#9AABB5" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="28" cy="27" r="6.5" fill="#F4C4C4" />
-        <path d="M25 24h6M26 30h4" stroke="#A66C70" strokeWidth="1" strokeLinecap="round" />
-        <circle cx="28" cy="27" r="1.5" fill="#1A1A1A" />
-      </g>
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true">
+      <rect x="8" y="3" width="32" height="42" rx="5" fill="#F7F7F5" stroke="#9CA3A8" strokeWidth="1.5" />
+      <rect x="12" y="7" width="24" height="14" rx="1.5" fill="#B7CAD2" stroke="#68777D" />
+      <path d="M14 11h12M14 14h17M14 17h9" stroke="#34464E" strokeWidth="1.2" />
+      <circle cx="24" cy="32" r="9" fill="#E6E7E8" stroke="#A7AAAD" />
+      <circle cx="24" cy="32" r="3.5" fill="#FAFAFA" stroke="#B8BABC" />
+      <path d="M21 25.5h6M18 32h3M27 32h3M22 38h4" stroke="#687177" strokeWidth="1" strokeLinecap="round" />
     </svg>
   );
 }

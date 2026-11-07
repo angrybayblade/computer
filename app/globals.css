@@ -210,6 +210,7 @@ body {
 
 /* Pointillism / stippling aesthetic */
 .pointillism-app {
+  container: music-app / inline-size;
   position: relative;
   background-color: var(--app-bg);
   background-image:
@@ -374,6 +375,66 @@ body {
   animation: pointillism-rise 0.6s ease 0.08s backwards;
 }
 
+.music-tab-section {
+  padding: 0 20px 24px;
+}
+
+.music-section-note {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  margin: 0 0 14px;
+  padding: 0 0 12px;
+  border-bottom: 1px dotted var(--app-border);
+}
+
+.music-section-note > span {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  background: var(--app-ink);
+  color: var(--app-fg-inv);
+  font-size: 9px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.music-section-note h2 {
+  margin: 0;
+  color: var(--app-fg);
+  font-family: var(--font-playfair-display), Georgia, serif;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.music-section-note p {
+  margin: 5px 0 0;
+  color: var(--app-muted);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+.music-song-grid,
+.music-playlist-grid,
+.music-lyric-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.music-song-grid {
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+}
+
+.music-playlist-grid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.music-lyric-grid {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
 .pointillism-tab-panel {
   animation: pointillism-fade-in 0.35s ease;
 }
@@ -389,22 +450,33 @@ body {
 }
 
 .pointillism-title-bar {
-  background-color: #FAF6F0 !important;
-  background-size: auto, 4px 4px !important;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 50%, transparent 0 9px, rgba(143, 168, 136, 0.48) 9px 10px, transparent 10px 15px, rgba(143, 168, 136, 0.34) 15px 16px, transparent 16px),
+    linear-gradient(115deg, transparent 0 54%, rgba(232, 196, 168, 0.22) 54% 54.2%, transparent 54.2% 61%, rgba(244, 196, 196, 0.18) 61% 61.2%, transparent 61.2%),
+    radial-gradient(rgba(250, 246, 240, 0.18) 0.55px, transparent 0.75px),
+    #1A1A1A !important;
+  background-size: auto, auto, 5px 5px, auto !important;
+}
+
+.pointillism-title-bar .app-window-title {
+  color: #FAF6F0 !important;
+  text-shadow: 0 1px 0 #1A1A1A;
 }
 
 .pointillism-window-controls button {
   font-family: var(--font-roboto-mono), ui-monospace, monospace;
-  background-color: #FAF6F0;
-  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.07) 0.6px, transparent 0.6px);
+  background-color: #1A1A1A;
+  background-image: radial-gradient(circle, rgba(250, 246, 240, 0.12) 0.6px, transparent 0.6px);
   background-size: 3px 3px;
   transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .pointillism-window-controls button:hover {
-  color: #1A1A1A;
-  background-color: #F5EDE3;
-  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.14) 0.8px, transparent 0.8px);
+  color: #1A1A1A !important;
+  background-color: #E8C4A8 !important;
+  background-image: radial-gradient(circle, rgba(26, 26, 26, 0.14) 0.8px, transparent 0.8px) !important;
 }
 
 .pointillism-window-controls button:last-child:hover {
@@ -545,6 +617,24 @@ body {
   transition: filter 0.25s ease, transform 0.4s ease;
 }
 
+.music-card-index {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  z-index: 2;
+  padding: 4px 6px;
+  background: var(--app-peach);
+  color: var(--app-ink);
+  font-size: 8px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  transition: opacity 0.2s ease;
+}
+
+.pointillism-cover--dim .music-card-index {
+  opacity: 0.45;
+}
+
 .pointillism-cover:hover img {
   transform: scale(1.04);
 }
@@ -672,6 +762,37 @@ body {
   background-size: 4px 4px;
 }
 
+.music-playlist-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.music-playlist-heading > span {
+  color: var(--app-muted);
+  font-size: 8px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+}
+
+.music-playlist-cover {
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border: 1px dotted var(--app-border);
+  background: var(--app-card);
+}
+
+.music-playlist-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.82) contrast(0.95);
+}
+
 .pointillism-lyric {
   padding: 3px;
   background-image: radial-gradient(circle, var(--app-ink) 1px, transparent 1px);
@@ -698,6 +819,18 @@ body {
   background-size: 3px 3px;
 }
 
+.music-lyric-index {
+  color: var(--app-muted);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.music-lyric-index--dark {
+  color: rgba(250, 246, 240, 0.48);
+}
+
 .pointillism-player {
   display: flex;
   align-items: center;
@@ -720,6 +853,468 @@ body {
   background-size: 2px 2px;
   flex-shrink: 0;
   animation: stipple-pulse 2s ease-in-out infinite;
+}
+
+/* ── Music (early-2000s portable player) ── */
+
+.ipod-window {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.ipod-title-bar {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent 28% 72%, rgba(118, 127, 133, 0.08)),
+    linear-gradient(#FFFFFF, #E3E6E8) !important;
+  box-shadow: inset 0 -1px #AEB4B8;
+}
+
+.ipod-title-bar .app-window-title {
+  color: #364047 !important;
+  text-shadow: 0 1px #FFFFFF;
+}
+
+.ipod-window-controls button {
+  border-left-color: #B8BEC2 !important;
+  background: linear-gradient(#FBFCFC, #E3E6E8) !important;
+  color: #4C565D !important;
+}
+
+.ipod-window-controls button:hover {
+  background: #CBD2D6 !important;
+  color: #1F292F !important;
+}
+
+.ipod-app {
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.12) 0 1px, rgba(113, 125, 134, 0.025) 1px 2px),
+    linear-gradient(110deg, #D7DBDE, #F2F3F4 46%, #D9DDE0);
+}
+
+.ipod-content {
+  gap: 14px;
+  padding: 16px;
+}
+
+.ipod-control-deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 170px;
+  gap: 18px;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid #C1C6C9;
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(232, 234, 235, 0.88)),
+    #F4F5F5;
+  box-shadow:
+    inset 0 1px #FFFFFF,
+    inset 0 -1px #CDD1D3,
+    0 7px 18px rgba(55, 65, 72, 0.11);
+}
+
+.ipod-screen {
+  min-width: 0;
+  height: 154px;
+  overflow: hidden;
+  border: 2px solid #7E8B91;
+  border-radius: 6px;
+  background: #B9CAD1;
+  box-shadow:
+    inset 0 0 14px rgba(38, 57, 66, 0.18),
+    0 1px #FFFFFF;
+  color: #22343D;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.ipod-screen-status {
+  display: grid;
+  grid-template-columns: 1fr auto 28px;
+  align-items: center;
+  min-height: 29px;
+  gap: 8px;
+  padding: 0 8px;
+  border-bottom: 1px solid #64777F;
+  background: rgba(232, 239, 241, 0.42);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.ipod-screen-status strong {
+  font-size: 12px;
+}
+
+.ipod-screen-status > span {
+  overflow: hidden;
+  color: #4D626B;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ipod-screen-status > i {
+  position: relative;
+  width: 21px;
+  height: 9px;
+  border: 1px solid #34484F;
+  border-radius: 1px;
+}
+
+.ipod-screen-status > i::before {
+  position: absolute;
+  inset: 1px 5px 1px 1px;
+  background: #405D68;
+  content: "";
+}
+
+.ipod-screen-status > i::after {
+  position: absolute;
+  top: 2px;
+  right: -3px;
+  width: 2px;
+  height: 3px;
+  background: #34484F;
+  content: "";
+}
+
+.ipod-menu {
+  display: flex;
+  height: calc(100% - 29px);
+  flex-direction: column;
+}
+
+.ipod-menu .pointillism-tab {
+  min-width: 0;
+  flex: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  animation: none;
+}
+
+.ipod-menu .pointillism-tab:hover {
+  transform: none;
+}
+
+.ipod-menu .pointillism-tab-inner {
+  height: 100%;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 9px;
+  border-bottom: 1px solid rgba(59, 79, 88, 0.36);
+  background: transparent;
+  color: #23363F;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.ipod-menu .pointillism-tab:last-child .pointillism-tab-inner {
+  border-bottom: 0;
+}
+
+.ipod-menu .pointillism-tab-inner:hover,
+.ipod-menu .pointillism-tab-inner--active {
+  background: #315F80;
+  color: #FFFFFF;
+}
+
+.ipod-menu .pointillism-tab-icon {
+  width: 15px;
+  justify-content: center;
+  font-size: 11px;
+  animation: none;
+}
+
+.ipod-menu-chevron {
+  margin-left: auto;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.ipod-click-wheel {
+  position: relative;
+  width: 154px;
+  height: 154px;
+  justify-self: center;
+  border: 1px solid #C4C7C9;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #F8F8F7, #D9DADC);
+  box-shadow:
+    inset 0 1px #FFFFFF,
+    inset 0 -1px #BFC3C5;
+  color: #667178;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ipod-click-wheel > i {
+  position: absolute;
+  inset: 48px;
+  border: 1px solid #C5C9CB;
+  border-radius: 50%;
+  background: linear-gradient(#FAFAFA, #E5E7E8);
+}
+
+.ipod-click-wheel > span {
+  position: absolute;
+  z-index: 1;
+}
+
+.ipod-wheel-menu {
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ipod-wheel-back {
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+}
+
+.ipod-wheel-next {
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+}
+
+.ipod-wheel-play {
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ipod-library-panel {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  border: 1px solid #B7BEC2;
+  border-radius: 10px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.74), rgba(241, 243, 244, 0.82)),
+    #F4F5F5;
+  box-shadow: inset 0 1px #FFFFFF;
+  scrollbar-color: #8D989E #E4E7E9;
+  scrollbar-width: thin;
+}
+
+.ipod-library-panel .pointillism-tab-panel {
+  min-height: 100%;
+  padding-top: 16px;
+}
+
+.ipod-app .music-tab-section,
+.ipod-app .ipod-library-panel > .pointillism-tab-panel > section {
+  padding-right: 16px !important;
+  padding-left: 16px !important;
+}
+
+.ipod-app .music-section-note {
+  border-bottom: 1px solid #B5BDC1;
+}
+
+.ipod-app .music-section-note > span {
+  border: 1px solid #7C8B93;
+  border-radius: 4px;
+  background: #B9CAD1;
+  color: #253940;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.54);
+}
+
+.ipod-app .music-section-note h2 {
+  color: #27343A;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ipod-app .music-section-note p {
+  color: #6C777D;
+  text-transform: none;
+}
+
+.ipod-app .pointillism-card-border {
+  padding: 0;
+  border: 1px solid #B5BCC0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: 0 3px 9px rgba(60, 70, 77, 0.09);
+}
+
+.ipod-app .pointillism-card-border:hover {
+  border-color: #71838D;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(60, 70, 77, 0.13);
+}
+
+.ipod-app .pointillism-card-border--playing {
+  border-color: #315F80;
+  background: transparent;
+  box-shadow: 0 0 0 2px #B9CAD1;
+  animation: pointillism-rise 0.4s ease backwards;
+}
+
+.ipod-app .pointillism-card {
+  border-radius: 7px;
+  background: #F8F8F7;
+}
+
+.ipod-app .pointillism-cover {
+  border-bottom: 1px solid #B9C0C4;
+  border-radius: 7px 7px 0 0;
+}
+
+.ipod-app .music-card-index {
+  border: 1px solid #708189;
+  border-radius: 3px;
+  background: #B9CAD1;
+  color: #253940;
+  box-shadow: none;
+}
+
+.ipod-app .pointillism-card-info {
+  border-top: 0;
+  background: linear-gradient(#FFFFFF, #F0F1F1);
+}
+
+.ipod-app .pointillism-card-title {
+  color: #29363C;
+  text-transform: none;
+}
+
+.ipod-app .pointillism-card-artist {
+  color: #69757B;
+}
+
+.ipod-app .pointillism-icon-link {
+  border: 1px solid #B1B8BC;
+  border-radius: 50%;
+  background: linear-gradient(#FFFFFF, #E2E5E7);
+  color: #4D5A61;
+}
+
+.ipod-app .pointillism-icon-link:hover {
+  border-color: #71838D;
+  background: #B9CAD1;
+  color: #21333B;
+}
+
+.ipod-app .pointillism-panel,
+.ipod-app .pointillism-lyric {
+  padding: 0;
+  border: 1px solid #B5BCC0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: 0 3px 9px rgba(60, 70, 77, 0.09);
+}
+
+.ipod-app .pointillism-panel:hover,
+.ipod-app .pointillism-lyric:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(60, 70, 77, 0.13);
+  animation: none;
+}
+
+.ipod-app .pointillism-panel-inner {
+  border: 0;
+  border-radius: 7px;
+  background: linear-gradient(#FFFFFF, #ECEEEF) !important;
+}
+
+.ipod-app .music-playlist-cover {
+  border: 1px solid #929DA3;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+.ipod-app .pointillism-lyric-inner {
+  border: 0;
+  border-radius: 7px;
+  background-color: var(--panel-bg, var(--app-card));
+  background-image: linear-gradient(rgba(255, 255, 255, 0.12), transparent) !important;
+}
+
+.ipod-app .pointillism-player {
+  margin: 0;
+  border: 1px solid #7E8B91;
+  border-radius: 6px;
+  background: #B9CAD1;
+  color: #263840;
+  box-shadow: inset 0 0 10px rgba(38, 57, 66, 0.12);
+}
+
+.ipod-app .pointillism-player .pointillism-icon-link {
+  border-color: #6E7D84;
+  color: #263840;
+}
+
+.ipod-app .ipod-player-title {
+  color: #22343D !important;
+}
+
+.ipod-app .ipod-player-artist {
+  color: #4D626B !important;
+}
+
+.ipod-app .pointillism-player .stipple-wave--dark .stipple-wave-dot {
+  background: #315F80;
+}
+
+@container music-app (max-width: 640px) {
+  .ipod-content {
+    padding: 12px;
+  }
+
+  .ipod-control-deck {
+    grid-template-columns: minmax(0, 1fr) 116px;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .ipod-screen {
+    height: 140px;
+  }
+
+  .ipod-click-wheel {
+    width: 112px;
+    height: 112px;
+  }
+
+  .ipod-click-wheel > i {
+    inset: 35px;
+  }
+
+  .ipod-wheel-menu {
+    top: 10px;
+  }
+
+  .ipod-wheel-back {
+    left: 9px;
+  }
+
+  .ipod-wheel-next {
+    right: 9px;
+  }
+
+  .ipod-wheel-play {
+    bottom: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ipod-app *,
+  .ipod-app *::before,
+  .ipod-app *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 /* Grain texture overlay for dark ethereal surfaces */

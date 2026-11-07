@@ -43,5 +43,11 @@
     "title": "Diet Coke",
     "artist": "Pusha T",
     "playConfig": { "id": "unRSQs7aABE" }
+  },
+  {
+    "id": "mirrors-justin-timberlake",
+    "title": "Mirrors",
+    "artist": "Justin Timberlake",
+    "playConfig": { "id": "U41KPUfOSFk" }
   }
 ]

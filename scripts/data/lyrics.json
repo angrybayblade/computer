@@ -5,5 +5,26 @@
     "artist": "Raqeeb Aalam",
     "song": "Blue Theme - Blue (2009)",
     "accent": "#5BA4A4"
+  },
+  {
+    "id": "punk-tactics",
+    "lyric": "Ooh goddamn, I drop bombs / I was born with the brains and the brawn / I am the king and you're just a pawn / Who's got the high ground now, Obi-Wan?",
+    "artist": "Joey Valence & Brae",
+    "song": "Punk Tactics",
+    "accent": "#D77A61"
+  },
+  {
+    "id": "khuda-bhi",
+    "lyric": "Tere aage pheeke pheeke / Saare shringar hai / Main toh kya farishte bhi / Tujhpe nissar hain / Garmi ki shaam hai tu, / Jaadon ki dhoop hai / Jitne bhi mausam hain, / Tere karzdaar hain",
+    "artist": "Mohit Chauhan",
+    "song": "Khuda Bhi",
+    "accent": "#C89B6D"
+  },
+  {
+    "id": "mans-not-hot",
+    "lyric": "Two plus two is four / Minus one that's three, quick maths",
+    "artist": "Big Shaq",
+    "song": "Man's Not Hot",
+    "accent": "#8FA888"
   }
 ]
